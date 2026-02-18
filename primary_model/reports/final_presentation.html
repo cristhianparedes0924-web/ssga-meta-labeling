@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Primary Model Final Presentation</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --panel: #ffffff;
+      --panel-2: #f1f4fa;
+      --ink: #142033;
+      --muted: #5f6b7a;
+      --line: #dbe2ee;
+      --accent: #0f6cbd;
+      --accent-soft: #e8f2fd;
+      --good: #0a7f5a;
+      --warn: #b45309;
+      --warn-soft: #fff5e8;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      --shadow: 0 8px 24px rgba(20, 32, 51, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); line-height: 1.45; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .layout {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    .toc {
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+      max-height: calc(100vh - 32px);
+      overflow: auto;
+    }
+    .toc h2 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .toc ol {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 14px;
+    }
+    .toc li { margin: 7px 0; }
+
+    .content {
+      max-width: 980px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    h1, h2, h3 { margin: 0 0 10px; line-height: 1.25; }
+    h1 { font-size: 30px; }
+    h2 { font-size: 22px; padding-top: 4px; }
+    h3 { font-size: 17px; color: #22344d; }
+    p { margin: 8px 0 12px; color: #22344d; }
+    ul, ol { margin: 8px 0 12px 20px; }
+    li { margin: 4px 0; }
+    .muted { color: var(--muted); }
+    .mono { font-family: var(--mono); font-size: 0.94em; }
+
+    .hero {
+      background: linear-gradient(120deg, #0f6cbd 0%, #0e4f9e 100%);
+      color: #fff;
+    }
+    .hero p, .hero li, .hero .muted { color: #e7f2ff; }
+    .hero .kicker {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+
+    .highlight {
+      background: var(--accent-soft);
+      border: 1px solid #c9def8;
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 14px;
+    }
+    .highlight h3 { margin-bottom: 8px; }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .kpi {
+      background: #fff;
+      border: 1px solid #cfe1f8;
+      border-radius: 10px;
+      padding: 10px;
+      min-height: 84px;
+    }
+    .kpi .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-bottom: 5px;
+    }
+    .kpi .value {
+      font-size: 21px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: #103b70;
+    }
+    .kpi .sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .note {
+      border-left: 4px solid var(--accent);
+      background: var(--panel-2);
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    .warn {
+      border: 1px solid #f0c083;
+      background: var(--warn-soft);
+      color: #6a3b06;
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+    .ok {
+      border: 1px solid #addcc8;
+      background: #ebfbf4;
+      color: #0b5f46;
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    pre {
+      background: #0f1724;
+      color: #dbe7ff;
+      border-radius: 10px;
+      padding: 12px;
+      overflow: auto;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.35;
+      margin: 10px 0 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 14px;
+      font-size: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 8px 10px;
+      vertical-align: top;
+    }
+    th {
+      background: #eef3fb;
+      color: #1d304a;
+      text-align: left;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+    }
+    tbody tr:nth-child(even) { background: #fafcff; }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    tr.primary-row {
+      background: #e8f6ef !important;
+      font-weight: 700;
+    }
+
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 12px;
+      padding: 0;
+      list-style: none;
+    }
+    .flow li {
+      background: #f0f5fd;
+      border: 1px solid #cfdbef;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 13px;
+      margin: 0;
+      color: #163b65;
+    }
+
+    figure {
+      margin: 14px 0;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+    }
+    figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+    }
+    figcaption {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 1080px) {
+      .layout { grid-template-columns: 1fr; }
+      .toc {
+        position: static;
+        max-height: none;
+      }
+      .toc details { display: block; }
+      .toc nav { margin-top: 10px; }
+    }
+
+    @media (max-width: 760px) {
+      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-2 { grid-template-columns: 1fr; }
+      h1 { font-size: 25px; }
+      h2 { font-size: 20px; }
+    }
+
+    @media print {
+      body { background: #fff; color: #000; }
+      .layout {
+        display: block;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+      }
+      .toc { display: none; }
+      .card {
+        box-shadow: none;
+        border: 1px solid #aaa;
+        page-break-inside: avoid;
+      }
+      a { color: #000; text-decoration: none; }
+      pre { background: #f5f5f5; color: #000; }
+      .hero { background: #fff; color: #000; border: 1px solid #aaa; }
+      .hero p, .hero li, .hero .muted { color: #000; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="toc">
+      <h2>Contents</h2>
+      <nav>
+        <ol>
+          <li><a href="#exec-summary">Executive Summary</a></li>
+          <li><a href="#repo-overview">Repo &amp; System Overview</a></li>
+          <li><a href="#data-qc">Data Pipeline + QC</a></li>
+          <li><a href="#treasury-fix">Treasury Fix</a></li>
+          <li><a href="#backtest-engine">Backtest Engine</a></li>
+          <li><a href="#benchmarks">Benchmarks Implemented</a></li>
+          <li><a href="#primaryv1">PrimaryV1</a></li>
+          <li><a href="#results">Results</a></li>
+          <li><a href="#validation">Validation &amp; Tests</a></li>
+          <li><a href="#repro">Repro Steps + Deliverables</a></li>
+          <li><a href="#next-steps">Limitations / Next Steps</a></li>
+        </ol>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <section id="exec-summary" class="card hero">
+        <div class="kicker">Final Presentation</div>
+        <h1>Primary Model Pipeline and Benchmark Integration</h1>
+        <p class="muted">Scope: end-to-end primary model implementation (data → signal → weights → backtest → reporting) with real artifacts from <span class="mono">reports/</span> and <span class="mono">data/clean/</span>.</p>
+        <ul>
+          <li>Built a production-style data layer with canonical schema and QC reporting.</li>
+          <li>Implemented PrimaryV1 signal builder and deterministic signal-to-weight strategy mapping.</li>
+          <li>Integrated PrimaryV1 into benchmark runner and report outputs (CSV/HTML/plots).</li>
+          <li>Validated with targeted tests covering alignment, no-lookahead, treasury math, and weight constraints.</li>
+        </ul>
+
+        <div class="highlight">
+          <h3>PrimaryV1 vs Benchmarks</h3>
+          <div class="kpi-grid">
+            <div class="kpi">
+              <div class="label">PrimaryV1 Sharpe</div>
+              <div class="value">0.8572</div>
+              <div class="sub">Highest in table</div>
+            </div>
+            <div class="kpi">
+              <div class="label">PrimaryV1 Max DD</div>
+              <div class="value">-18.76%</div>
+              <div class="sub">Shallowest drawdown</div>
+            </div>
+            <div class="kpi">
+              <div class="label">PrimaryV1 Ann Return</div>
+              <div class="value">6.49%</div>
+              <div class="sub">Below SimpleTrend / BuyHoldSPX</div>
+            </div>
+            <div class="kpi">
+              <div class="label">PrimaryV1 Avg Turnover</div>
+              <div class="value">0.0719</div>
+              <div class="sub">Lower than SimpleTrend (0.0810)</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="repo-overview" class="card">
+        <h2>1) Repo &amp; System Overview</h2>
+        <h3>Compact Repo Map</h3>
+        <pre>primary_model/
+├── src/primary_model/
+│   ├── data.py           ├── treasury.py       ├── signals.py
+│   ├── strategy.py       ├── backtest.py       ├── benchmarks.py
+│   ├── metrics.py        ├── plots.py          └── __init__.py
+├── scripts/
+│   ├── prepare_data.py   ├── data_qc.py
+│   ├── run_primary_variant1.py
+│   └── run_benchmarks.py
+├── tests/
+│   ├── test_data_loader.py
+│   ├── test_treasury.py
+│   ├── test_backtest_alignment.py
+│   ├── test_signals.py
+│   ├── test_strategy.py
+│   └── test_run_benchmarks_smoke.py
+├── data/clean/*.csv
+└── reports/*</pre>
+
+        <h3>Core Module Responsibilities</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Module</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="mono">data.py</td><td>Load canonical clean CSVs, align universe returns, apply treasury return adjustment.</td></tr>
+            <tr><td class="mono">treasury.py</td><td>Convert yield levels into approximate bond total returns via duration + carry.</td></tr>
+            <tr><td class="mono">signals.py</td><td>Build Variant1 indicators, expanding z-scores, composite score, and BUY/HOLD/SELL signals.</td></tr>
+            <tr><td class="mono">strategy.py</td><td>Map discrete signals to long-only portfolio weights with carry and pre-signal rules.</td></tr>
+            <tr><td class="mono">backtest.py</td><td>Run vectorized t+1 backtests, turnover, transaction-cost deduction, and equity series.</td></tr>
+            <tr><td class="mono">benchmarks.py</td><td>Generate benchmark weights: EqualWeight25, BuyHoldSPX, 60/40, SimpleTrend.</td></tr>
+            <tr><td class="mono">metrics.py</td><td>Compute annualized return/vol, Sharpe, max drawdown, Calmar, and summary tables.</td></tr>
+            <tr><td class="mono">plots.py</td><td>Render equity, drawdown, and rolling-Sharpe strategy plots.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="data-qc" class="card">
+        <h2>2) Data Pipeline + QC</h2>
+        <div class="note"><strong>Canonical clean schema:</strong> <span class="mono">Date, Price, Return</span> (monthly decimal returns).</div>
+        <p>Cleaner behavior (<span class="mono">scripts/prepare_data.py</span>): detect header row containing <span class="mono">Date</span>, map <span class="mono">PX_LAST→Price</span> and <span class="mono">CHG_PCT_1D→Return</span>, coerce types, sort chronologically, and write canonical CSVs.</p>
+
+        <h3>Coverage (from <span class="mono">data/clean/*.csv</span>)</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th class="num">Rows</th>
+              <th>Min Date</th>
+              <th>Max Date</th>
+              <th class="num">Missing Return %</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>bcom</td><td class="num">360</td><td>1996-01-31</td><td>2025-12-31</td><td class="num">0.0000</td></tr>
+            <tr><td>corp_bonds</td><td class="num">360</td><td>1996-01-31</td><td>2025-12-31</td><td class="num">0.0000</td></tr>
+            <tr><td>spx</td><td class="num">360</td><td>1996-01-31</td><td>2025-12-31</td><td class="num">0.0000</td></tr>
+            <tr><td>treasury_10y</td><td class="num">360</td><td>1996-01-31</td><td>2025-12-31</td><td class="num">0.0000</td></tr>
+          </tbody>
+        </table>
+
+        <h3>QC Highlights (from <span class="mono">reports/data_qc.html</span>)</h3>
+        <ul>
+          <li><strong>Overlap:</strong> raw overlap rows = <strong>360</strong>, adjusted overlap rows = <strong>359</strong>; window = <strong>1996-01-31</strong> to <strong>2025-12-31</strong>.</li>
+          <li><strong>Key raw correlations:</strong> SPX-BCOM = 0.344972, SPX-CorpBonds = 0.360750, SPX-Treasury = 0.141611, BCOM-Treasury = 0.190245, Treasury-CorpBonds = -0.561417.</li>
+          <li><strong>Treasury annualized vol:</strong> raw = 0.321270, adjusted = 0.077085.</li>
+        </ul>
+      </section>
+
+      <section id="treasury-fix" class="card">
+        <h2>3) Treasury Fix</h2>
+        <p><span class="mono">treasury_10y</span> “Price” is yield-like, not a bond price index. QC flags this explicitly (range 0.5282 to 6.9430). Using percentage changes in yields directly as “returns” inflates volatility and misrepresents bond behavior.</p>
+        <p>Implemented correction: keep treasury <span class="mono">Price</span> as yield level, but replace treasury <span class="mono">Return</span> with a duration-based total-return proxy.</p>
+        <div class="note">
+          <strong>Formula</strong><br>
+          <code>y = yield_percent / 100</code><br>
+          <code>price_return = -duration * diff(y)</code><br>
+          <code>carry = y.shift(1) / 12</code><br>
+          <code>total_return = price_return + carry</code>
+        </div>
+        <p>Assumption used: <strong>duration = 8.5</strong>. This stabilizes treasury risk behavior but remains an approximation; duration sensitivity should be tested later.</p>
+      </section>
+
+      <section id="backtest-engine" class="card">
+        <h2>4) Backtest Engine (Correctness &amp; No-Lookahead)</h2>
+        <ul>
+          <li><strong>t+1 alignment:</strong> weights decided at date <em>t</em> are applied to returns at <em>t+1</em> via <span class="mono">returns.shift(-1)</span>.</li>
+          <li><strong>Long-only normalization:</strong> negative weights are clipped to 0 and rows are normalized to sum to 1 when possible.</li>
+          <li><strong>Turnover:</strong> <span class="mono">0.5 * sum(abs(w_t - w_{t-1}))</span>.</li>
+          <li><strong>Transaction cost model:</strong> <span class="mono">cost = turnover * (tcost_bps / 10000)</span>.</li>
+          <li><strong>Current runs:</strong> <span class="mono">tcost_bps = 0.0</span>.</li>
+        </ul>
+      </section>
+
+      <section id="benchmarks" class="card">
+        <h2>5) Benchmarks Implemented</h2>
+        <ul>
+          <li><strong>EqualWeight25:</strong> 25% to each of the four assets every period.</li>
+          <li><strong>BuyHoldSPX:</strong> 100% SPX static allocation.</li>
+          <li><strong>60/40:</strong> 60% SPX + 40% Treasury static allocation.</li>
+          <li><strong>SimpleTrend:</strong> SPX fast/slow SMA regime switching between risk-on (SPX) and risk-off (Treasury).</li>
+        </ul>
+      </section>
+
+      <section id="primaryv1" class="card">
+        <h2>6) PrimaryV1</h2>
+        <ul class="flow">
+          <li>Indicators</li>
+          <li>Expanding z-score (shift(1))</li>
+          <li>Composite score</li>
+          <li>BUY/HOLD/SELL signal</li>
+          <li>Weights mapping</li>
+          <li>t+1 backtest</li>
+        </ul>
+
+        <h3>Signal Construction Rules</h3>
+        <ul>
+          <li>Indicators: <span class="mono">spx_trend</span>, <span class="mono">bcom_trend</span>, <span class="mono">credit_vs_rates</span>, <span class="mono">risk_breadth</span>.</li>
+          <li>Normalization uses prior history only (<span class="mono">history = x.shift(1)</span>) to avoid lookahead.</li>
+          <li>Thresholds: <span class="mono">BUY if score &gt; 0.5</span>, <span class="mono">SELL if score &lt; -0.5</span>, else HOLD.</li>
+        </ul>
+
+        <h3>Weight Mapping Rules</h3>
+        <ul>
+          <li><strong>BUY:</strong> equally split across SPX, BCOM, Corp Bonds (1/3 each).</li>
+          <li><strong>SELL:</strong> 100% Treasury.</li>
+          <li><strong>HOLD:</strong> carry previous period weights.</li>
+          <li><strong>Before first valid signal:</strong> default equal-weight across all assets (or risk-off mode if configured).</li>
+          <li>Weights are reindexed to returns index, forward-filled, and remaining NaNs are filled with equal weight.</li>
+        </ul>
+      </section>
+
+      <section id="results" class="card">
+        <h2>7) Results (Tables + Visuals)</h2>
+
+        <h3>Main Performance Table</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Strategy</th>
+              <th class="num">ann_return</th>
+              <th class="num">ann_vol</th>
+              <th class="num">sharpe</th>
+              <th class="num">max_drawdown</th>
+              <th class="num">calmar</th>
+              <th class="num">avg_turnover</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>EqualWeight25</td><td class="num">0.047792</td><td class="num">0.071808</td><td class="num">0.687576</td><td class="num">-0.268990</td><td class="num">0.177673</td><td class="num">0.000000</td></tr>
+            <tr><td>BuyHoldSPX</td><td class="num">0.082662</td><td class="num">0.152810</td><td class="num">0.598620</td><td class="num">-0.525605</td><td class="num">0.157271</td><td class="num">0.000000</td></tr>
+            <tr><td>60/40</td><td class="num">0.069366</td><td class="num">0.093251</td><td class="num">0.767870</td><td class="num">-0.307769</td><td class="num">0.225384</td><td class="num">0.000000</td></tr>
+            <tr><td>SimpleTrend</td><td class="num">0.086249</td><td class="num">0.129104</td><td class="num">0.707779</td><td class="num">-0.267169</td><td class="num">0.322827</td><td class="num">0.081006</td></tr>
+            <tr class="primary-row"><td>PrimaryV1</td><td class="num">0.064903</td><td class="num">0.076990</td><td class="num">0.857190</td><td class="num">-0.187608</td><td class="num">0.345952</td><td class="num">0.071927</td></tr>
+          </tbody>
+        </table>
+
+        <div class="grid-2">
+          <div>
+            <h3>Excess vs EqualWeight25</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Strategy</th>
+                  <th class="num">mean_excess_annual</th>
+                  <th class="num">months_won</th>
+                  <th class="num">months_lost</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>EqualWeight25</td><td class="num">0.000000</td><td class="num">0</td><td class="num">0</td></tr>
+                <tr><td>BuyHoldSPX</td><td class="num">0.042102</td><td class="num">226</td><td class="num">132</td></tr>
+                <tr><td>60/40</td><td class="num">0.022232</td><td class="num">208</td><td class="num">150</td></tr>
+                <tr><td>SimpleTrend</td><td class="num">0.042004</td><td class="num">220</td><td class="num">138</td></tr>
+                <tr class="primary-row"><td>PrimaryV1</td><td class="num">0.016622</td><td class="num">185</td><td class="num">157</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <h3>Correlation with EqualWeight25</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Strategy</th>
+                  <th class="num">corr_with_equal_weight</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>EqualWeight25</td><td class="num">1.000000</td></tr>
+                <tr><td>BuyHoldSPX</td><td class="num">0.759516</td></tr>
+                <tr><td>60/40</td><td class="num">0.838412</td></tr>
+                <tr><td>SimpleTrend</td><td class="num">0.588320</td></tr>
+                <tr class="primary-row"><td>PrimaryV1</td><td class="num">0.528013</td></tr>
+              </tbody>
+            </table>
+
+            <h3>PrimaryV1 Signal Counts</h3>
+            <table>
+              <thead><tr><th>Signal</th><th class="num">Count</th></tr></thead>
+              <tbody>
+                <tr><td>BUY</td><td class="num">81</td></tr>
+                <tr><td>HOLD</td><td class="num">191</td></tr>
+                <tr><td>SELL</td><td class="num">73</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <h3>Visual Diagnostics</h3>
+        <figure>
+          <img src="assets/equity_curves.png" alt="Equity curves for all strategies">
+          <figcaption>Figure 1. Net equity curves across EqualWeight25, BuyHoldSPX, 60/40, SimpleTrend, and PrimaryV1.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/drawdowns.png" alt="Drawdowns for all strategies">
+          <figcaption>Figure 2. Drawdown comparison; PrimaryV1 shows the shallowest peak-to-trough loss in this run.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/rolling_sharpe.png" alt="Rolling Sharpe ratios for all strategies">
+          <figcaption>Figure 3. 12-month rolling Sharpe for all strategies.</figcaption>
+        </figure>
+      </section>
+
+      <section id="validation" class="card">
+        <h2>8) Validation &amp; Test Coverage</h2>
+        <ul>
+          <li><span class="mono">test_data_loader.py</span>: data coercion, return derivation, universe alignment behavior.</li>
+          <li><span class="mono">test_treasury.py</span>: treasury duration/carry formula numeric correctness.</li>
+          <li><span class="mono">test_backtest_alignment.py</span>: verifies t+1 return application in backtest.</li>
+          <li><span class="mono">test_signals.py</span>: history-only z-score logic, threshold mapping, and signal schema.</li>
+          <li><span class="mono">test_strategy.py</span>: BUY/HOLD/SELL mapping, carry behavior, pre-signal behavior, non-negative/sum-to-1 constraints.</li>
+          <li><span class="mono">test_run_benchmarks_smoke.py</span>: end-to-end PrimaryV1 weight shape and constraints sanity test.</li>
+        </ul>
+
+        <div class="ok">
+          <strong>No-Lookahead Checklist</strong>
+          <ul>
+            <li>[x] Expanding z-score uses <span class="mono">shift(1)</span> history for normalization.</li>
+            <li>[x] Backtest applies <span class="mono">w_t</span> to <span class="mono">r_{t+1}</span> using <span class="mono">returns.shift(-1)</span>.</li>
+            <li>[x] Test suite includes explicit tests for both safeguards.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="repro" class="card">
+        <h2>9) Repro Steps + Deliverables Inventory</h2>
+        <h3>Recommended Reproduction Commands</h3>
+        <pre>cd /home/cristhian/Projects/ssga-meta-labeling/primary_model
+pip install -r requirements.txt
+python scripts/prepare_data.py
+python scripts/data_qc.py
+python scripts/run_primary_variant1.py
+python scripts/run_benchmarks.py
+pytest -q</pre>
+
+        <h3>Deliverables under <span class="mono">reports/</span></h3>
+        <table>
+          <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">benchmarks_summary.csv</td><td>Main strategy performance table.</td></tr>
+            <tr><td class="mono">benchmarks_summary.html</td><td>Benchmark report (performance, excess/correlation, sanity tables, plots).</td></tr>
+            <tr><td class="mono">data_qc.html</td><td>Data quality report (coverage, overlap, correlations, annualized stats).</td></tr>
+            <tr><td class="mono">primary_v1_signal.csv</td><td>PrimaryV1 indicators, z-scores, composite score, and signal timeline.</td></tr>
+            <tr><td class="mono">primary_v1_weights.csv</td><td>Aligned PrimaryV1 portfolio weights used in benchmark run.</td></tr>
+            <tr><td class="mono">primary_v1_backtest.csv</td><td>PrimaryV1 backtest time series output.</td></tr>
+            <tr><td class="mono">primary_v1_summary.csv</td><td>Single-row PrimaryV1 performance summary.</td></tr>
+            <tr><td class="mono">assets/equity_curves.png</td><td>Equity curves plot.</td></tr>
+            <tr><td class="mono">assets/drawdowns.png</td><td>Drawdown plot.</td></tr>
+            <tr><td class="mono">assets/rolling_sharpe.png</td><td>Rolling Sharpe plot.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Artifact Integrity</h3>
+        <div class="ok">
+          All required Stage 1 artifacts were found and parsed. No missing-data fallback was required.
+        </div>
+      </section>
+
+      <section id="next-steps" class="card">
+        <h2>10) Limitations / Next Steps</h2>
+        <ul>
+          <li>Transaction costs are currently modeled at 0 bps in benchmark runs; add robustness runs at non-zero costs.</li>
+          <li>Treasury duration is fixed at 8.5; add sensitivity analysis to duration assumptions.</li>
+          <li>PrimaryV1 uses fixed default windows/thresholds; add walk-forward and stability tests before meta-labeling rollout.</li>
+          <li>Consider adding a single consolidated machine-readable model card JSON for downstream automation.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Appendix: Data Presence Warning Template</h2>
+        <div class="warn">
+          WARNING TEMPLATE: If future runs are missing required artifacts (for example <span class="mono">benchmarks_summary.csv</span> or plot files), this report should show a visible warning block in this section and omit only the missing components.
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

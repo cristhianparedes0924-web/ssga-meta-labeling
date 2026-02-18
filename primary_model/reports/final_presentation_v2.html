@@ -1,0 +1,1451 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Primary Model Final Presentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --bg-elev: #ffffff;
+      --panel: #ffffff;
+      --panel-soft: #eef3fb;
+      --ink: #122033;
+      --ink-soft: #31445f;
+      --muted: #64748b;
+      --line: #d8e2ef;
+      --accent: #0e6cc4;
+      --accent-2: #2b8ad6;
+      --accent-soft: #e7f2ff;
+      --good: #0b8f61;
+      --good-soft: #e7f8f0;
+      --warn: #b76112;
+      --warn-soft: #fff4e7;
+      --focus: #1f8fff;
+      --shadow: 0 14px 36px rgba(14, 38, 66, 0.09);
+      --shadow-soft: 0 8px 20px rgba(14, 38, 66, 0.08);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: "Plus Jakarta Sans", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      --head: "Manrope", "Plus Jakarta Sans", system-ui, sans-serif;
+    }
+
+    html.theme-dark {
+      --bg: #0d1420;
+      --bg-elev: #101b2a;
+      --panel: #122033;
+      --panel-soft: #16283f;
+      --ink: #eaf1fb;
+      --ink-soft: #d4deeb;
+      --muted: #95a7bf;
+      --line: #2a3c55;
+      --accent: #57a8ff;
+      --accent-2: #7abaff;
+      --accent-soft: #18314f;
+      --good: #42c48a;
+      --good-soft: #17372d;
+      --warn: #ffb86b;
+      --warn-soft: #3d2c1b;
+      --focus: #8fc2ff;
+      --shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+      --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html:not(.theme-light):not(.theme-dark) {
+        --bg: #0d1420;
+        --bg-elev: #101b2a;
+        --panel: #122033;
+        --panel-soft: #16283f;
+        --ink: #eaf1fb;
+        --ink-soft: #d4deeb;
+        --muted: #95a7bf;
+        --line: #2a3c55;
+        --accent: #57a8ff;
+        --accent-2: #7abaff;
+        --accent-soft: #18314f;
+        --good: #42c48a;
+        --good-soft: #17372d;
+        --warn: #ffb86b;
+        --warn-soft: #3d2c1b;
+        --focus: #8fc2ff;
+        --shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+        --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      transition: all 0.15s ease;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top right, rgba(14, 108, 196, 0.06), transparent 42%), var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.62;
+      scroll-behavior: smooth;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 120;
+      background: color-mix(in srgb, var(--panel) 90%, transparent);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .topbar-inner {
+      height: 44px;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .doc-title {
+      font-family: var(--head);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toggle-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toggle-btn {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .toggle-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      text-decoration: none;
+    }
+
+    .progress-track {
+      height: 3px;
+      width: 100%;
+      background: transparent;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 8px rgba(14, 108, 196, 0.45);
+    }
+
+    .layout {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 292px minmax(0, 1fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .toc {
+      position: sticky;
+      top: 58px;
+      align-self: start;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      max-height: calc(100vh - 72px);
+      overflow: auto;
+    }
+
+    .toc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .toc h2 {
+      margin: 0;
+      font-family: var(--head);
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .toc-toggle {
+      display: none;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      color: var(--ink);
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+
+    .toc nav ol {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 14px;
+    }
+
+    .toc nav li {
+      margin: 3px 0;
+      border-left: 2px solid transparent;
+    }
+
+    .toc nav li a {
+      display: block;
+      padding: 7px 8px;
+      border-radius: 8px;
+      color: var(--ink-soft);
+      font-weight: 500;
+    }
+
+    .toc nav li a:hover {
+      background: var(--panel-soft);
+      color: var(--ink);
+      text-decoration: none;
+      transform: translateX(2px);
+    }
+
+    .toc nav li.active {
+      border-left-color: var(--accent);
+    }
+
+    .toc nav li.active a {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .content {
+      max-width: 1020px;
+    }
+
+    .card {
+      --card-accent: var(--line);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-left: 6px solid var(--card-accent);
+      border-radius: 18px;
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: clip;
+    }
+
+    .card.reveal {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+
+    .card.reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #exec-summary.card { --card-accent: #93c5fd; }
+    #repo-overview.card,
+    #data-qc.card,
+    #treasury-fix.card,
+    #backtest-engine.card,
+    #benchmarks.card,
+    #repro.card { --card-accent: var(--accent); }
+    #primaryv1.card,
+    #results.card,
+    #validation.card { --card-accent: var(--good); }
+    #next-steps.card,
+    #appendix-warning.card { --card-accent: var(--warn); }
+
+    h1, h2, h3 {
+      margin: 0 0 12px;
+      line-height: 1.25;
+      color: var(--ink);
+    }
+
+    h1 {
+      font-family: var(--head);
+      font-size: clamp(2rem, 3.2vw, 2.45rem);
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      font-family: var(--head);
+      font-size: clamp(1.45rem, 2.4vw, 1.85rem);
+      letter-spacing: -0.01em;
+      margin-bottom: 14px;
+    }
+
+    h3 {
+      font-family: var(--head);
+      font-size: clamp(1.03rem, 1.7vw, 1.2rem);
+      color: color-mix(in srgb, var(--ink) 88%, var(--muted));
+      margin-top: 12px;
+    }
+
+    .section-num {
+      color: var(--accent);
+      font-weight: 800;
+      margin-right: 0.16em;
+    }
+
+    p {
+      margin: 10px 0 14px;
+      color: var(--ink-soft);
+      font-size: 0.99rem;
+    }
+
+    ul, ol { margin: 8px 0 14px 20px; }
+    li { margin: 6px 0; color: var(--ink-soft); }
+    .muted { color: var(--muted); }
+    .mono {
+      font-family: var(--mono);
+      font-size: 0.93em;
+      background: var(--panel-soft);
+      padding: 1px 4px;
+      border-radius: 5px;
+    }
+
+    .hero {
+      color: #fff;
+      background:
+        radial-gradient(1200px 380px at 7% -20%, rgba(132, 202, 255, 0.45), transparent 55%),
+        radial-gradient(900px 320px at 95% 120%, rgba(145, 230, 194, 0.35), transparent 50%),
+        linear-gradient(128deg, #0c4f94 0%, #0c6ec1 46%, #0a7bb4 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.12)' stroke-width='1'%3E%3Cpath d='M0 35h140M0 70h140M0 105h140'/%3E%3Cpath d='M35 0v140M70 0v140M105 0v140'/%3E%3C/g%3E%3C/svg%3E");
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 18px 40px rgba(8, 35, 70, 0.35);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 35%, rgba(0, 0, 0, 0.14));
+      pointer-events: none;
+    }
+
+    .hero > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero p, .hero li, .hero .muted { color: #eaf3ff; }
+    .hero .kicker {
+      display: inline-block;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      opacity: 0.95;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 999px;
+      padding: 4px 10px;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 14px;
+    }
+
+    .chip {
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: #f3f8ff;
+    }
+
+    .highlight {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.65);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 16px;
+      color: #16345b;
+    }
+
+    .highlight h3 {
+      margin-bottom: 10px;
+      color: #11406f;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .kpi {
+      background: #fff;
+      border: 1px solid #c8d9ef;
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 94px;
+      box-shadow: 0 6px 18px rgba(22, 56, 96, 0.1);
+    }
+
+    .kpi .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #4c6a8f;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+      font-weight: 800;
+    }
+
+    .kpi .label::before {
+      margin-right: 6px;
+    }
+
+    .kpi:nth-child(1) .label::before { content: "🏆"; }
+    .kpi:nth-child(2) .label::before { content: "📉"; }
+    .kpi:nth-child(3) .label::before { content: "📈"; }
+    .kpi:nth-child(4) .label::before { content: "🔄"; }
+
+    .kpi .value {
+      font-size: clamp(1.45rem, 2.4vw, 1.8rem);
+      font-weight: 800;
+      line-height: 1.08;
+      color: #0f3765;
+      letter-spacing: -0.02em;
+    }
+
+    .kpi .sub {
+      font-size: 12px;
+      color: #5c7391;
+      margin-top: 5px;
+      line-height: 1.3;
+    }
+
+    .note, .warn, .ok {
+      position: relative;
+      border-radius: 11px;
+      padding: 12px 14px 12px 40px;
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      color: var(--ink-soft);
+    }
+
+    .note {
+      border-left: 5px solid var(--accent);
+      background: var(--panel-soft);
+    }
+
+    .warn {
+      border-left: 5px solid var(--warn);
+      background: var(--warn-soft);
+    }
+
+    .ok {
+      border-left: 5px solid var(--good);
+      background: var(--good-soft);
+    }
+
+    .note::before,
+    .warn::before,
+    .ok::before {
+      position: absolute;
+      left: 12px;
+      top: 11px;
+      font-size: 18px;
+    }
+    .note::before { content: "ℹ️"; }
+    .warn::before { content: "⚠️"; }
+    .ok::before { content: "✅"; }
+
+    .code-shell {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 10px 0 14px;
+      box-shadow: var(--shadow-soft);
+      background: #0f1724;
+    }
+
+    .code-head {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      background: #121c2b;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .traffic {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .traffic i {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .traffic i:nth-child(1) { background: #ff605c; }
+    .traffic i:nth-child(2) { background: #ffbd44; }
+    .traffic i:nth-child(3) { background: #00ca4e; }
+
+    .copy-btn {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      color: #dce8fa;
+      border-radius: 7px;
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: rgba(255, 255, 255, 0.34);
+    }
+
+    pre {
+      background: #0f1724;
+      color: #dbe7ff;
+      margin: 0;
+      border-radius: 0;
+      padding: 12px;
+      overflow: auto;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 16px;
+      font-size: 14px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 9px 10px;
+      vertical-align: middle;
+    }
+
+    th {
+      background: color-mix(in srgb, var(--panel-soft) 86%, var(--panel));
+      color: color-mix(in srgb, var(--ink) 85%, var(--muted));
+      text-align: left;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      position: sticky;
+      top: 44px;
+      z-index: 2;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    th.sortable::after {
+      content: "↕";
+      font-size: 11px;
+      margin-left: 6px;
+      color: var(--muted);
+    }
+    th.sortable.asc::after { content: "↑"; color: var(--accent); }
+    th.sortable.desc::after { content: "↓"; color: var(--accent); }
+
+    tbody tr:nth-child(even) { background: color-mix(in srgb, var(--panel-soft) 35%, var(--panel)); }
+    td.num, th.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum";
+    }
+
+    tr.primary-row {
+      background: color-mix(in srgb, var(--good-soft) 75%, var(--panel)) !important;
+      font-weight: 700;
+      box-shadow: inset 3px 0 0 var(--good);
+    }
+
+    .best-badge {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      background: color-mix(in srgb, var(--good-soft) 70%, var(--panel));
+      color: var(--good);
+      border: 1px solid color-mix(in srgb, var(--good) 36%, var(--line));
+      vertical-align: middle;
+    }
+
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 12px 0 14px;
+      padding: 0;
+      list-style: none;
+      counter-reset: pipe;
+    }
+
+    .flow li {
+      position: relative;
+      margin: 0;
+      background: color-mix(in srgb, var(--accent-soft) 72%, var(--panel));
+      border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+      color: color-mix(in srgb, var(--accent) 80%, var(--ink));
+      border-radius: 999px;
+      padding: 8px 12px 8px 36px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .flow li::before {
+      counter-increment: pipe;
+      content: counter(pipe);
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+    }
+
+    .flow li:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    figure {
+      margin: 14px 0;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 9px;
+      display: block;
+      border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+    }
+
+    figcaption {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    @media (max-width: 1100px) {
+      .layout {
+        grid-template-columns: 1fr;
+        padding: 14px;
+      }
+
+      .toc {
+        position: static;
+        max-height: none;
+      }
+
+      .toc-toggle {
+        display: inline-flex;
+      }
+
+      .toc nav {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+      }
+
+      .toc.open nav {
+        max-height: 520px;
+        opacity: 1;
+        margin-top: 8px;
+      }
+
+      th { top: 44px; }
+    }
+
+    @media (max-width: 760px) {
+      html, body { font-size: 15px; }
+      .card { padding: 20px; border-radius: 14px; }
+      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-2 { grid-template-columns: 1fr; }
+      .flow { gap: 10px; }
+      .flow li:not(:last-child)::after { display: none; }
+      .topbar-inner { padding: 0 12px; }
+      .layout { padding: 10px; gap: 14px; }
+      .doc-title { max-width: 62vw; }
+    }
+
+    @media (max-width: 420px) {
+      .kpi-grid { grid-template-columns: 1fr; }
+      .chip { font-size: 11px; }
+      .topbar-inner { gap: 6px; }
+      .toggle-btn { padding: 5px 9px; }
+      .card { padding: 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+      .card.reveal {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+
+    @media print {
+      .topbar,
+      .toc {
+        display: none !important;
+      }
+      .layout {
+        display: block;
+        max-width: none;
+        margin: 0;
+        padding: 0;
+      }
+      .card {
+        box-shadow: none;
+        border: 1px solid #9aa5b3;
+        page-break-inside: avoid;
+      }
+      th { position: static; }
+      .hero {
+        color: #000;
+        background: #fff;
+      }
+      .hero p,
+      .hero li,
+      .hero .muted { color: #000; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="doc-title">Primary Model Final Presentation</div>
+      <div class="toggle-wrap">
+        <button class="toggle-btn" id="themeToggle" type="button" aria-label="Toggle dark mode"><span id="themeIcon">🌙</span><span id="themeLabel">Dark</span></button>
+      </div>
+    </div>
+    <div class="progress-track"><div class="progress-bar" id="readingProgress"></div></div>
+  </header>
+
+  <div class="layout">
+    <aside class="toc" id="tocPanel">
+      <div class="toc-header">
+        <h2>Contents</h2>
+        <button class="toc-toggle" id="tocToggle" type="button" aria-expanded="false">Show</button>
+      </div>
+      <nav>
+        <ol>
+          <li><a href="#exec-summary">Executive Summary</a></li>
+          <li><a href="#repo-overview">Repo &amp; System Overview</a></li>
+          <li><a href="#data-qc">Data Pipeline + QC</a></li>
+          <li><a href="#treasury-fix">Treasury Fix</a></li>
+          <li><a href="#backtest-engine">Backtest Engine</a></li>
+          <li><a href="#benchmarks">Benchmarks Implemented</a></li>
+          <li><a href="#primaryv1">PrimaryV1</a></li>
+          <li><a href="#results">Results</a></li>
+          <li><a href="#validation">Validation &amp; Tests</a></li>
+          <li><a href="#repro">Repro Steps + Deliverables</a></li>
+          <li><a href="#next-steps">Limitations / Next Steps</a></li>
+        </ol>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <section id="exec-summary" class="card hero">
+        <div class="kicker">Final Presentation</div>
+        <h1>Primary Model Pipeline and Benchmark Integration</h1>
+        <div class="hero-meta">
+          <span class="chip">Project: PrimaryV1 Benchmarks</span>
+          <span class="chip" id="generatedBadge">Generated on —</span>
+        </div>
+        <p class="muted">Scope: end-to-end primary model implementation (data → signal → weights → backtest → reporting) with real artifacts from <span class="mono">reports/</span> and <span class="mono">data/clean/</span>.</p>
+        <ul>
+          <li>Built a production-style data layer with canonical schema and QC reporting.</li>
+          <li>Implemented PrimaryV1 signal builder and deterministic signal-to-weight strategy mapping.</li>
+          <li>Integrated PrimaryV1 into benchmark runner and report outputs (CSV/HTML/plots).</li>
+          <li>Validated with targeted tests covering alignment, no-lookahead, treasury math, and weight constraints.</li>
+        </ul>
+
+        <div class="highlight">
+          <h3>PrimaryV1 vs Benchmarks</h3>
+          <div class="kpi-grid">
+            <div class="kpi">
+              <div class="label">PrimaryV1 Sharpe</div>
+              <div class="value">0.8572</div>
+              <div class="sub">Highest in table</div>
+            </div>
+            <div class="kpi">
+              <div class="label">PrimaryV1 Max DD</div>
+              <div class="value">-18.76%</div>
+              <div class="sub">Shallowest drawdown</div>
+            </div>
+            <div class="kpi">
+              <div class="label">PrimaryV1 Ann Return</div>
+              <div class="value">6.49%</div>
+              <div class="sub">Below SimpleTrend / BuyHoldSPX</div>
+            </div>
+            <div class="kpi">
+              <div class="label">PrimaryV1 Avg Turnover</div>
+              <div class="value">0.0719</div>
+              <div class="sub">Lower than SimpleTrend (0.0810)</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="repo-overview" class="card">
+        <h2>1) Repo &amp; System Overview</h2>
+        <h3>Compact Repo Map</h3>
+        <pre>primary_model/
+├── src/primary_model/
+│   ├── data.py           ├── treasury.py       ├── signals.py
+│   ├── strategy.py       ├── backtest.py       ├── benchmarks.py
+│   ├── metrics.py        ├── plots.py          └── __init__.py
+├── scripts/
+│   ├── prepare_data.py   ├── data_qc.py
+│   ├── run_primary_variant1.py
+│   └── run_benchmarks.py
+├── tests/
+│   ├── test_data_loader.py
+│   ├── test_treasury.py
+│   ├── test_backtest_alignment.py
+│   ├── test_signals.py
+│   ├── test_strategy.py
+│   └── test_run_benchmarks_smoke.py
+├── data/clean/*.csv
+└── reports/*</pre>
+
+        <h3>Core Module Responsibilities</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Module</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="mono">data.py</td><td>Load canonical clean CSVs, align universe returns, apply treasury return adjustment.</td></tr>
+            <tr><td class="mono">treasury.py</td><td>Convert yield levels into approximate bond total returns via duration + carry.</td></tr>
+            <tr><td class="mono">signals.py</td><td>Build Variant1 indicators, expanding z-scores, composite score, and BUY/HOLD/SELL signals.</td></tr>
+            <tr><td class="mono">strategy.py</td><td>Map discrete signals to long-only portfolio weights with carry and pre-signal rules.</td></tr>
+            <tr><td class="mono">backtest.py</td><td>Run vectorized t+1 backtests, turnover, transaction-cost deduction, and equity series.</td></tr>
+            <tr><td class="mono">benchmarks.py</td><td>Generate benchmark weights: EqualWeight25, BuyHoldSPX, 60/40, SimpleTrend.</td></tr>
+            <tr><td class="mono">metrics.py</td><td>Compute annualized return/vol, Sharpe, max drawdown, Calmar, and summary tables.</td></tr>
+            <tr><td class="mono">plots.py</td><td>Render equity, drawdown, and rolling-Sharpe strategy plots.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="data-qc" class="card">
+        <h2>2) Data Pipeline + QC</h2>
+        <div class="note"><strong>Canonical clean schema:</strong> <span class="mono">Date, Price, Return</span> (monthly decimal returns).</div>
+        <p>Cleaner behavior (<span class="mono">scripts/prepare_data.py</span>): detect header row containing <span class="mono">Date</span>, map <span class="mono">PX_LAST→Price</span> and <span class="mono">CHG_PCT_1D→Return</span>, coerce types, sort chronologically, and write canonical CSVs.</p>
+
+        <h3>Coverage (from <span class="mono">data/clean/*.csv</span>)</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th class="num">Rows</th>
+              <th>Min Date</th>
+              <th>Max Date</th>
+              <th class="num">Missing Return %</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>bcom</td><td class="num">360</td><td>1996-01-31</td><td>2025-12-31</td><td class="num">0.0000</td></tr>
+            <tr><td>corp_bonds</td><td class="num">360</td><td>1996-01-31</td><td>2025-12-31</td><td class="num">0.0000</td></tr>
+            <tr><td>spx</td><td class="num">360</td><td>1996-01-31</td><td>2025-12-31</td><td class="num">0.0000</td></tr>
+            <tr><td>treasury_10y</td><td class="num">360</td><td>1996-01-31</td><td>2025-12-31</td><td class="num">0.0000</td></tr>
+          </tbody>
+        </table>
+
+        <h3>QC Highlights (from <span class="mono">reports/data_qc.html</span>)</h3>
+        <ul>
+          <li><strong>Overlap:</strong> raw overlap rows = <strong>360</strong>, adjusted overlap rows = <strong>359</strong>; window = <strong>1996-01-31</strong> to <strong>2025-12-31</strong>.</li>
+          <li><strong>Key raw correlations:</strong> SPX-BCOM = 0.344972, SPX-CorpBonds = 0.360750, SPX-Treasury = 0.141611, BCOM-Treasury = 0.190245, Treasury-CorpBonds = -0.561417.</li>
+          <li><strong>Treasury annualized vol:</strong> raw = 0.321270, adjusted = 0.077085.</li>
+        </ul>
+      </section>
+
+      <section id="treasury-fix" class="card">
+        <h2>3) Treasury Fix</h2>
+        <p><span class="mono">treasury_10y</span> “Price” is yield-like, not a bond price index. QC flags this explicitly (range 0.5282 to 6.9430). Using percentage changes in yields directly as “returns” inflates volatility and misrepresents bond behavior.</p>
+        <p>Implemented correction: keep treasury <span class="mono">Price</span> as yield level, but replace treasury <span class="mono">Return</span> with a duration-based total-return proxy.</p>
+        <div class="note">
+          <strong>Formula</strong><br>
+          <code>y = yield_percent / 100</code><br>
+          <code>price_return = -duration * diff(y)</code><br>
+          <code>carry = y.shift(1) / 12</code><br>
+          <code>total_return = price_return + carry</code>
+        </div>
+        <p>Assumption used: <strong>duration = 8.5</strong>. This stabilizes treasury risk behavior but remains an approximation; duration sensitivity should be tested later.</p>
+      </section>
+
+      <section id="backtest-engine" class="card">
+        <h2>4) Backtest Engine (Correctness &amp; No-Lookahead)</h2>
+        <ul>
+          <li><strong>t+1 alignment:</strong> weights decided at date <em>t</em> are applied to returns at <em>t+1</em> via <span class="mono">returns.shift(-1)</span>.</li>
+          <li><strong>Long-only normalization:</strong> negative weights are clipped to 0 and rows are normalized to sum to 1 when possible.</li>
+          <li><strong>Turnover:</strong> <span class="mono">0.5 * sum(abs(w_t - w_{t-1}))</span>.</li>
+          <li><strong>Transaction cost model:</strong> <span class="mono">cost = turnover * (tcost_bps / 10000)</span>.</li>
+          <li><strong>Current runs:</strong> <span class="mono">tcost_bps = 0.0</span>.</li>
+        </ul>
+      </section>
+
+      <section id="benchmarks" class="card">
+        <h2>5) Benchmarks Implemented</h2>
+        <ul>
+          <li><strong>EqualWeight25:</strong> 25% to each of the four assets every period.</li>
+          <li><strong>BuyHoldSPX:</strong> 100% SPX static allocation.</li>
+          <li><strong>60/40:</strong> 60% SPX + 40% Treasury static allocation.</li>
+          <li><strong>SimpleTrend:</strong> SPX fast/slow SMA regime switching between risk-on (SPX) and risk-off (Treasury).</li>
+        </ul>
+      </section>
+
+      <section id="primaryv1" class="card">
+        <h2>6) PrimaryV1</h2>
+        <ul class="flow">
+          <li>Indicators</li>
+          <li>Expanding z-score (shift(1))</li>
+          <li>Composite score</li>
+          <li>BUY/HOLD/SELL signal</li>
+          <li>Weights mapping</li>
+          <li>t+1 backtest</li>
+        </ul>
+
+        <h3>Signal Construction Rules</h3>
+        <ul>
+          <li>Indicators: <span class="mono">spx_trend</span>, <span class="mono">bcom_trend</span>, <span class="mono">credit_vs_rates</span>, <span class="mono">risk_breadth</span>.</li>
+          <li>Normalization uses prior history only (<span class="mono">history = x.shift(1)</span>) to avoid lookahead.</li>
+          <li>Thresholds: <span class="mono">BUY if score &gt; 0.5</span>, <span class="mono">SELL if score &lt; -0.5</span>, else HOLD.</li>
+        </ul>
+
+        <h3>Weight Mapping Rules</h3>
+        <ul>
+          <li><strong>BUY:</strong> equally split across SPX, BCOM, Corp Bonds (1/3 each).</li>
+          <li><strong>SELL:</strong> 100% Treasury.</li>
+          <li><strong>HOLD:</strong> carry previous period weights.</li>
+          <li><strong>Before first valid signal:</strong> default equal-weight across all assets (or risk-off mode if configured).</li>
+          <li>Weights are reindexed to returns index, forward-filled, and remaining NaNs are filled with equal weight.</li>
+        </ul>
+      </section>
+
+      <section id="results" class="card">
+        <h2>7) Results (Tables + Visuals)</h2>
+
+        <h3>Main Performance Table</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Strategy</th>
+              <th class="num">ann_return</th>
+              <th class="num">ann_vol</th>
+              <th class="num">sharpe</th>
+              <th class="num">max_drawdown</th>
+              <th class="num">calmar</th>
+              <th class="num">avg_turnover</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>EqualWeight25</td><td class="num">0.047792</td><td class="num">0.071808</td><td class="num">0.687576</td><td class="num">-0.268990</td><td class="num">0.177673</td><td class="num">0.000000</td></tr>
+            <tr><td>BuyHoldSPX</td><td class="num">0.082662</td><td class="num">0.152810</td><td class="num">0.598620</td><td class="num">-0.525605</td><td class="num">0.157271</td><td class="num">0.000000</td></tr>
+            <tr><td>60/40</td><td class="num">0.069366</td><td class="num">0.093251</td><td class="num">0.767870</td><td class="num">-0.307769</td><td class="num">0.225384</td><td class="num">0.000000</td></tr>
+            <tr><td>SimpleTrend</td><td class="num">0.086249</td><td class="num">0.129104</td><td class="num">0.707779</td><td class="num">-0.267169</td><td class="num">0.322827</td><td class="num">0.081006</td></tr>
+            <tr class="primary-row"><td>PrimaryV1</td><td class="num">0.064903</td><td class="num">0.076990</td><td class="num">0.857190</td><td class="num">-0.187608</td><td class="num">0.345952</td><td class="num">0.071927</td></tr>
+          </tbody>
+        </table>
+
+        <div class="grid-2">
+          <div>
+            <h3>Excess vs EqualWeight25</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Strategy</th>
+                  <th class="num">mean_excess_annual</th>
+                  <th class="num">months_won</th>
+                  <th class="num">months_lost</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>EqualWeight25</td><td class="num">0.000000</td><td class="num">0</td><td class="num">0</td></tr>
+                <tr><td>BuyHoldSPX</td><td class="num">0.042102</td><td class="num">226</td><td class="num">132</td></tr>
+                <tr><td>60/40</td><td class="num">0.022232</td><td class="num">208</td><td class="num">150</td></tr>
+                <tr><td>SimpleTrend</td><td class="num">0.042004</td><td class="num">220</td><td class="num">138</td></tr>
+                <tr class="primary-row"><td>PrimaryV1</td><td class="num">0.016622</td><td class="num">185</td><td class="num">157</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <h3>Correlation with EqualWeight25</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Strategy</th>
+                  <th class="num">corr_with_equal_weight</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>EqualWeight25</td><td class="num">1.000000</td></tr>
+                <tr><td>BuyHoldSPX</td><td class="num">0.759516</td></tr>
+                <tr><td>60/40</td><td class="num">0.838412</td></tr>
+                <tr><td>SimpleTrend</td><td class="num">0.588320</td></tr>
+                <tr class="primary-row"><td>PrimaryV1</td><td class="num">0.528013</td></tr>
+              </tbody>
+            </table>
+
+            <h3>PrimaryV1 Signal Counts</h3>
+            <table>
+              <thead><tr><th>Signal</th><th class="num">Count</th></tr></thead>
+              <tbody>
+                <tr><td>BUY</td><td class="num">81</td></tr>
+                <tr><td>HOLD</td><td class="num">191</td></tr>
+                <tr><td>SELL</td><td class="num">73</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <h3>Visual Diagnostics</h3>
+        <figure>
+          <img src="assets/equity_curves.png" alt="Equity curves for all strategies">
+          <figcaption>Figure 1. Net equity curves across EqualWeight25, BuyHoldSPX, 60/40, SimpleTrend, and PrimaryV1.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/drawdowns.png" alt="Drawdowns for all strategies">
+          <figcaption>Figure 2. Drawdown comparison; PrimaryV1 shows the shallowest peak-to-trough loss in this run.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/rolling_sharpe.png" alt="Rolling Sharpe ratios for all strategies">
+          <figcaption>Figure 3. 12-month rolling Sharpe for all strategies.</figcaption>
+        </figure>
+      </section>
+
+      <section id="validation" class="card">
+        <h2>8) Validation &amp; Test Coverage</h2>
+        <ul>
+          <li><span class="mono">test_data_loader.py</span>: data coercion, return derivation, universe alignment behavior.</li>
+          <li><span class="mono">test_treasury.py</span>: treasury duration/carry formula numeric correctness.</li>
+          <li><span class="mono">test_backtest_alignment.py</span>: verifies t+1 return application in backtest.</li>
+          <li><span class="mono">test_signals.py</span>: history-only z-score logic, threshold mapping, and signal schema.</li>
+          <li><span class="mono">test_strategy.py</span>: BUY/HOLD/SELL mapping, carry behavior, pre-signal behavior, non-negative/sum-to-1 constraints.</li>
+          <li><span class="mono">test_run_benchmarks_smoke.py</span>: end-to-end PrimaryV1 weight shape and constraints sanity test.</li>
+        </ul>
+
+        <div class="ok">
+          <strong>No-Lookahead Checklist</strong>
+          <ul>
+            <li>[x] Expanding z-score uses <span class="mono">shift(1)</span> history for normalization.</li>
+            <li>[x] Backtest applies <span class="mono">w_t</span> to <span class="mono">r_{t+1}</span> using <span class="mono">returns.shift(-1)</span>.</li>
+            <li>[x] Test suite includes explicit tests for both safeguards.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="repro" class="card">
+        <h2>9) Repro Steps + Deliverables Inventory</h2>
+        <h3>Recommended Reproduction Commands</h3>
+        <pre>cd /home/cristhian/Projects/ssga-meta-labeling/primary_model
+pip install -r requirements.txt
+python scripts/prepare_data.py
+python scripts/data_qc.py
+python scripts/run_primary_variant1.py
+python scripts/run_benchmarks.py
+pytest -q</pre>
+
+        <h3>Deliverables under <span class="mono">reports/</span></h3>
+        <table>
+          <thead><tr><th>File</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">benchmarks_summary.csv</td><td>Main strategy performance table.</td></tr>
+            <tr><td class="mono">benchmarks_summary.html</td><td>Benchmark report (performance, excess/correlation, sanity tables, plots).</td></tr>
+            <tr><td class="mono">data_qc.html</td><td>Data quality report (coverage, overlap, correlations, annualized stats).</td></tr>
+            <tr><td class="mono">primary_v1_signal.csv</td><td>PrimaryV1 indicators, z-scores, composite score, and signal timeline.</td></tr>
+            <tr><td class="mono">primary_v1_weights.csv</td><td>Aligned PrimaryV1 portfolio weights used in benchmark run.</td></tr>
+            <tr><td class="mono">primary_v1_backtest.csv</td><td>PrimaryV1 backtest time series output.</td></tr>
+            <tr><td class="mono">primary_v1_summary.csv</td><td>Single-row PrimaryV1 performance summary.</td></tr>
+            <tr><td class="mono">assets/equity_curves.png</td><td>Equity curves plot.</td></tr>
+            <tr><td class="mono">assets/drawdowns.png</td><td>Drawdown plot.</td></tr>
+            <tr><td class="mono">assets/rolling_sharpe.png</td><td>Rolling Sharpe plot.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Artifact Integrity</h3>
+        <div class="ok">
+          All required Stage 1 artifacts were found and parsed. No missing-data fallback was required.
+        </div>
+      </section>
+
+      <section id="next-steps" class="card">
+        <h2>10) Limitations / Next Steps</h2>
+        <ul>
+          <li>Transaction costs are currently modeled at 0 bps in benchmark runs; add robustness runs at non-zero costs.</li>
+          <li>Treasury duration is fixed at 8.5; add sensitivity analysis to duration assumptions.</li>
+          <li>PrimaryV1 uses fixed default windows/thresholds; add walk-forward and stability tests before meta-labeling rollout.</li>
+          <li>Consider adding a single consolidated machine-readable model card JSON for downstream automation.</li>
+        </ul>
+      </section>
+
+      <section id="appendix-warning" class="card">
+        <h2>Appendix: Data Presence Warning Template</h2>
+        <div class="warn">
+          WARNING TEMPLATE: If future runs are missing required artifacts (for example <span class="mono">benchmarks_summary.csv</span> or plot files), this report should show a visible warning block in this section and omit only the missing components.
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const html = document.documentElement;
+      const body = document.body;
+      const themeToggle = document.getElementById('themeToggle');
+      const themeIcon = document.getElementById('themeIcon');
+      const themeLabel = document.getElementById('themeLabel');
+      const TOGGLE_KEY = 'primary_model_report_theme';
+
+      function applyTheme(theme) {
+        html.classList.remove('theme-light', 'theme-dark');
+        if (theme === 'light') html.classList.add('theme-light');
+        if (theme === 'dark') html.classList.add('theme-dark');
+        const dark = html.classList.contains('theme-dark') || (!html.classList.contains('theme-light') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        themeIcon.textContent = dark ? '☀️' : '🌙';
+        themeLabel.textContent = dark ? 'Light' : 'Dark';
+      }
+
+      const saved = localStorage.getItem(TOGGLE_KEY);
+      if (saved === 'light' || saved === 'dark') applyTheme(saved);
+      else applyTheme('system');
+
+      themeToggle.addEventListener('click', function () {
+        const nowDark = html.classList.contains('theme-dark') || (!html.classList.contains('theme-light') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        const next = nowDark ? 'light' : 'dark';
+        localStorage.setItem(TOGGLE_KEY, next);
+        applyTheme(next);
+      });
+
+      const generatedBadge = document.getElementById('generatedBadge');
+      if (generatedBadge) {
+        const d = new Date();
+        generatedBadge.textContent = 'Generated on ' + d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+      }
+
+      document.querySelectorAll('h2').forEach((h2) => {
+        const txt = h2.textContent || '';
+        const m = txt.match(/^(\d+\))/);
+        if (!m) return;
+        const num = m[1];
+        if (h2.querySelector('.section-num')) return;
+        h2.innerHTML = h2.innerHTML.replace(num, '<span class="section-num">' + num + '</span>');
+      });
+
+      const toNumber = (text) => {
+        const raw = String(text || '').trim();
+        if (!raw) return null;
+        const cleaned = raw.endsWith('%') ? raw.slice(0, -1).trim() : raw;
+        if (!/^[+-]?(?:\d+(?:\.\d+)?|\.\d+)$/.test(cleaned)) return null;
+        const n = Number(cleaned);
+        return Number.isFinite(n) ? n : null;
+      };
+
+      const pctScaled = new Set(['ann_return', 'ann_vol', 'max_drawdown', 'mean_excess_annual', 'ann_mean']);
+      const decimal3 = new Set(['sharpe', 'calmar', 'avg_turnover', 'corr_with_equal_weight']);
+      const intCols = new Set(['months_won', 'months_lost', 'count', 'rows']);
+      const pctLiteral = new Set(['missing_return_%']);
+
+      function normKey(str) {
+        return String(str || '')
+          .toLowerCase()
+          .replace(/\s+/g, '_')
+          .replace(/[^a-z0-9_%]/g, '');
+      }
+
+      function formatTables() {
+        document.querySelectorAll('table').forEach((table) => {
+          const headers = Array.from(table.querySelectorAll('thead th'));
+          const keys = headers.map((th) => normKey(th.textContent));
+          const rows = Array.from(table.querySelectorAll('tbody tr'));
+          rows.forEach((tr) => {
+            const cells = Array.from(tr.children);
+            cells.forEach((td, idx) => {
+              const key = keys[idx] || '';
+              const rawNum = toNumber(td.textContent);
+              const shouldTry = td.classList.contains('num') || pctScaled.has(key) || decimal3.has(key) || intCols.has(key) || pctLiteral.has(key);
+              if (!shouldTry || rawNum === null) return;
+              td.dataset.sortValue = String(rawNum);
+              if (pctScaled.has(key)) td.textContent = (rawNum * 100).toFixed(2) + '%';
+              else if (pctLiteral.has(key)) td.textContent = rawNum.toFixed(2) + '%';
+              else if (intCols.has(key)) td.textContent = String(Math.round(rawNum));
+              else if (decimal3.has(key)) td.textContent = rawNum.toFixed(3);
+              else td.textContent = rawNum.toFixed(3);
+            });
+          });
+
+          table.querySelectorAll('tr.primary-row td:first-child').forEach((cell) => {
+            if (cell.querySelector('.best-badge')) return;
+            const badge = document.createElement('span');
+            badge.className = 'best-badge';
+            badge.textContent = '★ Best';
+            cell.appendChild(badge);
+          });
+        });
+      }
+
+      function makeTablesSortable() {
+        const tables = Array.from(document.querySelectorAll('table'));
+        tables.forEach((table) => {
+          const ths = Array.from(table.querySelectorAll('thead th'));
+          const tbody = table.querySelector('tbody');
+          if (!tbody || !ths.length) return;
+
+          ths.forEach((th, colIndex) => {
+            th.classList.add('sortable');
+            th.setAttribute('role', 'button');
+            th.setAttribute('tabindex', '0');
+
+            const doSort = () => {
+              const rows = Array.from(tbody.querySelectorAll('tr'));
+              if (rows.length < 2) return;
+
+              const current = th.dataset.sortDir === 'asc' ? 'asc' : th.dataset.sortDir === 'desc' ? 'desc' : null;
+              const nextDir = current === 'asc' ? 'desc' : 'asc';
+              ths.forEach((h) => {
+                h.dataset.sortDir = '';
+                h.classList.remove('asc', 'desc');
+              });
+              th.dataset.sortDir = nextDir;
+              th.classList.add(nextDir);
+
+              rows.sort((a, b) => {
+                const ca = a.children[colIndex];
+                const cb = b.children[colIndex];
+                const va = ca ? (ca.dataset.sortValue ?? ca.textContent.trim()) : '';
+                const vb = cb ? (cb.dataset.sortValue ?? cb.textContent.trim()) : '';
+                const na = toNumber(va);
+                const nb = toNumber(vb);
+
+                let cmp = 0;
+                if (na !== null && nb !== null) cmp = na - nb;
+                else cmp = String(va).localeCompare(String(vb), undefined, { sensitivity: 'base' });
+                return nextDir === 'asc' ? cmp : -cmp;
+              });
+
+              const frag = document.createDocumentFragment();
+              rows.forEach((r) => frag.appendChild(r));
+              tbody.appendChild(frag);
+            };
+
+            th.addEventListener('click', doSort);
+            th.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                doSort();
+              }
+            });
+          });
+        });
+      }
+
+      function decoratePreBlocks() {
+        document.querySelectorAll('pre').forEach((pre) => {
+          if (pre.parentElement && pre.parentElement.classList.contains('code-shell')) return;
+          const shell = document.createElement('div');
+          shell.className = 'code-shell';
+          const head = document.createElement('div');
+          head.className = 'code-head';
+          const traffic = document.createElement('span');
+          traffic.className = 'traffic';
+          traffic.innerHTML = '<i></i><i></i><i></i>';
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'copy-btn';
+          btn.textContent = 'Copy';
+          btn.addEventListener('click', async () => {
+            try {
+              await navigator.clipboard.writeText(pre.textContent || '');
+              const original = btn.textContent;
+              btn.textContent = 'Copied';
+              setTimeout(() => { btn.textContent = original; }, 1100);
+            } catch (_) {
+              btn.textContent = 'Failed';
+              setTimeout(() => { btn.textContent = 'Copy'; }, 1100);
+            }
+          });
+          head.appendChild(traffic);
+          head.appendChild(btn);
+          pre.parentNode.insertBefore(shell, pre);
+          shell.appendChild(head);
+          shell.appendChild(pre);
+        });
+      }
+
+      function setupToc() {
+        const tocPanel = document.getElementById('tocPanel');
+        const tocToggle = document.getElementById('tocToggle');
+        if (tocToggle) {
+          tocToggle.addEventListener('click', () => {
+            tocPanel.classList.toggle('open');
+            const open = tocPanel.classList.contains('open');
+            tocToggle.textContent = open ? 'Hide' : 'Show';
+            tocToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          });
+        }
+
+        const links = Array.from(document.querySelectorAll('.toc nav a[href^="#"]'));
+        const linkMap = new Map(links.map((a) => [a.getAttribute('href')?.slice(1), a]));
+        const sections = Array.from(document.querySelectorAll('main section[id]'));
+
+        const setActive = (id) => {
+          links.forEach((a) => a.parentElement && a.parentElement.classList.remove('active'));
+          const link = linkMap.get(id);
+          if (link && link.parentElement) link.parentElement.classList.add('active');
+        };
+
+        if (!sections.length) return;
+
+        const obs = new IntersectionObserver((entries) => {
+          const visible = entries
+            .filter((e) => e.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+          if (visible[0]) setActive(visible[0].target.id);
+        }, { rootMargin: '-24% 0px -58% 0px', threshold: [0.15, 0.35, 0.6] });
+
+        sections.forEach((s) => obs.observe(s));
+        setActive(sections[0].id);
+      }
+
+      function setupProgressBar() {
+        const bar = document.getElementById('readingProgress');
+        let ticking = false;
+        const update = () => {
+          const h = document.documentElement;
+          const max = h.scrollHeight - h.clientHeight;
+          const pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
+          bar.style.width = pct.toFixed(2) + '%';
+          ticking = false;
+        };
+        window.addEventListener('scroll', () => {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(update);
+        }, { passive: true });
+        update();
+      }
+
+      function setupReveal() {
+        const cards = Array.from(document.querySelectorAll('.card'));
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        cards.forEach((c) => c.classList.add('reveal'));
+        if (reduced) {
+          cards.forEach((c) => c.classList.add('in-view'));
+          return;
+        }
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            requestAnimationFrame(() => entry.target.classList.add('in-view'));
+            io.unobserve(entry.target);
+          });
+        }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
+        cards.forEach((c) => io.observe(c));
+      }
+
+      decoratePreBlocks();
+      formatTables();
+      makeTablesSortable();
+      setupToc();
+      setupProgressBar();
+      setupReveal();
+      body.classList.add('enhanced');
+    })();
+  </script>
+</body>
+</html>

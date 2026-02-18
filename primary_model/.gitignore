@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environments
+.venv/
+venv/
+env/
+
+# Local editor/OS
+.DS_Store
+.idea/
+.vscode/
+
+# Data files
+data/raw/*
+!data/raw/.gitkeep
+data/clean/*.csv
+!data/clean/.gitkeep
