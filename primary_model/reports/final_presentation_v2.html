@@ -504,6 +504,85 @@
     .callout.ok .callout-icon { color: var(--green); }
     .callout.formula { background: var(--bg3); border: 1px solid var(--border2); }
     .callout.formula .callout-icon { color: var(--gold); }
+    /* ─── Math formula layout ─── */
+    .formula-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .formula-grid.single { grid-template-columns: 1fr; }
+    @media (max-width: 760px) {
+      .formula-grid { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: 1fr !important; }
+    }
+
+    .formula-card {
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .formula-card.span-2 { grid-column: 1 / -1; }
+
+    .formula-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 16px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+    }
+    .formula-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--gold);
+      background: var(--gold-soft);
+      border: 1px solid var(--gold-glow);
+      border-radius: 4px;
+      padding: 2px 7px;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+    }
+    .formula-title {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink2);
+      letter-spacing: 0.01em;
+    }
+    .formula-body {
+      padding: 20px 16px;
+      overflow-x: auto;
+      text-align: center;
+    }
+    .formula-body mjx-container { margin: 0.4em 0 !important; }
+    .formula-body mjx-container[display="true"] { margin: 0.5em 0 !important; }
+
+    .formula-note {
+      padding: 8px 16px 12px;
+      font-size: 12px;
+      color: var(--ink3);
+      font-family: var(--mono);
+      border-top: 1px solid var(--border);
+      background: rgba(0,0,0,0.1);
+    }
+    html.light .formula-note { background: rgba(0,0,0,0.03); }
+
+    /* legacy math-block kept for any inline use */
+    .math-block {
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px dashed var(--border2);
+      background: rgba(255,255,255,0.02);
+      color: var(--ink);
+      overflow-x: auto;
+    }
+    html.light .math-block { background: rgba(15,27,45,0.03); }
+    .math-block mjx-container { margin: 0.15em 0 !important; }
+    .math-block mjx-container[display="true"] { margin: 0.25em 0 !important; }
 
     /* ─── Pipeline flow ─── */
     .pipeline {
@@ -798,6 +877,8 @@
       <li><a href="#backtest-engine"><span class="toc-num">04</span> Backtest Engine</a></li>
       <li><a href="#benchmarks"><span class="toc-num">05</span> Benchmarks</a></li>
       <li><a href="#primaryv1"><span class="toc-num">06</span> PrimaryV1</a></li>
+      <li><a href="#math-theory"><span class="toc-num">06A</span> Math &amp; Formulas</a></li>
+      <li><a href="#math-theory"><span class="toc-num">06A</span> Math &amp; Assumptions</a></li>
       <li><a href="#results"><span class="toc-num">07</span> Results</a></li>
       <li><a href="#validation"><span class="toc-num">08</span> Validation &amp; Tests</a></li>
       <li><a href="#repro"><span class="toc-num">09</span> Repro + Deliverables</a></li>
@@ -1062,6 +1143,171 @@
       <p style="font-size:13px; color: var(--ink3);">Before the first valid signal: default equal-weight across all assets. Weights are forward-filled and remaining NaNs filled with equal weight.</p>
     </section>
 
+    <!-- ── 6A: MATH ── -->
+    <section id="math-theory" class="card" data-accent="gold">
+      <div class="section-label"><span>06A</span> — Mathematical Foundation</div>
+      <h2>Math &amp; Assumptions</h2>
+      <p>Core equations used in the primary-model pipeline, matching the implementation in <span class="mono">src/primary_model/</span>.</p>
+
+      <!-- Row 1: Treasury (full width) -->
+      <div class="formula-grid single">
+        <div class="formula-card span-2">
+          <div class="formula-card-header">
+            <span class="formula-tag">EQ 1</span>
+            <span class="formula-title">Treasury Return Proxy — Duration + Carry</span>
+          </div>
+          <div class="formula-body">
+\[
+y_t = \frac{Y_t}{100}, \qquad
+r_t^{\mathrm{UST}} = -D\,(y_t - y_{t-1}) + \frac{y_{t-1}}{12}, \qquad D = 8.5
+\]
+          </div>
+          <div class="formula-note">▸ D = 8.5 is a fixed-duration approximation for the 10Y Treasury. Carry = prior month's yield / 12.</div>
+        </div>
+      </div>
+
+      <!-- Row 2: Z-score + Score side by side -->
+      <div class="formula-grid">
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-tag">EQ 2</span>
+            <span class="formula-title">Expanding Z-Score (no lookahead)</span>
+          </div>
+          <div class="formula-body">
+\[
+z_{i,t} = \frac{x_{i,t} - \mu_{i,\,1:t-1}}{\sigma_{i,\,1:t-1}}
+\]
+          </div>
+          <div class="formula-note">▸ Normalizes each indicator using only history before time t.</div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-tag">EQ 3</span>
+            <span class="formula-title">Composite Score</span>
+          </div>
+          <div class="formula-body">
+\[
+\mathrm{score}_t = \frac{\displaystyle\sum_i w_i\, z_{i,t}}{\displaystyle\sum_i |w_i| \cdot \mathbf{1}_{\{z_{i,t}\,\mathrm{valid}\}}}
+\]
+          </div>
+          <div class="formula-note">▸ Weighted average of valid z-scores, normalized by the sum of active weights.</div>
+        </div>
+      </div>
+
+      <!-- Row 3: Signal rule (full width) -->
+      <div class="formula-grid single">
+        <div class="formula-card span-2">
+          <div class="formula-card-header">
+            <span class="formula-tag">EQ 4</span>
+            <span class="formula-title">Signal Generation Rule</span>
+          </div>
+          <div class="formula-body">
+\[
+\mathrm{signal}_t =
+\begin{cases}
+\mathrm{BUY},  & \mathrm{score}_t > 0.5 \\
+\mathrm{SELL}, & \mathrm{score}_t < -0.5 \\
+\mathrm{HOLD}, & \text{otherwise}
+\end{cases}
+\]
+          </div>
+          <div class="formula-note">▸ HOLD carries previous period weights unchanged, minimizing unnecessary turnover.</div>
+        </div>
+      </div>
+
+      <!-- Row 4: Backtest gross + turnover + net -->
+      <div class="formula-grid">
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-tag">EQ 5</span>
+            <span class="formula-title">Backtest — Gross &amp; Net Return</span>
+          </div>
+          <div class="formula-body">
+\[
+\mathrm{gross}_t = \mathbf{w}_t^\top \mathbf{r}_{t+1}
+\]
+\[
+\mathrm{net}_t = \mathrm{gross}_t - \mathrm{turnover}_t \cdot \frac{\mathrm{tcost}_{\mathrm{bps}}}{10000}
+\]
+          </div>
+          <div class="formula-note">▸ Weights at t are applied to returns at t+1 (no lookahead).</div>
+        </div>
+
+        <div class="formula-card">
+          <div class="formula-card-header">
+            <span class="formula-tag">EQ 6</span>
+            <span class="formula-title">Turnover</span>
+          </div>
+          <div class="formula-body">
+\[
+\mathrm{turnover}_t = \frac{1}{2} \sum_j \left| w_{t,j} - w_{t-1,j} \right|
+\]
+          </div>
+          <div class="formula-note">▸ Half the sum of absolute weight changes. Currently tcost_bps = 0.</div>
+        </div>
+      </div>
+
+      <!-- Row 5: Performance metrics 2x2 grid -->
+      <div style="margin: 0 0 4px;">
+        <div style="display:flex; align-items:center; gap:10px; padding:11px 16px; background:var(--bg2); border:1px solid var(--border2); border-radius: var(--radius) var(--radius) 0 0; border-bottom: none;">
+          <span class="formula-tag">EQ 7</span>
+          <span class="formula-title">Performance Metrics</span>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; border:1px solid var(--border2); border-radius: 0 0 var(--radius) var(--radius); overflow:hidden;">
+
+          <!-- AnnReturn -->
+          <div style="padding:20px 16px 14px; border-right:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg3); text-align:center;">
+            <div style="font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold); margin-bottom:12px;">Annualized Return</div>
+\[
+\mathrm{AnnReturn} = \left(\prod_{t=1}^{N}(1+r_t)\right)^{\!12/N} - 1
+\]
+          </div>
+
+          <!-- AnnVol -->
+          <div style="padding:20px 16px 14px; border-bottom:1px solid var(--border); background:var(--bg3); text-align:center;">
+            <div style="font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold); margin-bottom:12px;">Annualized Volatility</div>
+\[
+\mathrm{AnnVol} = \sigma(r_t)\,\sqrt{12}
+\]
+          </div>
+
+          <!-- Sharpe -->
+          <div style="padding:20px 16px 14px; border-right:1px solid var(--border); background:var(--bg3); text-align:center;">
+            <div style="font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold); margin-bottom:12px;">Sharpe Ratio</div>
+\[
+\mathrm{Sharpe} = \frac{\mu(r_t - r_{f,t})}{\sigma(r_t - r_{f,t})}\,\sqrt{12}
+\]
+          </div>
+
+          <!-- MaxDD -->
+          <div style="padding:20px 16px 14px; background:var(--bg3); text-align:center;">
+            <div style="font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--gold); margin-bottom:12px;">Maximum Drawdown</div>
+\[
+\mathrm{MaxDD} = \min_t\!\left(\frac{E_t}{\max_{s \le t} E_s} - 1\right)
+\]
+          </div>
+
+        </div>
+        <div class="formula-note" style="border:1px solid var(--border2); border-top:none; border-radius:0 0 var(--radius) var(--radius); padding:8px 16px 10px; font-size:12px; color:var(--ink3); font-family:var(--mono);">▸ All metrics annualized over 12 monthly periods. r<sub>f</sub> = risk-free rate.</div>
+      </div>
+
+      <h3>Modeling Assumptions</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Area</th><th>Assumption</th></tr></thead>
+          <tbody>
+            <tr><td>Frequency</td><td>Monthly observations and annualization by 12 periods.</td></tr>
+            <tr><td>Treasury handling</td><td><span class="mono">treasury_10y</span> is treated as a yield level series; return replaced with duration proxy.</td></tr>
+            <tr><td>Execution timing</td><td>No lookahead: weights at <span class="mono">t</span> applied to returns at <span class="mono">t+1</span>.</td></tr>
+            <tr><td>Portfolio constraints</td><td>Long-only weights (clipped at 0) and row-normalized to 100% when feasible.</td></tr>
+            <tr><td>Costs</td><td><span class="mono">tcost_bps = 0</span> for reported benchmark runs.</td></tr>
+            <tr><td>Pre-signal behavior</td><td>Before first valid signal, PrimaryV1 defaults to equal weight across all assets.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
     <!-- ── 7: RESULTS ── -->
     <section id="results" class="card" data-accent="green">
       <div class="section-label"><span>07</span> — Performance</div>
@@ -1285,21 +1531,27 @@ pytest -q</pre>
       </ul>
     </section>
 
-    <!-- ── APPENDIX ── -->
-    <section class="card" data-accent="red">
-      <div class="section-label"><span>A</span> — Appendix</div>
-      <h2>Data Presence Warning Template</h2>
-      <div class="callout warn">
-        <span class="callout-icon">⚠</span>
-        <div class="callout-body">
-          <strong>Warning Template</strong>
-          <p>If future runs are missing required artifacts (e.g. <span class="mono">benchmarks_summary.csv</span> or plot files), this report should display a visible warning block and omit only the missing components rather than failing silently.</p>
-        </div>
-      </div>
-    </section>
+
 
   </main>
 </div>
+
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)'], ['$', '$']],
+      displayMath: [['\\[', '\\]'], ['$$', '$$']],
+      processEscapes: true,
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+    },
+    svg: {
+      fontCache: 'global',
+    },
+  };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
 <script>
   // ── Progress bar ──
