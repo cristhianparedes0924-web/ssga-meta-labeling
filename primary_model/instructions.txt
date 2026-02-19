@@ -1,0 +1,141 @@
+# Primary Model: Run Instructions
+
+This guide explains how to run the full `primary_model` project from scratch.
+
+## 1) Prerequisites
+
+- Python 3.10+ installed (`python --version`)
+- `pip` available
+- Git installed (if cloning from GitHub)
+- Raw Bloomberg-style Excel files:
+  - `spx.xlsx`
+  - `bcom.xlsx`
+  - `treasury_10y.xlsx`
+  - `corp_bonds.xlsx`
+
+## 2) Clone and Enter the Project
+
+```bash
+git clone git@github.com:cristhianparedes0924-web/ssga-meta-labeling.git
+cd ssga-meta-labeling/primary_model
+```
+
+If you already have the repo, just go to:
+
+```bash
+cd /path/to/ssga-meta-labeling/primary_model
+```
+
+## 3) Create and Activate a Virtual Environment
+
+### Linux / macOS
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+
+### Windows (PowerShell)
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+## 4) Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+Optional (dev/test extras):
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+## 5) Place Raw Data Files
+
+Copy these files into `data/raw/`:
+
+- `data/raw/spx.xlsx`
+- `data/raw/bcom.xlsx`
+- `data/raw/treasury_10y.xlsx`
+- `data/raw/corp_bonds.xlsx`
+
+## 6) Run the Full Pipeline
+
+Run commands in this order:
+
+```bash
+python scripts/prepare_data.py
+python scripts/data_qc.py
+python scripts/run_primary_variant1.py
+python scripts/run_benchmarks.py
+```
+
+What each command does:
+
+1. `prepare_data.py`: converts raw Excel files into canonical CSVs in `data/clean/`
+2. `data_qc.py`: creates data quality report in `reports/data_qc.html`
+3. `run_primary_variant1.py`: runs standalone PrimaryV1 backtest and writes summary CSVs
+4. `run_benchmarks.py`: runs benchmarks + PrimaryV1 and writes summary tables/plots
+
+## 7) Run Tests (Recommended)
+
+```bash
+pytest -q
+```
+
+## 8) Where to Find Results
+
+Main outputs are in `reports/`:
+
+- `reports/benchmarks_summary.html`
+- `reports/benchmarks_summary.csv`
+- `reports/data_qc.html`
+- `reports/primary_v1_signal.csv`
+- `reports/primary_v1_weights.csv`
+- `reports/primary_v1_backtest.csv`
+- `reports/primary_v1_summary.csv`
+- `reports/assets/equity_curves.png`
+- `reports/assets/drawdowns.png`
+- `reports/assets/rolling_sharpe.png`
+- `reports/final_presentation.html`
+- `reports/final_presentation_v2.html`
+
+## 9) Quick Run (If Clean Data Already Exists)
+
+If `data/clean/*.csv` are already prepared, you can run:
+
+```bash
+python scripts/run_benchmarks.py
+```
+
+## 10) Common Issues
+
+### A) `FileNotFoundError` for raw files
+
+Make sure all 4 Excel files are in `data/raw/` with exact expected names.
+
+### B) Import/module errors
+
+Make sure you are running commands from inside:
+
+```bash
+.../ssga-meta-labeling/primary_model
+```
+
+and that the virtual environment is activated.
+
+### C) Plot generation errors
+
+Make sure dependencies installed successfully from `requirements.txt`.
+
+### D) Permission issues
+
+Check file/folder permissions for `data/` and `reports/`.
+
+---
+
+If you want a single-command runner later, you can create a small shell script that runs the 4 core commands in sequence.
