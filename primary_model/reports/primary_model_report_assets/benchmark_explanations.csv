@@ -1,0 +1,5 @@
+Benchmark,Why meaningful,Why include
+Buy & Hold SPX,Represents passive equity beta and the default alternative to any timing model.,Checks whether the primary strategy adds value above a simple market exposure.
+60/40 SPX-Treasury,Institutional policy mix with built-in diversification between growth and duration.,Tests if dynamic timing improves on a standard portfolio allocation.
+EqualWeight 25/25/25/25,"Neutral cross-asset baseline across equities, rates, commodities, and credit.",Separates true signal value from concentration in a single risk bucket.
+Simple Trend (SMA10/12),Classic low-complexity trend-following rule.,Validates whether richer indicator engineering beats a transparent trend baseline.

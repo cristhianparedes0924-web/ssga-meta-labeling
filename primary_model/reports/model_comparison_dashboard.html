@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Model Comparison Dashboard</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --ink: #0b1220;
+      --muted: #495a73;
+      --line: #d8dfec;
+      --accent: #005f73;
+    }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top right, #e6f7ff 0%, var(--bg) 40%);
+      color: var(--ink);
+    }
+    .wrap {
+      max-width: 1460px;
+      margin: 0 auto;
+      padding: 28px 22px 36px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      letter-spacing: 0.01em;
+    }
+    .sub {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .card {
+      background: linear-gradient(165deg, #ffffff 0%, #f7fbff 100%);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 2px 10px rgba(8, 19, 38, 0.04);
+    }
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      color: var(--accent);
+    }
+    .section {
+      margin-top: 18px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .section h2 {
+      margin: 0 0 12px;
+      font-size: 19px;
+    }
+    .imgbox {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px;
+      background: #fff;
+    }
+    .imgbox img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 6px 8px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    th:first-child, td:first-child {
+      text-align: left;
+    }
+    th {
+      background: #edf4ff;
+      color: #0e1f3a;
+    }
+    .note {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .pill {
+      display: inline-block;
+      background: #eaf3ff;
+      border: 1px solid #cfe2ff;
+      color: #19436a;
+      border-radius: 999px;
+      padding: 3px 10px;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Primary-Model Comparison Dashboard</h1>
+    <div class="sub">Primary Unified vs Trend Aware vs Trend Aware Enhanced vs Benchmark (Samwegs) | Generated 2026-02-19 17:13:21 UTC</div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Run Status</h3>
+        <div><span class="pill">primary_model_unified.py run-all: OK</span></div>
+        <div><span class="pill">Trend Aware (1) (1).py: OK</span></div>
+        <div><span class="pill">Trend Aware (1) (1) - Enhanced.py: OK</span></div>
+        <div><span class="pill">Benchmark (2).py: OK</span></div>
+      </div>
+      <div class="card">
+        <h3>Star Marker</h3>
+        <div class="note">Any value marked with <b>*</b> is the best value for that tested metric across the four models in that table.</div>
+      </div>
+      <div class="card">
+        <h3>Included Aspects</h3>
+        <div class="note">Return, volatility, Sharpe, drawdown, Calmar, win-rate, turnover, time-in-market, signal mix, allocation profile, equity curve, drawdown curve, rolling Sharpe, and benchmark context.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Core Performance</h2>
+      <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Model</th>
+      <th>Periods</th>
+      <th>Start</th>
+      <th>End</th>
+      <th>Cumulative Return</th>
+      <th>Annual Return</th>
+      <th>Annual Volatility</th>
+      <th>Sharpe</th>
+      <th>Max Drawdown</th>
+      <th>Calmar</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Primary Unified</td>
+      <td>358</td>
+      <td>1996-02-29</td>
+      <td>2025-11-28</td>
+      <td>552.76%</td>
+      <td>6.49%</td>
+      <td>7.70%*</td>
+      <td>0.843</td>
+      <td>-18.76%*</td>
+      <td>0.346</td>
+    </tr>
+    <tr>
+      <td>Trend Aware</td>
+      <td>356</td>
+      <td>1996-04-30</td>
+      <td>2025-11-28</td>
+      <td>2901.91%*</td>
+      <td>12.15%*</td>
+      <td>12.06%</td>
+      <td>1.008*</td>
+      <td>-23.68%</td>
+      <td>0.513*</td>
+    </tr>
+    <tr>
+      <td>Trend Aware Enhanced</td>
+      <td>356</td>
+      <td>1996-04-30</td>
+      <td>2025-11-28</td>
+      <td>1277.84%</td>
+      <td>9.24%</td>
+      <td>9.53%</td>
+      <td>0.970</td>
+      <td>-27.64%</td>
+      <td>0.334</td>
+    </tr>
+    <tr>
+      <td>Benchmark (Samwegs)</td>
+      <td>359</td>
+      <td>1996-01-31</td>
+      <td>2025-11-28</td>
+      <td>380.95%</td>
+      <td>5.39%</td>
+      <td>9.14%</td>
+      <td>0.590</td>
+      <td>-20.00%</td>
+      <td>0.270</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+      <h2>Risk and Trading Behavior</h2>
+      <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Model</th>
+      <th>Win Rate</th>
+      <th>Best Month</th>
+      <th>Worst Month</th>
+      <th>Avg Turnover (monthly)</th>
+      <th>Time in Market</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Primary Unified</td>
+      <td>63.41%</td>
+      <td>9.11%</td>
+      <td>-7.36%*</td>
+      <td>7.19%</td>
+      <td>100.00%</td>
+    </tr>
+    <tr>
+      <td>Trend Aware</td>
+      <td>66.01%*</td>
+      <td>18.00%*</td>
+      <td>-13.21%</td>
+      <td>31.26%</td>
+      <td>100.00%</td>
+    </tr>
+    <tr>
+      <td>Trend Aware Enhanced</td>
+      <td>66.01%*</td>
+      <td>11.77%</td>
+      <td>-9.75%</td>
+      <td>24.26%</td>
+      <td>100.00%</td>
+    </tr>
+    <tr>
+      <td>Benchmark (Samwegs)</td>
+      <td>28.97%</td>
+      <td>12.68%</td>
+      <td>-14.58%</td>
+      <td>4.74%*</td>
+      <td>44.57%</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+      <h2>Signal Profile</h2>
+      <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Model</th>
+      <th>BUY</th>
+      <th>HOLD</th>
+      <th>SELL</th>
+      <th>Coverage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Primary Unified</td>
+      <td>81</td>
+      <td>191</td>
+      <td>73</td>
+      <td>345 labeled periods</td>
+    </tr>
+    <tr>
+      <td>Trend Aware</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>No explicit BUY/HOLD/SELL signals</td>
+    </tr>
+    <tr>
+      <td>Trend Aware Enhanced</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>No explicit BUY/HOLD/SELL signals</td>
+    </tr>
+    <tr>
+      <td>Benchmark (Samwegs)</td>
+      <td>51</td>
+      <td>229</td>
+      <td>57</td>
+      <td>337 labeled periods</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+      <h2>Average Allocation Profile</h2>
+      <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Model</th>
+      <th>SPX</th>
+      <th>Commodities</th>
+      <th>Rates/Treasury</th>
+      <th>Credit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Primary Unified</td>
+      <td>19.03%</td>
+      <td>19.03%</td>
+      <td>42.90%</td>
+      <td>19.03%</td>
+    </tr>
+    <tr>
+      <td>Trend Aware</td>
+      <td>30.61%</td>
+      <td>23.40%</td>
+      <td>20.37%</td>
+      <td>25.63%</td>
+    </tr>
+    <tr>
+      <td>Trend Aware Enhanced</td>
+      <td>27.47%</td>
+      <td>20.22%</td>
+      <td>16.18%</td>
+      <td>36.13%</td>
+    </tr>
+    <tr>
+      <td>Benchmark (Samwegs)</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>N/A</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+      <h2>Equity Curves</h2>
+      <div class="imgbox"><img src="assets/model_compare_equity.png" alt="Equity curves"></div>
+    </div>
+
+    <div class="section">
+      <h2>Drawdown Curves</h2>
+      <div class="imgbox"><img src="assets/model_compare_drawdown.png" alt="Drawdown curves"></div>
+    </div>
+
+    <div class="section">
+      <h2>Rolling 12-Month Sharpe</h2>
+      <div class="imgbox"><img src="assets/model_compare_rolling_sharpe.png" alt="Rolling Sharpe"></div>
+    </div>
+
+    <div class="section">
+      <h2>Benchmark Context: Primary Unified</h2>
+      <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Strategy</th>
+      <th>ann_return</th>
+      <th>ann_vol</th>
+      <th>sharpe</th>
+      <th>max_drawdown</th>
+      <th>calmar</th>
+      <th>avg_turnover</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>EqualWeight25</td>
+      <td>4.78%</td>
+      <td>7.18%</td>
+      <td>0.688</td>
+      <td>-26.90%</td>
+      <td>0.178</td>
+      <td>0.00%</td>
+    </tr>
+    <tr>
+      <td>BuyHoldSPX</td>
+      <td>8.27%</td>
+      <td>15.28%</td>
+      <td>0.599</td>
+      <td>-52.56%</td>
+      <td>0.157</td>
+      <td>0.00%</td>
+    </tr>
+    <tr>
+      <td>60/40</td>
+      <td>6.94%</td>
+      <td>9.33%</td>
+      <td>0.768</td>
+      <td>-30.78%</td>
+      <td>0.225</td>
+      <td>0.00%</td>
+    </tr>
+    <tr>
+      <td>SimpleTrend</td>
+      <td>8.62%</td>
+      <td>12.91%</td>
+      <td>0.708</td>
+      <td>-26.72%</td>
+      <td>0.323</td>
+      <td>8.10%</td>
+    </tr>
+    <tr>
+      <td>PrimaryV1</td>
+      <td>6.49%</td>
+      <td>7.70%</td>
+      <td>0.857</td>
+      <td>-18.76%</td>
+      <td>0.346</td>
+      <td>7.19%</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+      <h2>Benchmark Context: Trend Aware</h2>
+      <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Strategy</th>
+      <th>periods</th>
+      <th>start</th>
+      <th>end</th>
+      <th>cumulative_return</th>
+      <th>ann_return</th>
+      <th>ann_vol</th>
+      <th>sharpe</th>
+      <th>max_drawdown</th>
+      <th>calmar</th>
+      <th>win_rate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>TrendAware</td>
+      <td>356</td>
+      <td>1996-04-30</td>
+      <td>2025-11-28</td>
+      <td>2901.91%</td>
+      <td>12.15%</td>
+      <td>12.06%</td>
+      <td>1.008</td>
+      <td>-23.68%</td>
+      <td>0.513</td>
+      <td>66.01%</td>
+    </tr>
+    <tr>
+      <td>SPX BuyHold</td>
+      <td>356</td>
+      <td>1996-04-30</td>
+      <td>2025-11-28</td>
+      <td>961.05%</td>
+      <td>8.29%</td>
+      <td>15.32%</td>
+      <td>0.541</td>
+      <td>-52.56%</td>
+      <td>0.158</td>
+      <td>63.76%</td>
+    </tr>
+    <tr>
+      <td>EqualWeight 4-Asset</td>
+      <td>356</td>
+      <td>1996-04-30</td>
+      <td>2025-11-28</td>
+      <td>247.02%</td>
+      <td>4.28%</td>
+      <td>10.95%</td>
+      <td>0.391</td>
+      <td>-34.40%</td>
+      <td>0.125</td>
+      <td>59.55%</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+      <h2>Benchmark Context: Trend Aware Enhanced</h2>
+      <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Strategy</th>
+      <th>periods</th>
+      <th>start</th>
+      <th>end</th>
+      <th>cumulative_return</th>
+      <th>ann_return</th>
+      <th>ann_vol</th>
+      <th>sharpe</th>
+      <th>max_drawdown</th>
+      <th>calmar</th>
+      <th>win_rate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>TrendAware Enhanced (Net)</td>
+      <td>356</td>
+      <td>1996-04-30</td>
+      <td>2025-11-28</td>
+      <td>1277.84%</td>
+      <td>9.24%</td>
+      <td>9.53%</td>
+      <td>0.970</td>
+      <td>-27.64%</td>
+      <td>0.334</td>
+      <td>66.01%</td>
+    </tr>
+    <tr>
+      <td>SPX BuyHold</td>
+      <td>356</td>
+      <td>1996-04-30</td>
+      <td>2025-11-28</td>
+      <td>961.05%</td>
+      <td>8.29%</td>
+      <td>15.32%</td>
+      <td>0.541</td>
+      <td>-52.56%</td>
+      <td>0.158</td>
+      <td>63.76%</td>
+    </tr>
+    <tr>
+      <td>EqualWeight 4-Asset</td>
+      <td>356</td>
+      <td>1996-04-30</td>
+      <td>2025-11-28</td>
+      <td>247.02%</td>
+      <td>4.28%</td>
+      <td>10.95%</td>
+      <td>0.391</td>
+      <td>-34.40%</td>
+      <td>0.125</td>
+      <td>59.55%</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+      <h2>Benchmark Context: Benchmark (Samwegs)</h2>
+      <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Strategy</th>
+      <th>periods</th>
+      <th>start</th>
+      <th>end</th>
+      <th>cumulative_return</th>
+      <th>ann_return</th>
+      <th>ann_vol</th>
+      <th>sharpe</th>
+      <th>max_drawdown</th>
+      <th>calmar</th>
+      <th>win_rate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>SamBenchmark_M1</td>
+      <td>359</td>
+      <td>1996-01-31</td>
+      <td>2025-11-28</td>
+      <td>380.95%</td>
+      <td>5.39%</td>
+      <td>9.14%</td>
+      <td>0.590</td>
+      <td>-20.00%</td>
+      <td>0.270</td>
+      <td>28.97%</td>
+    </tr>
+    <tr>
+      <td>BuyHold SPX</td>
+      <td>359</td>
+      <td>1996-01-31</td>
+      <td>2025-11-28</td>
+      <td>976.53%</td>
+      <td>8.27%</td>
+      <td>15.26%</td>
+      <td>0.542</td>
+      <td>-52.56%</td>
+      <td>0.157</td>
+      <td>63.79%</td>
+    </tr>
+    <tr>
+      <td>60/40</td>
+      <td>359</td>
+      <td>1996-01-31</td>
+      <td>2025-11-28</td>
+      <td>455.19%</td>
+      <td>5.90%</td>
+      <td>16.82%</td>
+      <td>0.351</td>
+      <td>-48.00%</td>
+      <td>0.123</td>
+      <td>58.77%</td>
+    </tr>
+    <tr>
+      <td>SMA 10/12</td>
+      <td>359</td>
+      <td>1996-01-31</td>
+      <td>2025-11-28</td>
+      <td>792.71%</td>
+      <td>7.59%</td>
+      <td>12.06%</td>
+      <td>0.630</td>
+      <td>-22.53%</td>
+      <td>0.337</td>
+      <td>48.47%</td>
+    </tr>
+    <tr>
+      <td>Random Median</td>
+      <td>336</td>
+      <td>1997-12-31</td>
+      <td>2025-11-28</td>
+      <td>154.24%</td>
+      <td>3.39%</td>
+      <td>11.28%</td>
+      <td>0.300</td>
+      <td>-31.15%</td>
+      <td>0.109</td>
+      <td>30.36%</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+      <h2>Benchmark (Samwegs) Test-Only Slice</h2>
+      <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Model</th>
+      <th>Periods</th>
+      <th>Start</th>
+      <th>End</th>
+      <th>Cumulative Return</th>
+      <th>Annual Return</th>
+      <th>Annual Volatility</th>
+      <th>Sharpe</th>
+      <th>Max Drawdown</th>
+      <th>Calmar</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Benchmark (Samwegs) - Test Only</td>
+      <td>134</td>
+      <td>2014-10-31</td>
+      <td>2025-11-28</td>
+      <td>164.97%</td>
+      <td>9.12%</td>
+      <td>10.67%</td>
+      <td>0.855</td>
+      <td>-20.00%</td>
+      <td>0.456</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+      <h2>Method Notes</h2>
+      <div class="note">
+        <p>1. Annualized metrics assume monthly periodicity.</p>
+        <p>2. Primary Unified uses net returns from <code>reports/primary_v1_backtest.csv</code>.</p>
+        <p>3. Trend Aware uses monthly allocation outputs from <code>monthly_allocations.csv</code>.</p>
+        <p>4. Trend Aware Enhanced uses net returns from <code>strategy_returns_enhanced.csv</code>.</p>
+        <p>5. Benchmark (Samwegs) uses strategy columns from <code>reports/backtest_results.csv</code>.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

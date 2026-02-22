@@ -1,0 +1,3134 @@
+The A-Z of Quant
+27 August 2004
+Inside
+Building a Quant model,
+Macquarie sgle
+The search for factors
+Factor selection
+Building the model
+Portfolio simulations
+Appendicies
+Analysts
+Richard Lawson
+(612) 8232 4391
+richard. lawson@macquarie.com
+George Platt
+(612) 8232 6s3e
+george. platt@macq uarie. com
+3
+4
+7
+23
+32
+43
+Building a Quant model,
+Macquarie style
+Quant: the numbers work for you
+Stock prices change for a multitude of reasons and these reasons vary over
+time and economic conditions. This makes it more difficult to outperform your
+chosen benchmark. Quant models are a great way to systematically capture
+the multi{imensionality of the market. In this report, we show how the
+Macquarie Research Quantitative Team builds multi-factor Quant models
+that work.
+Superior factor selection
+We require factor signals to have:
+1. Meaning - financial, economic and/or behavioural underpinnings
+2. Significance - based on various statistical tests
+3. Stability - through time and across stock groupings
+A combination of lC analysis, lC decay profiles, fractiles and pure factor
+returns yield superior analysis of factor predictability and stability than
+traditional regression based approaches only.
+Optimally combining correlated factors
+Many return factors are highly correlated. So how do you combine them into
+a model that is optimal while limiting the risk of double counting correlated
+factors? We have developed a sophisticated technique to construct multi-
+factor models that produces befter results!
+Constructing realistic portfolios
+We demonstrate how we construct portfolios with real life constraints, such
+as limiting active bet size, limiting exposure to risk factors, liquidity
+constraints and transaction costs.
+Please rcler to the disclaimer and d,sc/osure on page 66 of this document.
+Macquarie Research Equities - Repoft The A-Z of Quant
+This page has been left blank intentionally
+27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+1. Searching for factors
+2. Selecting and testing
+factors
+3. Combining factors
+4. Constructing
+portfolios
+Building a Quant model,
+Macquarie style
+Welcome to the Macquarie's A-Z of Quant The purpose of this report is to give a serious
+overview of the many quantitative techniques we use to construct and simulate quantitatively
+styled portfolios at Macquarie
+In Section One, we explore just what factors are, how Quants use factors and how they are
+constructed. In particular, we discuss what we look for in desirable factors, as well as some of
+the pitfalls in constructing factors.
+Section Two then discusses many of the quantitative techniques we use to select the factors
+that end uo in the final multi-factor model. These include various univariate tests like rank lCs,
+lC decay profiles and fractiles, as well multivariate tests (pure factor returns).
+Section Three examines how to combine those factors that have made it through the tests
+we described in Section Two. In particular, we examine how to optimally combine correlated
+factors. This is an important issue as many factors are highly correlated. lf factor correlation is
+not taken into account you run the risk of double counting similar type factors that are both
+highly correlated and successful, while risking the under utilisation of other successful factors.
+Lastly, Section Four discusses the more technical side of constructing optimised portfolios.
+Here we take your Alpha model, together with an appropriate risk model, and optimise
+through time with our in-house optimiser. lt has the advantage of imposing real-life constraints
+such as limiting active bet size, limiting exposure to risk factors, liquidity constraints and
+transaction costs.
+trectir" one- |sectbn rwcl l=ectfi rhr;l
+lThesearchtor l+l Factor l+l Buildingthe F---+
+lfactots I lselection I lmooet I
+Various Appendiccs are also included dealing with various other quantitative issues from
+dealing with data, in- and out-of-sample testing and portfolio construction techniques.
+27 August 2004
+Macquarie Research Equities - Repod The A-Z of Quant
+Factors = information
+about a company that
+can be measured
+D iffe re nt factor g ro u p s
+Factor performance
+varies over time
+3. Momentum factors
+4 Forecast revisions
+The search for factors
+What are factors?
+Factors embody information about a publicly listed company. They could be characteristics of
+the company, the company's share price performance or vital statistics of an analyst's
+company model. A factor may change as relevant new information arrives about a listed
+company, which may in turn be accompanied by a change in the share price. Factors might
+therefore be used to predict future stock price returns.
+Information separates active managers from passive managers. Information,
+properly applied, allows active managers to outperform their informationless
+benchmarks (Grinold & Kahn, 2000, P315).
+But stock prices change for a multitude of reasons, making it difficult to capture without the
+use of quantitative techniques:
+Multi-factor Quant models can be developed to capture the different systematic
+driverc of stock prices.
+Multi-factor models, as the name suggests, comprise of a number of stock price signals
+known as factors. Factors, as the embodiment of information, form the core of any
+quantitative investment strategy. The development and selection of factors is the important
+first step in building a quantitative return forecast model that works.
+The Macquarie Quantitative Research Team has developed an extensive factor database that
+allows for the construction and testing of factors within Asia Pacific equity markets. Some
+examples of types of factors we use are:
+1. Value factors eg dividend yield and price to earnings ratio
+2. Profitability factors eg ROE and change in ROE
+eg 1, 3 or 6 month price momentum
+eg 1, 3 or 6 month changes in consensus EPS and DPS
+5. Event driven factors eg lPOs, mergers and acquisitions, and earnings surprises
+We call these factor groups. Factors within the same factor group are typically more highly
+correlated than factors from two different groups. They also may belong to the same group
+because they are constructed using a similar calculation methodology
+As the above list demonstrates, some factor groups are related to historical company
+performance or to future expectations of company performance (such as value, profitability
+and economic factors). Other factors may be more behaviourally based (such as momentum
+factors). Some factors are even related to the investor composition of equity markets, and
+how equity markets work (eg event driven factors)'
+The same factors do not always work throughout time and several types of factors may be
+driving the market at the same time. They may even be working against each other, so that
+when one factor is punished, another is rewarded This can make successful factor selection
+and hence stock selection tricky.
+ln this report, we will discuss how to construct Quant models that deal with these issues.
+r a detailed discussion of some of the more mmmonly used factors.
+4 27 Auoust 2004
+Macquarie Research Equities - Report The A-Z of Quant
+How do Quants use factors?
+Factors are used to Quants use factors to predict relative returns of financial assets (in our case stocks). We
+predict returns typically are interested in this on a cross-sectional basis. In particular, by comparing and
+filtering stocks by the various factors that we believe predict relative stock returns, we end up
+with stocks that have the most desirable characteristics. This relative returns framework
+implicitly assumes a benchmark (ie an investible universe of stocks) against which fund
+oerformance is measured.
+The goal of active management is to outperform the appropriate benchmark with
+as little risk as possible.
+This then raises two ouestions:
+1. What factors do we use in our Quant model?
+2. How do you combine factors together into a model that outperforms your chosen
+benchmark, with as little risk as possible?
+Factors must In regard to the first question, we want factors that systematically signal outperformance but
+systematically signal we don't want factors that by accident or coincidence seemed to have worked historically
+outpeiormance, not (known as data mining). Factors that have worked by coincidence historically are unlikely to
+work by coincidence add any value to the model.
+Therefore, at Macquarie, we require candidate factors to have:
+. Meaning - to be economically, financially or behaviourally justifiable or recognised as
+systematic predictors of stock prices
+. Significance - to have tested well (statistical significance) in both an in-sample and out-
+of-sample period
+. Stability - to have worked well through time and in different market conditions
+Meaning, in particular, is the top level protection against data mining. By using factors that
+have some theoretical rationale, based on the financial or behavioural biases that drive stock
+prices, we ensure that the possibility of data mining is minimised For example, a factor based
+on the number of employees of a listed entig is much more open to criticism than a factor
+based on the share orice movement over the last three months
+Significance and stabilig are the two other key prerequisites in selecting factors for the final
+model. They embody the past ability of a factor to consistently predict share price
+performance on a cross-sectional basis through time In the next section, factor screening, we
+devote much time to quantitative techniques that help us sift for factors that actually exhibit
+significance and stability2.By using the three criteria (meaning, significance, stability) we
+hope to capture the significant drivers of equity markets in different economic conditions In
+doing so we reduce the risk that our model won't perform in real life3.
+Once we have our shortlist of factors, we can examine the second question posed above. ln
+particular, we want to combine these factors into a model that proxies for the underlying
+drivers of relative returns We do this in Section f hree, Building the model, where we discuss
+the art and science of creatino the multi-factor model.
+2 One other factor level check we like to use is whether a factor works across all equity markets. However, an
+equally valid argument is that equity markets can differ significantly in terms of makeup, ownership and
+constraints (eg developed markets versus emerging markets) This in turn might lead to qualitatively different
+drivers ofthese markets Hence, we only use this as a check, ratherthan a requirement
+t Performance of individual factors will typically change through time and in different economic conditions. This
+may sometimes affect how stable the performance is of the multi-fuctor model. Multi-factor models should
+therefore not be exoected to be correct 1 00% of the time but rather Doint us in the riqht direction
+27 August 2004
+Macquarie Research Equities - Repod The A-Z of Quant
+Pitfalls in calculating
+factors from raw data ...
+How do you create and calculate factors?
+As discussed above, factors need to have some financial or behavioural justification. Factor
+creation is quite an art form and new ones are continually being developed and tested,
+particularly as equity markets change and evolve. Factors we use at Macquarie typically have
+their origin in some theoretical, academic and/or pragmatic background (for a list of factors
+we have calculated, please contact us).
+To calculate a factor typically raw data from various data sources needs to be turned into
+meaningful factor signals. However, there are several possible pitfalls to factor calculation:
+1. Matching across data sources: this is when factors use information from two or more
+sources This is potentially problematic if the various data vendors use different core
+information (eg if one vendor doesn't take into account a recent share dilution, resulting in
+distorted number of shares or even share price).
+2. Survivorship bias: this occurs when you don't include stocks in your database that have
+since delisted or gone bankrupt. This will make your performance tests look better than
+they really would have been at the time.
+3. Look ahead bias: typically this problem arises with historical @mpany accounts data. lt
+might take 2-4 months after a company year end (depending on the country) before a
+company publicly releases its financial statements. lf a factor is calculated historically
+using data in the 24 months between company year end and the company reporting
+date, this will make your results look better than they really would have been.
+4. Diluting per share data: forgetting to adjust per share data when various corporate
+events occur, like rights issues, bonus issues and share splits, will distort the results and
+introduce noise into your results.
+Appendix 2, Dealing with data, discusses their issues in more detail as well as the issue of
+normalisation, which allows different factors to be massaged into comparable, unitless
+dimensions. This is essential before attempting to combine individual factors into a multi-
+factor model.
+Once meaningful factors have been created we need to test them for significance and
+stability. This is the subject matter of the next section, Factor selection.
+27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+Cross secfional
+regressions can be
+used to test factors
+U n ivariate information
+analysis is another
+common method
+Factor selection
+Before any multi-factor model can be built, a screen for candidate factors is conducted. ln
+particular, we desire to screen for those factors that show significance and stability of
+predicting stock performance on a cross-sectional basis throughout history (time). There are a
+variety of ways of doing this.
+One popular method for determining what the return drivers in any market might be is a
+cross-sectional regression based approach, on a univariate basis (univariate means one
+factor at a time). Here, stock returns one month fonruard are regressed against the factor
+exposures of individual stocks the previous month (with the stock exposures being in
+normalised data form: see Appendix 2 for further details). The regression is performed each
+month across the universe of stocks to give a time series of regression coefficients (or factor
+returns) Comparing the t-stats of these regression coefficients for different factors enables us
+to see what factors have been the statistically significant drivers of performance through time.
+The factors selected for the final model are those that have statistically significant regression
+coefficients over time. lt is hoped that by selecting only those factors that have been
+statistically significant in the past, we are selecting factors that have predictive power of
+cross-sectional stock returns for the future
+Another common method is a univariate information analysis approach (again on a cross-
+sectional basis) Here, we conduct a broad range of comparative tests designed to assess the
+different dimensions of factor performance, namely significance and stability, as we discussed
+on the previously. The tests we conduct of univariate information analysis are:
+1. Monthly time series of information coefficients (rank lCs)
+2. lC decay profiles
+3 Fractiles
+Again, the hope is that those factors that have tested well here will continue working into the
+future (indeed research has confirmed a certain amount of autocorrelation in factor signals).
+At Macquarie, we use both approaches in our factor selection methodology. However, we
+typically conduct a univariate information analysis as the first factor screen, after which we
+then conduct regressions for each successfully screened factor while controlling for various
+risk factors (often referred to as a pure factor return).
+In this section, we will be examining both the univariate tests (information analysis) as well as
+the multivariate test (pure factor returns).
+27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+Univariate tests
+1. Monthly time series of information coefficients (Rank lCs)
+lCs are based on the Monthly lCs are a straightforward way of ascertaining the predictive capability of a factor in
+correlation of forvvard the past. They are similar to the factor returns (regression coefficients) of a univariate
+returns againstfactor regression of forward returns against individual stock exposures. In fact, monthly lCs are also
+scores calculated usino forward returns and factors scores. \Mile the calculation methods of both
+are different, OJtn factor returns and lCs give us an idea of the relative success of individual
+factor strategy (ie an investment strategy based around selecting stocks with high factor
+scores).
+lCs are cross-secflona I To calculate the lCs for monthly data, we cross-sectionally rank each stock's factor score as
+at the end of one month, as well as rank the subsequent month's total return for each stock.
+We do this for all stocks within the required universe Note the one month lag between the
+factor scores and the monthly total returns. So if the stock's factor exposures are as at 31-
+Jan-04, the month returns are from 31-Jan-04 to 29-Feb-04. We then calculate the correlation
+between the two sets of ranks.
+A ranked lC therefore measures the predictive power of a factor by
+looking at the correlation between the factor scores and subsequent
+period's stock returns.
+Ranked lC's are then calculated every month. lf a factor has no predictive power, we would
+expect its lC on average to be zero, jumping unpredictably from month to month. On the other
+hand, a ranked lC always equal to 1 (1OO%) indicates perfect forecasting skill4 lCs can range
+from -100% to +100%.
+Average lC should be Factors that are likely candidates for a multifactor model might have an average lC of above
+over 4%o, preferably 4o/o, sa!, as long as they were consistently positive most of the time (ie are stable). In the
+higher Australian equity market, some of the strongest factors have average ranked lCs of 8% to
+12%.5 While the average factor lCs may be small, they must be reasonably stable over time
+To ascertain stability we use two simple measures:
+Factor stability over time 1. Twelve month rolling average
+is also impoftant 2 t-stat of monthly lcs
+Twelve month rolling average: lCs can be quite volatile over time. Therefore we take a 12
+month rolling average and graph it. This allows us to visually examine the factor's predictive
+stability over time.
+A consistently positive 12 month average lC gives us confidence in a strategy. On the other
+hand, a strategy where the average 12 month lC is positive half the time and negative the
+other half is not likelv to make it into the model6.
+' lCs can also be calculated using normallsed factor scores and the next month's actual retums However,
+rankedlCsarearguablycleanerthannormalisedlCs Thisisbecausethedistributionofranksisflat,whereas
+normalised factor scores can have large outliers that can substantially distort the results (noting that normalised
+factor scores will typically be roughly normally distributed) Arguably, multi-factor models should be built using
+normalised based lCs but because ranked lcs are typically highly correlated with normalised lCs, we use the
+cleaner ranked lcs. Alternatively, we could build a composite rank model based on ranked lCs
+s Wthin certain sectors of a market the averages can be significantly higher (eg up to 20% for listed property
+trusts within Australia)
+u On the other hand, a factor ranked lC that has a consistently negative 12 month rolling average lC might
+imply an opposite strategy to what the factor score captures, For example, many developed equity markets
+experience negative 12 month rolling average lCs for short term momentum This implies that mean reversion
+(defined as the negative of one month momentum), might be a good factor to use. Of course, if there was no
+intuitive reason for usino this factor this wav. it should be not be included in the model
+27 August 2004
+Macquarie Research Equities - Repoft The A-Z of Quant
+12 month momentum
+generates con si stently
+strong lCs, while ...
+... Consensus
+recommendations do
+not
+Chart 1 and Chart 2 below contrast two different factors for the Australian equity market,
+namely 12 month momentum and consensus recommendation. In particular, 12 month
+momentum has a consistently strong 12 month rolling average lC over time, so it is far more
+likely to make it into the final model than consensus recommendation.
+Ghart 1: Twelve month momentum for S&P/ASX200 (Rank lcs)
+4Oo/o
+30%
+20%
+10%
+Oo/o
+-10%
+40%
+30%
+20%
+10%
+0%
+-20o/o
+-30%
+-40%
+Jan-95
+Source: Maquaie Quantitative Research
+Chart 2: Gonsensus necommendation for S&P/ASX200 (Rank lGs)
+-10o/o
+-20Vo
+-3OYo
+-4oo/o
+Jan-96 Jan-97 Jan-98 Jan-99 Jan-00 Jan-01 Jan-02 Jan-03 Jan-04
+Monthly
+Twelve month momentum has strong predictive power in Australia.
+4Oo/o
+30%
+2OYo
+lOYo
+Oo/o
+-1Qo/o
+-2OYo
+-30%
+40o/o
+4Oo/o
+30o/o
+20o/o
+lOYo
+OYo
+-10Yo
+-20o/o
+-3OYo
+40%
+Jan-95 Jan-96 Jan-98 Jan-99 Jan-00 Jan-01 Jan-02 Jan-03 Jan-04
+MonthlY
+Consensus recommendation has less predictor power than 12 month momentum
+Source: Maquaie Quantitative Resarch
+r--Rank lC -12m 
+avg
+r---'l Rank lC - 
+12m avg
+27 August 2004
+Macquarie Research Equities - Repoft The A-Z of Quant
+t-stat definition
+f-sfaf > 2 provides
+statistical significance
+Beware factors that
+generate prolonged
+periods of
+underper-formance!
+t-stats: As mentioned above, lCs are like the factor returns (or regression coefficients) in a
+univariate cross-sectional regression. And just as with univariate regressions, we can take the
+t-stat of lCs to see if they are significantly different to zero' This is important as it gives us an
+indication as to the stability or consistency of a factor strategy's predictive ability. A t-stat is
+defined as:
+t€tat(lC) = Average (lC) / Standard Deviation (lC) x {No. of Observations
+The idea of the t-stat is that it rewards higher average lCs (the numerator) and punishes
+higher standard deviations of lCs (the denominator) Also, for a given average and standard
+deviation, the more observations we have the more confidence we have in the results for the
+factor. Here the t-stat is proportional to the square root of the number of observations.
+As a rough rule, a t-stat greater than +2 indicates that we can be very confident in the factor's
+stability through time. But the closer the t-stat is to zero, the less confidence we have in a
+factor's ability to add value.E
+Other issues: lt should be noted that it is also preferable to see the lCs not working every
+now and then, rather than not working over an extended time period. For example, it is
+preferable to have a factor randomly misfiring in three out of every 12 months over a 4-year
+period say, rather than not working for 12 months in a row. This detracts from confidence and
+raises questions about why this factor is working and how temporary its usefulness could be.
+Monthly lGs, the 12 month rolling average and the lC t-stat form a core part of
+the factor selection process.
+t t-stats are a statistical tool to measure if a distribution is likely to be statistically different from a particular
+value lt is like a z-stat but is used when the standard error has to be estimated from the data. The formula is
+basically a method for calculating the area under the normal curve (actually it is the t-distribution, which is very
+similar) This area represents the probability of a statistic being greater than or less than a specific value
+(otherwise known in statistics as hypothesis testing)
+8 Similar to the comments on the previous page about a consistently negative 12 month rolling average lC, a
+t-stat less than -2 implies an opposite strategy to what the fuctor score captures As long as there is an intuitive
+rationale for this, this oooosite strateqv should be emDloved within the multifuctor model.
+10 27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+Some factors exhibit
+shoft term predictive
+power, while others
+work over longer
+investment horizons
+Factor lC decay profiles
+involve
+... lagging fhe sfocks
+forward return
+... and calculating the
+average of the ICs for
+each lagged return
+Sample lC decay for 12
+month momentum and
+2. lC decay profiles
+Equity markets react at different speeds to different types of new information. The faster the
+market reacts to one type of information, the quicker we need to act to capitalise on this new
+information. On the other hand, strategies based on information that gets quickly priced into the
+market also tend to have higher tumover.
+lC decay profiles measure how fast or how efficient the market is at pricing
+in new information.
+Using factors as the embodiment of information, we can then generate factor lC decay
+profiles, as follows:
+1. Calculate Series of Ranked lCs; First, for each lag n = I , 2, 3, .. 12 months, we
+calculate a time series of ranked lCs based on the stocks forward return lagged by n
+months relative to the factor signal In fact for n = 1 this is simply the lC monthly time
+series as discussed in the section above.
+2. Average each Ranked lC series: we then take the average of each lag's monthly lC time
+series (where n = 1 , 2, 3, ... 12). Again, the average lC calculated for the one month lag
+will actually be the average lC of the chart in the section above on monthly time series of
+information coefficients.
+In Chart 3 and, we examine the lC decay profile for the two factors we considered before,
+namely 12 month momentum as well as consensus recommendation.
+Chart 3: Twelve month momentum for S&P/ASX200 (lC decay profile)
+tc
+10 Oo/o
+80%
+60%
+4.0o/o
+2.O%
+-o-u-/o
+-8.O%
+-10.Oo/o
+Twelve month momentum has a strong signal with a slow decay rate.
+Source: Macquaie Quantitative Research
+0 Oo/o
+-2 Oo/o
+4 O%o
+27 August 2004 11
+Macquarie Research Equities - Repoft The A-Z of Quant
+... consensus
+recommendation
+Low decay = more time
+to get set in stocks and
+lower turnover
+Success rates provide a
+measure of factor
+pefformance stab ility, as
+do..
+10.0o/o
+8.0o/o
+Chart 4: Consensus recommendation for S&P/ASX200 (lC decav profile)
+6 Oo/o
+4 0o/o
+20%
+o.o%
+-2.0o/o
+4 0o/o
+-6 0o/o
+-8.0%
+-10 0o/o
+Consensus recommendation has a very weak signal
+Source: Macquaie Quantitative Research
+ldeally, we like to see high average ranked lCs in the initial lags of an lC
+decay profile that gradually decays as the lag increases (ie the lC decay profile
+has a gradual slope down to the right).
+\Mile a high average ranked lC in the initial lags gives us confidence in a factor strategy, a
+low decay rate leaves more time to get set in stocks which expose us to this factor. However,
+if a factor decays quickly, this means the information is quickly priced into the market and
+hence becomes redundant, and so stocks will remain shorter in the portfolio Therefore, a fast
+decay rate usually implies the factor's strategy has higher turnover.e
+Some strategies, like earnings revisions, tend to have lower decay rates This is partly due to
+autocorrelation in analysts revising their earnings estimates In particular, they revise their
+earnings slowly while cautiously gauging markevconsensus opinion.
+We also like to get an idea of the stability of the factor's predictability for each lag. We
+therefore use two further measures:
+1. Success rates for each lag of the monthly lCs
+2. t-stats for each lag of the monthly lCs
+Success rate for each lag: we use this in conjunction with the lC decay profile. lt is a
+measure of the stability of the factor performance for each lag lt is calculated by dividing the
+number of times the lC for a given lag was positive by the total number of months tested:
+No. months lG > 0
+Success rate = Total no. months in sample
+ldeally, we want to see a succ€ss rate for a one month lag above 55%, say (if we are
+rebalancing monthly) The success rate of a typical factor strategy will drop to 50% as the
+factor signal is priced into the market.
+n In fact, multi-factor models can be created by combining a signal with itself lagged in time. See Chapter 13 ol
+Grinold & Kahn (2000) for more details
+12 27 August 2004
+Macquarie Research Equities - Repoft The A-Z of Quant
+t-stats for each lag of
+the monthly lCs
+F actor autoconel ations
+also provide information
+about how fast a signal
+changes
+t-stats for each lag of the monthly lGs: the other metric we use here is the t-stat for each
+month's lag. As discussed in the previous section, if the t-stat is above 2 for the first couple of
+months, the factor strategy is a likely candidate for the final model1o.
+Note the t-stat and the success rate are actually closely related statistics. As we increase the
+lag of the signal the success rate drops down towards 50% while the magnitude of t-stat will
+typically drop down towards zero.
+One other closely related concept to lC decays are factor autocorrelations. A factor
+autocorrelation measures how fast a signal changes (ie relative to itself). \A/hile a faster signal
+for a stock will lead to higher turnover, which lowers performance, it will also lead to a higher
+number of independent bets, which will ultimately increase performance. This is discussed
+further in Appendix 5.
+10 Again a t-stat less than -2 implies a strategy opposite to that which the factor is trying to capture As
+explained in the footnote in the section on monthly time series of lCs, this might imply an opposite strategy as
+long as there is an intuitive reason for the factor to behave this way The same comment applies to success
+rates below 45% and risino to 50%
+27 August 2004 13
+Macquarie Research Equities - Repori The A-Z of Quant
+Fractile portfolios are
+formed by dividing the
+universe of stocks each
+month based on stock
+factor scores
+Returns are then
+tracked for each fractile
+portfolio
+3. Fractiles
+Fractiles are the next step in testing factor strategies.
+Fractiles are the first portfolio simulations we use that test the efficacy of a
+factor strategy.
+Fractiles are essentially a ranking strategy that are generated by splitting the universe of
+stocks each month into a number of equally weighted portfolios (fractiles) according to their
+factor exposures.
+For example, a quintile strategy would involve splitting the universe of stocks into five
+portfolios Quintile 1 would have stocks with the top 20% of factor scores; quintile 2 stocks
+would have the next 20% of stocks and so forth. Fractiles embody the idea that useful
+information can mainly be derived from the tails of a factor distribution rather than from the
+middle (ie for quintiles 2,3 and 4), where the potential signal noise is much greater. Fractiles
+can be informative for both long-only strategies as well as long/short strategies
+After each fractile portfolio has been formed, we then track the total return to each fractile
+portfolio over the following month At the end of every month, we rebalance back to equally
+weighted fractiles and then repeat the proc€ss. In this way we can calculate an accumulation
+series (total return series)1t. In Chart 5 and, we again examine the quintile portfolio
+performance for 12 month momentum and consensus recommendation:
+Chart 5: Twelve month momentum for S&P/ASX200 (Quintiles)
+0
+Jan-95 Jan-02 Jan43 Jan44
+Again, 12 Month Momentum shows up as a strong predictive signal.
+Source: Maceuarie Quantitative Research
+" Note that fractile strategies ignore all information in the factor exposures except for the relative stock
+rankings They are naive factor portfolio strategies in that they do not take account of risk (be that factor risk,
+idiosyncratic risk or other) In fact, they tend to be considerably more risky than real life portfolios and have
+considerably more turnover
+14 27 August 2004
+Macquarie Research Equities - Repoft The A-Z of Quanl
+Ghart 6: Consensus necommendation for S&P/ASX200 (Quintiles)
+Jan-97 Jan-98 Jan-99 Jan{o Jan-01 Jan-O2 Jan43 Jan-04
+Use a number of
+fractiles relevant to your
+stock universe
+There are a range of
+ftactile peiormance
+sfafisflcs
+Jan-95
+The lack of predictabilig of equal weighted consensus recommendation also shows up
+in quintile analysis
+Source: Maquaie Quantitative Research
+Note that if your universe of stocks is small, say less than 15, you may only want to perform
+tertiles or quartiles (splitting the universe into three or four portfolios). On the other hand, if
+your universe is very large, say above 100 stocks, deciles (10 portfolios) might be more
+appropriatel2
+Besides charting the fractile performances through time, we also generate a summary table of
+return based performance metrics for each fractile. This gives us a better idea of how the
+factor performed as a distinguisher of subsequent returns. The table also shows various other
+statistics, for example each fractile's tracking error (active risk), information ratio (risk
+adjusted active return) and turnover. These can then be used as a basis for comparison
+across d ifferent factors:
+Table 1: Twelve month momentum for S&P/ASX200
+Quintile 1 Quintile 2 Quintile 3 Quintile 4 Quintile 5 a1-O5 (L-S) Market
+Total return 22.82o/o 15 87Yo '10.75% 5.33o/o -10.14% 31.13o/o 8.78%
+Active retum 1404% 7.O9o/o 1 97o/o -3.45% -1892o/o 31.13%
+Tracking enor 7 98% 6.48% 5 33% 480o/o 14 19o/o 2O.O5To
+lnfiormation ratio 1.76 1 09 o.37 -o72 -1.33 1 55
+lstat (information ratio) 5.37 3 U 1.13 -2.19 -4 08 4.74
+Monthly success rate 72.32o/o 58 04Yo 52.680/o 39.29Vo 34.82% 68 75Yo
+Turnover 22.58% 42.94o/o 49.17o/o 44.28Yo 25.960/o 48 54Yo
+Volatility 13.73o/o 10 28o/o 10.67% 12.90o/o 23.95% 20 O5o/o 12.57%
+SharDe ratio 1 66 1 54 1 01 0.41 -o42 o7o
+t-stat (sharpe ratio) 721
+CAPM Beta (vs benchmark) 0 90 o7o 0.77 095 168 -0.78
+CAPM Alpha 5.97o/o 4 OlYo 3.4loh 3 620/o 8.6070 13.25o/o
+Twelve month price momentum is a successful factor. \y'Vith an information ratio
+of 1.47 (and a t-stat ot 4.27) this result is highly significant.
+Sou rce: Macauaie Q uantitative Research
+t' On" cornron criticism of equally weighted fractiles is that they can hold positions in a lot of illiquid stocks,
+too small for a typical investible universe. In this case, we might also want to calculate the market weighted
+return for fractile strategies This will show how the strategy works for larger cap stocks within each fractile. In
+fact, by comparing equally weighted and cap weighted fractiles, we can get an idea how the strategy works for
+larger versus smaller caps For example, if all the equally weighted fractiles outperform the cap weighted
+6 32 2.31 -2 13 -8 40
+27 August 2004
+fractiles, one could infer that the strategy works better for small cap stocks
+15
+Macquarie Research Equities - Reporl The A-Z of Quant
+Table 2: Equal weighted consensus recommendation for S&P/ASX200
+Quintile 'l Quintile 2 Quintile 3 Quintile 4 Quintile 5 Q1-O5 (L-S) Market
+Total return 12.94% 11 20% 7 45Yo 14 22% 0 02o/o 12 29o/o 9 22o/o
+Active return 373o/o 1 99o/o -1 77Yo 5 00% -9 19o/o 1229o/o
+Tracking error 5 92% 4 650/o 4 75% 5 41o/o 6 48% 10 24o/o
+lnformation ratio 0 63 0 43 -037 0 92 -1 42 1 20
+t-stat (information ratio) 1 92 1.31 -1 .14 2 82 -4 33 3 67
+Monthly success rate 6071% 54 460/o 41 07o/o 59 82o/o 33 04Yo 62 50To
+Turnover 25.260/o 41 33o/o 43.55o/o 39 58% 24 35o/o 49 61V.
+Volatility 15 00% 13480/. 1282Y0 1228% 1522% 1024o/o 12670/o
+Sharoe ratio 0.86 0 83 0 58 1 16 0 00 073
+t-stat (sharpe ratio) 1 01 0.78 -1 10 322 -543
+CAPIVI Beta (vs benchmark) 1 09 1.00 0 94 0 88 1 09 0 00
+CAPI\il Alpha 4 37% 3 50o/o 3 53% 3 91o/o 4 80o/o 7 70Yo
+Despite the poor performance relative to 12 month momentum, consensus recommendation
+is also less volatile, resulting in a comparable information ratio.
+Source: Macquaie Quantitative Research
+We now explain the various returns based performance metrics in the tables above:
+Total return measures r Total Return = Annualised Total Return over period, Equally Weighted (for Fractiles and
+the return to the Benchmark)
+portfolio This also includes the long-short results where we measure the total return difference
+between the top and bottom fractiles. ldeally, we want this difference to be positive and
+rarge.
+Active return measures . Active Return (Annualised) = Total Return (Fractile) - Total Return (Benchmark).
+return in excess of fhe
+benchmark ldeally, we would like to see the active return drop smoothly across the fractiles. For the
+long-short result, which are measured relative to zero, Active Return = Total Return
+Tracking error . Tracking Error = Annualised Standard Deviation of Monthly Active Returns
+measures the standard
+deviation of the active ldeally, we would like to see the tracking error drop smoothly across the fractiles.
+returns Tracking error is also known as active risk.
+lnformation ratio . Information Ratio = Active Return / Tracking Error (ie annualised).
+measures the active
+return per unit of risk For active managers this is probably the most important measure of performance versus
+a benchmark. In fact, the information ratio is sometimes referred to as the Sharpe ratio
+for active portfolio management. lt measures active return per unit of active risk. ldeally,
+we would like to see the information ratios for the first and last fractiles above 0.5 and
+below -0.5 respectively, with a smooth transition in between
+The t-stat measures fhe o t-stat (tnformation Ratio) = Information Ratio /{N, where N = no. of years.
+stati sti c a I sig n ifi c a n ce of
+the returns ldeallv. we would like to see a t-stat above 2 for the lowest fractile and below -2 for the
+highest fractile, with a smooth change in between.
+Success rates measure . Monthly Success pslg = (Number of months with Active Return >0) / Total no. of months
+the proportion of months
+with a positive active Like the lC decay success rate, this is a way of assessing the stability or consistency of
+return the factor as a return predictor. ldeally, we would like to see the monthly success rate
+smoothly drop from above 50% to below 50% across the fractiles. lf all fractiles had a
+success rate of 50%, we would not have any confidence in the predictive power of the
+factor, as different factor scores would not result in different stock returns against the
+benchmark.
+to 27 August 2004
+Macquarie Research Equities - Repoft The A-Z of Quant
+Monthly turnover
+measures the amount of
+trading activity
+Volatility measures the
+deviation in total returns
+Sharpe ratio measures
+total return per unit of
+risk
+t-stat measures the
+stati sti ca I si g n ifi can ce of
+the returns
+CAPM Beta measures
+th e co rre I ati o n betwee n
+fractile and benchmark
+returns
+. Monthly Turnover = One way, with monthly rebalancing of each fractile
+We don't want the turnover to be too high, as this incurs transaction costs and greater
+market impact thereby reducing effective Alpha. A low, median and high quintile turnover
+might be 20%o, 50o/o and 80% respectively per month. In practice, these would be
+unsustainable levels but when risk factors are taken into account, this turnover drops
+dramaticallyl3. We mainly use fractile turnovers for a comparison across different factors.
+. Volatility = Annualised Standard Deviation of Monthly Returns
+Otherwise known as total risk. ldeally, we would like to see the active return drop
+smoothly across the fractiles.
+. Sharpe Ratio (SR) = Total Return / Volatility.
+Typically, the Sharpe ratio measures the excess total return per unit of total risk. As we
+are comparing across fractiles, we are not interested in the cash rate, hence we can
+assume it is zero. ldeally, we would like to see the Sharpe ratio drop smoothly across the
+fractiles. We also calculate the Sharpe ratio for the benchmark
+o t-stat (vs Benchmarkl = (SR (Fractile) - SR (Benchmark)) / Std. Err. (SR difference)
+= (SR (Fractile) - SR (Benchmark))/ r2lN
+lf the t-stat of the difference between is signiflcant, we can be confident our portfolio is
+adding value in terms of excess return per unit of total risk. Therefore ideally we would
+like to see a smoothly declining Sharpe ratio across the fractiles.
+. CAPM Beta (vs Benchmark) = sensitivity to the benchmark total return, based on a
+regression of Fractile Total Returns against the Benchmark Total Return (the regression
+coefficient).
+. CAPM Alpha (vs Benchmark) = y-intercept from regression based on a regression of
+Fractile Total Returns against the Benchmark Total Return.
+CAPM Aloha measures the non-benchmark related comoonent of fractile performance.
+Using these performance metrics, we can easily filter desirable factor candidates from
+undesi rable factor cand idates. esirable factors exhibit:
+. a positive and significant annualised active return for the lowest fractile (and a negative
+and significant active return for the highest, although this is not as necessaryto;,
+. a low annualised tracking error for the lowest fractile (and high for the highest fractile).
+. these in turn combine into a high positive information ratio (=2s11v" return/tracking error)
+for the lowest fractile and high negative information ratio for the highest fractile. For the
+lowest fractile a value above 0.5, say, is desirable, with a t-stat above 2 (for the highest
+fractile an information ratio below -0.5 and t-stat below -2 is desirable).
+. a low turnover is desirable in that it reduces transaction costs and potential market impact
+(although a higher turnover potentially increases the number of independent bets).
+Using fractiles, we can easily search for factors that help distinguish future stock
+performance
+Like monthly lCs, fractiles are part of our core factor screening process.
+13 Fractile strategiestypically have significantly higherturnoversthan a benchmarked strategy, where stocks
+positions are held relative to the benchmark weight. The reason for this higher turnover has to do with how
+fractiles are constructed In particular a stock is either in a fractile portfolio with an equal weight or not lf it is in
+the fractile one month, but is rebalanced out of the fractile the next month we would have to sell the entire
+position (for benchmarked strategies re-weighting involves only buying/selling a fraction of the stock around the
+benchmark weight) But the highest and lowest fractiles will typically have the lowest turnovers as they have
+stocks moving into them only from one direction (eg while Quintile 1 will typically have most of its new additions
+from Quintile 2 only, Quintile 2 will typically get most of its new additions from both Quintile 1 and Quintiles 3)
+" Arquablv lonq/short funds are better able to utilise the information embodied within highest fractile portfolios
+27 August 2004 17
+Macquarie Research Equities - Repoft The A-Z of Quant
+M u ltiv a ri ate regresslons
+can be used to control
+for key risk factor
+exposures
+Pure factor return is the
+return to a one standard
+deviation exposure to
+the factor after
+controlling for all risk
+factor exposures
+Multivariate tests (pure factor returns)
+As discussed above, we also perform a cross-sectional regression analysis on each factor to
+ascertain the factor's ability to predict performance. However, we do not perform a univariate
+regression on each factor, as it is unlikely to show anything different to the univariate tests we
+have already conducted (rank lCs, lC decay profiles and fractiles)
+Instead, we perform a multivariate cross-sectional regression each month, where key risk
+factors are also included (eg size, sector and/or book to price)1s:
+A pure factor return therefore measures the notional return to a factor after
+controlling for key risk factors (eg size, sector and/or book to price).
+Strictly speaking, the pure factor return is the return to a one standard deviation exposure to
+the signal (factor) after the risk factors have been extracted (a risk factor being a factor that
+predicts risk). lt is calculated by regressing the stock returns one month forward against the
+relevant factor exposures of individual stocks the previous month. These factor exposures
+need to be in a normalised form (see Appendix 2 for more details). They would include the
+factor you desire to test (eg 12 month momentum or dividend yield), as well as your desired
+risk factors (eg size, sectors and/or book to price). By examining the pure factor return of a
+factor, we get a good idea of how a portfolio would perform if it was constructed around this
+factor once risk was taken into account
+The formula for such a multi-variate regression is as follows:
+Returnl*1 = Fr fr + (pnrr fnrr + Fnrz fnrz + ,.. + Pnrr,r fnpr'r) + a
+Where 9r = the pure factor return (regression coefficient) for the desired return factor
+and 9*r' = the pure factor return (regression coefficient) for Risk Factor i
+and E = Error Term from the regression
+Once we have the time series of pure factor returns (Fr), we can produce some graphs along
+with some performance metrics. Below we show two types of charts:
+. The first set (Charts 7 & 8) demonstrates the performance over time of a one standard
+deviation exposure to the factor, in this case prospective dividend yield. We do this for
+both the raw factor returns (ie with no risk factors) as well as the pure factor returns
+(where the risk factors are sector and size). The results are typical in that the pure factor
+return doesn't perform as well as the raw factor return, because the returns to size and
+sector have been stripped out.
+. The second set (Charts 9 & 10) demonstrates the monthly and 12 monthly average
+performance of the factor returns (for prospective dividend yield) over time. Again the
+results are typical, with both charts showing qualitatively similar profiles, yet the raw
+factor return performs better as the returns to size and sector have not been stripped out.
+18
+1s See Aooendix 9 for a discussion on risk factors retum fuctors and factors in oeneral
+27 August 2004
+Macquarie Research Equities - Repoft The A-Z of Quant
+Chart 7: Index of ASX 100 purc factor returns for prcspective dividend yield
+Annudised pure rctum: 4.65%
+Annudised tracking eficf:7 .73o/o
+Pure lnformation Ratio: 0.60
+Monthly Success Rate: 50.8
+t-s{al (0):1.98
+Jul-94 Jul-95 Jul-96 Jul-97 Jul-98 Jul-99 Jul-00 Jul-01 Jul-02 JuF03
+lndex of ASX 100 Pure Factor Return
+Soure: Maquade Quantitative Researdt
+Ghart 8: lndex of ASX ,|00 raw factor rcturns for prospective dividend yield
+Annudised raw rdum: 7.53%
+Annuafised tracking efior. 7 .24o/o
+Ralv lnformation Ratio: 1.O4
+Monthly Success Rde: 63.6
+tslat (0):3.29
+JuLlX Jul-95 Jul-96 Jul-97 Jul-98 Jul-99 Jul-00 Jul-01 Jul-02 JuF03
+lndex ofASX 100 Raw Factor Return
+Source: Maquarie Quantitative Research
+27 August 2004 19
+Macquarie Research Equities - Repoft The A-Z of Quant
+Ghart 9: Prospective dividend yield - ASXl00 pure factor return
+'t0%
+9o/o
+a%
+7Yo
+6Y'
+5o/o
+4Yo
+3o/o
+2%
+'l%
+0o/o
+-2o/o
+-3o/o
+-4%
+-5%
+Source: Macquaie Quantitative Research
+Chart 10: Prospective dividend yield - ASX100 raw factor return
+10o/o
+9o/o
+8o/o
+7o/o
+6%
+5%
+4%
+3%
+2o/o
+1%
+0%
+10%
+-2%
+-3o/o
+-4%
+-5o/o
+Oo/o
+-10%
+-2oo/o
+-30o/o
+Example of tilting
+towards risk factors
+Sou rce: Macquarie Quantitative Research
+Comparing these two sets of charts seems to imply that prospective dividend yield in the
+ASX100 exhibits predictive power because it tilts investors towards sectors which have
+outperformed. When you strip this out in the pure factor return the value add reduces a lot,
+particularly during the early years of the sample period. However, even with size and sectors
+taken into account, there still seems to be value in this factor, as the information ratio is still
+06.
+r--- Monthly (LHS)
+-Rolling 
+12mth (LHS)
+Monthly
+Monthly pure factor return and rolling 12 monthly return
+r----r Monthly (LHS)
+-Rolling 
+12mth (LHS)
+Monthly
+Monthly raw factor return and rolling 12 monthly return
+20 27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+A range of statistics can The performance metrics in these graphs are described below:
+be calcul
+th . Pure Return (% pa) = the annualised return to a one standard deviation exposure to the
+signal (factor) after the risk factors have been extracted
+. Pure Tracking Error (%pa) = annualised standard deviation of the monthly regression
+coefficients. Here the factor returns (coefficients) relate to the returns of a one standard
+deviation active exposure, taking into account the risk factors. Therefore we are
+effectively calculating the tracking error relative to the benchmark.
+. Pure lnformation Ratio = Pure Return / Pure Tracking Error. This is similar to the fractile
+information ratios we calculate.
+Monthly Success Rate (%) = the proportion of monthly pure factor returns that are greater
+then zero. We look for values above 55%, say.
+. t-stat (Pure Returns Time Series). In this case we are looking for values greater than +2.
+. Naive Return (%pal = the return to a one standard deviation exposure to the signal
+(factor) before the risk factors have been extracted (ie univariate regression results)
+. Raw Tracking Error (%pa) = annualised standard deviation of the monthly regression
+coefficients. Here the factor returns (coefficients) relate to the returns of a one standard
+deviation active exposure, without the risk factors. Therefore we are effectively
+calculating the tracking error relative to the benchmark
+. Raw Information Ratio = Raw Return / Raw Tracking Error. This is similar to the Fractile
+lnformation Ratios we calculate.
+. Success Rate 1%;= the proportion of monthly naive factor returns that are greater then
+zero. We look for values above 55%, say.
+. t-stat (Naive Returns Time Series). In this case we are looking for values greater than +2.
+This should be similar to a t-stat of a univariate Rank lC test.
+. Pure-Naive (%pa). \Mren greater than zero this implies the factor works better when
+controlled for risk. \Mten less than zero. it implies the factor works better when there is no
+control for risk factors.
+. Pure-Naive Tracking Error (%pa) = annualised standard deviation of the difference
+between the pure and raw monthly regression coefficients.
+. Pure-Naive Information Ratio = Pure-Naive Return / Pure-Naive Tracking Error. This is
+similar to the Fractile Information Ratios we calculate.
+. Success Rate (%)= the proportion of monthly pure factor returns were greater than naive
+factor returns We look for values above 55%, say.
+o t-stat (Naive-Pure Returns Time Series). In this case, we are looking for values greater
+than +2
+ldeally strong statistics from this analysis are desired from the Pure Returns (%pa), Pure
+Return Success Rate and Pure Return t-stat. However, statistical significance is a lot more
+difficult to achieve after the risk factors are included in a regression. Instead, we use pure
+factor returns on a comparative basis, selecting the factors with the strongest pure factor
+returnsl6.
+16 We might also test the efficacy of a long/short strategy after neutralising for sector or industry A common
+method of neutralising for sectors in a long/short strategy is to include only those stocks in the long/short
+portfolios that are ranked in the top and bottom third offactor exposures within each sector. The resulting short
+portfolio will then have the same number of stocks as the long portfolio.
+27 August 2004 21
+Macquarie Research Equities - Repoft The A-Z of Quant
+Summaising all of the
+factor performance
+sfaflsfrbs
+The final factor screen
+Each of the above described tests (lCs, lC decays, ftactiles, pure factor returns) shows many
+of the different dimensions of factor performance. Once all the tests have been completed we
+need to use them to select the factors that are most likely to work. The assumption here is
+that factor strategies that worked in the past will continue working into the future17.
+Given the extensive nature of these different tests, we found it easier to amass all the most
+vital performance statistics for each factor into a simple report and then do a manual filter for
+desirable factors.
+An example of a summary sheet of factor performance statistics for Singapore is shown
+below in Table 3.
+Table 3: Summary sheet of factor performance statisUcs for Singapore (1995-2003)
+Group Factor
+AnalystSentiment Consensusrecommendation
+Analyst Sentiment 1 month Consensus change
+Analyst Sentiment 2 month Consensus change
+Avg Rank lC
+Lag 1m Lag 2m
+2.5204 1.530/0
+3630/0 4 09%
+3.06% -1.77o/o
+1.69% 2.18%
+Hit Rate
+Lag 1m Lag 2m
+54.720/0 52.380/0
+51.92% 51.46%
+54.720/o 45.71%
+52430/0 53.330/0
+t-stat
+Lag lm Lag 2m
+1.17 0 73
+1.52 -0.05
+1.54 -0.94
+0.65 0.88
+Active Return
+Top Bottom Top-Bottom
+2.42Vo 2.39Vo 0 03%
+7.5O% -7.O1Vo 14 51o/o
+6.120/o -6.810/o 12 92o/"
+-0.88% 0.29Y. -'t't7o/o
+GroMh
+Growth
+Historic ROE
+Prospective ROE
+1 Month momentum
+2.OO% 1830/0
+0780/o 0 98%
+51.89% 5't.430/o
+52.830/0 56.19%
+2.55% -1.780 4 320/0
+2'13% -0 670/o 2.8O'/.
+082
+048
+159
+090
+o37
+Price Momentum 3 Month momentum
+Price Momentum 6 Month momentum
+4 35'/o
+-3 85%
+-24A%
+-2.58o/o
+-O.42o/o
+50.00%
+44.34o/o
+44.34o/o
+47.170/0
+46.67%
+49.52%
+45.71%
+48.57%
+4.47%
+-5.37%
+-3.99%
+-7 .660/o
+-9.75o/o
+-9 66%
+-0.397o
+3.'l8o/o
+4.38o/o
+5.670/o
+I
+-0.66%
+-0.93
+-0.16
+-0.08
+I
+0.67
+Group Factor
+AnalystSentiment Consensusrecommendation
+Analyst Sentiment 1 month Consensus change
+Analyst Sentiment 2 month Consensus change
+Tracking Error
+Top Bottom
+10.52% 10.77%
+'11'l3o/o '11 12Y.
+10 63% 8 68%
+12.65% 13.79%
+1A',t%
+Information Ratio Monthly Success Rate Avg Tumover
+Top Bottom Top Bottom Top Bottom
+O.23 O.22 52.8Vo 42.5'/" '103o/o 27.7%
+0.67 {.63 61 .5% 44.2Vo 67.20/0 67 60/o
+0.58 -0 78 6230/o 39.6% 48.4% 5'l-4o/o
+Historic ROE
+Prospective ROE
+1 Month momentum
+FY1 Dividend Yeld
+12.75%
+11.28%
+10.59%
+'t4.910/o 15.760/o
+'t5't70h 18.88%
+0.02 47.2% 49.1%
+-0.14
+-0 06 57.5'/"
+50.0%
+48.1%
+47.2%
+20 5o/o
+24 4'/"
+39.9% 41.80k
+31.3% 32.90/o
+-U.U/ 21.Oo/o
+I
+14.8'/'
+'l6.oo/o
+o.23
+0.2'l
+49 1o/o
+43 4%
+50 0%
+Price Momentum 3 Month momentum
+Price Momentum 6 Month momentum
+-0.30
+-0.35
+Highlighted are hctors that fit most of the criteria below:
+. High and significant one and two month lagged rank lCs
+. Well-distinguished active returns and information ratios for top and bottom fractiles
+e Lower turnover for top and bottom fractiles
+. Strong relative pure factor returns
+We could therefore use these factors to build a multi-factor model.
+17 Bearino in mind. of course. the Dotential danqer of data mlnrno.
+Sou rce: Macquarie Qu antitative Research
+22 27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+Building the model
+Combining factors into a Up to now, we have focused on selection factors to go into the final model. In this section we
+multi-factor model explore the process of combining these factors into a multi-factor model
+Two-stage factor models
+lnitially the factors are One innovative approach to model construction is the two-stage model building process Two-
+grouped together stage factor models evolved from the idea that factors within each factor group are typically
+more highly correlated than those that are not within the same factor group lt therefore made
+sense to build factor group sub-models from those successfully screened factors belonging
+to the same factor group. Once the factor group sub-models have been constructed we then
+combine these into the final model.
+Why? This two-stage approach in turn leads to:
+lmproves . Increased model transparency: lt is easier to see what the weights of each factor
+transparency... block within the final model are This in turn allows us to see what general factor groups
+the multi-factor model has the most exposure to. For example, it would be much more
+informative if we knew that the final model was weighted with 20% to the value block,
+40%to the momentum block and 40%to the forecasts revisions block, than given the
+individual factor weights.
+.. and control o Increased model control: lt is easier to qualitatively re-weight factors within factor
+blocks and factor blocks within the final model to take into account other practicalities.
+For example, high turnover factors/factor blocks can be down weighted so as to reduce
+the drag on the Alpha caused through higher transaction costs and market impact. A
+factor or factor block might also be down weighted to reduce factor diversification risk,
+and to make sure certain factors don't dominate the final mode
+In Table 4 below, we show a narrow sample of some typical factors and their factor groups:
+Table 4: Typical factors used in multi-factor models
+Factor group
+Analyst Sentiment
+Analyst Sentiment
+Analyst Sentiment
+Forecast Revisions
+Forecast Revisions
+Forecast Revisions
+Other Factors
+Other Factors
+Price Momentum
+Price Momentum
+Price Momentum
+Price Momentum
+Profitability
+Profitability
+Value
+Value
+Value
+Value
+Value
+Value
+Source: Macouarie Quantitative Research
+Factor name
+Consensus Reommendation
+1 Month Change in Consensus Reommendation
+2 Month Change in Consensus Reommendetion
+1 Month % Change in FY1 EPS
+2 Month % Change in FY1 EPS
+3 Month 7o Change in FY1 EPS
+Relative Trading Intensity (3/12 Month by Value Traded)
+Size (Log Market Capitalisation)
+1 Month Momentum
+3 Month Momentum
+6 Month Momentum
+12 Month Momentum
+Historic ROE
+Prosoective ROE
+ProsDective 12 Months Forward Dividend Yield
+Prospec'tive 12 Months Forward Earnings Yield
+Prosoective FY1 Dividend Yield
+Prospective FY1 Earnings Yield
+Historic Earnings Yield
+Historic Dividend Yield
+27 August 2004 23
+Macquarie Research Equities - Reporl The A-Z of Quant
+Ghart 11: Two-stage model building
+Stage 1
+Stage 2
+Source: Macquarie Quantitative Research
+The explicit steps in this two-stage model building process, as Chart 11 shows, are as
+follows:
+1. The first stage: involves combining all successfully screened candidate factors within
+the same factor group into an optimal mix (ie determining the sub-model factor weights)
+This optimal mix will take into account the correlation between these factors (see the
+next section Putting it all together), ensuring we don't double count factors that are too
+similar.
+Once the weights of the factor group sub-model have been determined the sub-model
+scores need to be calculated They will simply be the weighted average of the
+normalised factor scores that make up the sub-model (the weights being the optimal
+mix)18.
+2 The second stage: involves repeating the above process but at a factor group level. An
+information analysis on each factor group sub-model is often a good idea first, to check
+the success of each factor group sub-model. Any factor group that does not satisfy the
+lC and fractile performance criteria as documented above is excluded (this is not very
+likely as the positive ICs for each factor within a factor group are indirectly additive)
+The final model weights are then found by taking account of the correlation between
+factor group sub-models. Once the weights of the final model have been determined the
+final model scores need to be calculated. They will simply be the weighted average of
+the normalised factor group sub-model scoresle.
+One further point should be made. While the correlation between factors from different factor
+groups is less likely, there will still be some correlation.
+An obvious examole of correlated factors is between the momentum and forecast revisions
+factors Analysts tend to upgrade their earnings estimates as the stock price rises (and
+downgrade their earnings estimates as the stock price drops). On the other hand, stock prices
+can also rise or fall on the back of changes in analyst earnings expectations. This in turn can
+give rise to rather high correlations between factors within these two factor groups. In
+Australia, some of the earnings revision factors have been over 75o/o correlated to three, six
+and 12 month momentum.
+18 To combine factors together we need to make them comparable This is because different factors will have
+different scales and some may have units (eg market cap has a dollar unit, although yields and many earnings
+revisions are unitless) By combining non-normalised scores in a model we run the risk of applying weights that
+areeffectively different to the ones we intended Raw and non-normalised should never be used to build multi-
+factor models So it makes sense to find a way to treat them on the same basis Normalisation achieves this
+because it makes all the data unitless and have roughly identical distributions (with mean 0 and standard
+deviation 1) See Appendix 3 for more details on how we normalise our raw fuctor data
+1e Again, lt is important to ensure all the faclor group sub-models have similar distributions (ie roughly normally
+distributed with mean 0 and standard deviation 1) lf we don't normalise each of the factorgroup sub-model
+scores, their distributions will be rouqhlv mean 0 but not standard deviation 1
+1. Form factor groups
+by optimally combining
+similar factors
+2. Repeat fhe process
+for factor groups to
+create the final model
+Finai Multi-Factor Model
+24 27 August 2004
+tac4uarie Research Equities - Reporl The A-Z of Quant
+In Table 5 we present an example of a final model along with its core statistics (and give the
+factor group suFmodel weights)
+Table 5: Final multi-factor models
+Factorgrcup Factor AW lC t stat (lC)
+Value Prospecdive UBrElS Eamings Veld 3.7o/o 2.56
+Vaiue Prospective FYI UB/E/S Dividend Veld 4.9% 2.61
+Momenlum 3 Month Momentum 8.8% 6.02
+Momentum 6 Month Momentum 9.3% 6.35
+Momentum 12 Month Momentnm 8.7% 5 53
+Momentum 3 Month Sedor Momentum 5.7o/o 4.46
+Sentiment I Monh Revisbn of 1 Year Forward EPS 71% 7 01
+Sentiment 3 Month Revision of 'l Year Fotward EPS 8.2o/o 6.30
+Sentiment 6 Month Revision of 1 YearForward EPS 8.2% 5.73
+other Eamings certainty 6.9% 4.o7
+Other Prospedive |/B/E/S ROE 2.4ofr 2 43
+Total
+Source: Maquarie Quant'tative Reearch
+Factor Factorgroup Actual
+weights weight weight
+40% 20% a%
+600/o 20% 12oA
+15% 40% 6%
+25oh 40o/o 10%
+4oo/o 40% 'l6oh
+20% 40o/o 8%
+30o/o 20% 6oh
+35o/o 20% 7%
+35o/o 2lo/o 7%
+80% 20o/o 16%
+20o/o 20% 4oA
+lOOo/o
+27 August 2004 25
+Macquarie Research Equities - Repoft The A-Z of Quant
+We need to optimally
+combine correlated
+factors
+to avoid double
+counting and. .
+. to avoid creating a
+model that only works
+in-sample
+Soph isticated form ula is
+used fo strip ourfactor
+correlations fhaf uses ..
+average rank ICs
+... and average time
+series rank correl ations
+between each factor
+Putting it all together
+When putting a multi-factor model together, the issue arises as to how to optimally combine
+correlated factors (or correlated factor groups)
+lf we don't take account of correlated factors we run the risk of:
+1. Unknowingly overexposing the portfolio to some factor types at the expense of others
+(ie effectively double counting), and
+2. Creating a sub-optimal in-sample model (see Appendix 4 for a discussion of in sample
+model building and out of sample tests).
+We therefore use a sophisticated formula that effectively strips from each factor's lC the part
+that is correlated with the other factor signals (also known as orthogonalising the factors) In
+particular, it adjusts down the lCs of correlated factors. Highly correlated factors typically will
+get significantly reduced or diluted relative to the other factors in the factor group. The
+resulting correlation-adjusted lC is then used as the basis for the models final factors
+weights.
+To determine the optimal weights of correlated factors we need two things:
+1. The average ranked lCs of each factor/factor group over the in-sample period. This is
+expressed in the form of a vector we label lG. Note that the average lC vector should
+have lCs that reflect the investment horizon desired. lf you wish the model to be
+rebalanced monthly, then monthly lCs should be used. lf you wish the final model to be
+rebalanced yearly, then yearly lCs should be used. We discuss this later in more detail
+2. The average of the time series rank correlations between each factor pair over the in-
+sample period. This is in the form of a matrix we label p.
+An examole of a factor Correlation Matrix is in Table 6:
+Correlation matix Momentum Earnings yield Sentiment
+Momentum 100 0% 55 6% 10 0%
+Earnings yield 55.6% 100 0% -10 0o/o
+Sentiment 10 0% -10 0% 100 lYo
+Source: Macquarie Quantitative Research
+Note that the matrix will actually be symmetric, with the diagonals being the correlation of
+the ranked factors with themselves (ie 100%).
+Once we have the lC vector lC' and correlation matrix p we can calculate what is known as
+the correlation-adjusted lC for each factor. This correlation-adjusted lC is effectively how
+much lC the factor individually contributes to the whole model separately from any other
+factor in the model The correlation-adiusted lCs for a two-factor model are:
+f C1' = (fC1 - pnzlC) t (1 - prr'],
+lc2' = (lc2- p12lci t (1 - p122) el
+where p12 = correlation between ranked factor 1 and ranked factor 2
+Put simply, the higher the correlation the lower the adjusted lCs become On the other hand,
+if p12 is zero, meaning the factors are completely uncorrelated, then the adjusted lCs for each
+factor will simply be the actual lCs.
+For an N factor case, the matrix formula for the correlation-adiusted lCs vector is20:
+lC' = lCr. p-l
+Once the correlation-adjusted lC has been calculated it is straightfonivard to calculate the
+optimal weights of the model. Each factor's weight in the model is simply the proportion of its
+correlation-adjusted lC to the sum of the correlation-adjusted lCs of all the factors in the
+model
+20 Equation (3) also be used to combine a signal with itself lagged in time (also see Chapter 13 of Grinold &
+Kahn (2000) for more details)
+(3)
+Table 6: Factor correlation matrix
+Avg lG
+I 0o/o
+6 Qo/o
+40%
+zo 27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+The weights of each factor for a two-factor model then become:
+wr = lCr'/ (lCl,+ lC2'), 
+(4)
+wz=lCz'/ (lcr' + lC2')
+Using a model with these weights will give the optimal lC over the in-sample period21. There
+is even an approximate estimate of the final combined lC, as found in Grinold and Kahn
+(2000) lt is:
+lCcomriu = ./ lgt. P'. lC (5)
+lCs, final weights and estimate of the finalIn Table 7, we shovrl how the to derive the adjusted
+combined lC for a t*o-factor model.
+/ssues fhaf need to be
+addressed include...
+. negative weights
+... adjusting the weights
+via a qualitative overlay
+... small weights 2
+...large weights
+Source: Macguaie Quantitative Researcfi
+While this methodology is strictly correct in a perfect wodd, there are other requirements and
+issues that can and do pop up when building multi-factor models We will now discuss the
+more typical ones encountered:
+Negative weights: a factor that ends up with a negative adjusted lC and hence negative
+weight will usually be highly correlated with a more successful factor. The question then
+arises as to whether to include the less successful factor in the model. One could argue
+that the resulting combination of the correlated factors optimises the in-sample results
+That is, the combination of both the more successful factor with a positive weight and the
+less successful factor with a negative weight is more optimal than just the more
+successful factor by itself. On the one hand, this souhds suspiciously like data mining and
+would be against financial intuition, due to the negative weight.
+On this basis then, we typically exclude factors with negative weights. This translates to
+excluding any factor with a negative adjusted lC (see Grinold & Kahn, P270). For a two-
+factor model this simply means (resulting from equation 2 above):
+(tcr _ prz tC, > 0, 
+(6)
+(lCz - prz lCr) > 0
+Small final weights: we also tend to exclude factors with final weights of less than 5%, as
+they only marginally contribute to the final Alpha. For example if an individual factor has a
+weight of 5% in the factor group sub-model and the factor group sub-model makes up
+30% of the final model, this factor really has a weight of only '1 .5% in the final model. At
+this weight this factor will have no significant impact. Equity markets will not work like an
+optimal strategy in a perfect world, so there is little point in having small weighted factors
+in the model or finessing the model to exact weights.
+Large final weights: at the other end of the scale we may decide to cap the weight of any
+factor or factor group. Typically we set this to 50%. lf we don't cap the weight of factors or
+factor groups they may dominate the model, which is particularly dangerous if the factor
+starts to mean revert, thereby threatening the stability and success of the live portfolio.
+Capping the factors' weight reduces this problem and increases factor diversification
+We tend to use capping only at the factor group level when combining factors into the final
+model (rather than at a factor level). This is because factors within factor groups tend to
+be reasonably highly correlated with each other; so capping one is unlikely to affect the
+performance of the sub-model.
+A qualitative overlay to reweighting factors: this can be applied to the model weights to
+take account of higher turnover factors or higher turnover factor groups that will reduce the
+" Again, notice that when prz = O, the adjusted lCs are simply the unadjusted lcs The weight of each factor
+within the final model is then simply its lC over the sum of all the factor ICs
+4
+Table 7: Two-factor model building
+Correlation matrix Momentum Earnings yield
+Momentum 100 0% 556%
+Earnings yield 55 6% 10o oo/o
+Avg lG Adj lC Weight in model
+8.0% 6.870 75 0o/o
+6 0% 2.2o/o 25.0o/o
+27 August2004 27
+Macquarie Research Equities - Report The A-Z of Quant
+... using consisfenl
+measurements periods
+Ofher issues that should
+be addressed when
+creating multi-factor
+models
+Alpha (due to higher transaction costs) We do this by giving these factors less weight in
+the overall model. This is an inexact step and is not possible to finesse.
+5. Consistent measurement periods: care must be taken when forming the lC vector and
+the p matrix in terms of ensuring the time period is the same for all correlations calculated.
+This is most important for the lG vector as it most strongly influences the weights in the
+final model
+For example take a two-factor model. One factor might have 10 years of lC performance
+data, where for the first five years the lCs were poor but for the last five years the lCs
+were good. Another factor might only have lC history for the previous five years. In this
+case it might only be appropriate for both factors to use the average lCs in the lC vector
+over the last five years (see Appendix 6 for a discussion on Coverage), because the
+correlations between the two factors will only be available for the last five years.
+Once the weights of the factors within the model have been determined, we then can
+calculate the scores of multi-factor model through time. However, there are a number of data
+related issues that can pop up here:
+1. Missing dominant factor scores: factors or factor groups that are the mainstay of the
+model are typically required to exist in order to assign a stock a multi-factor score. lf no
+dominant factor score exists for a stock it does not receive a multi-factor score. This is a
+common reouirement that we make.
+2. Missing nondominant factor scores: if a stock has data from the dominant factor but
+from not all the other factors, we have two clear choices We can either assume the
+missing facto(s) are uncorrelated and hence irreplaceable. ln this case it would be logical
+to assign the missing factor a zero score. On the other hand we can assume that the other
+non-missing facto(s) are reasonable substitutes for the missing one(s). In the later case
+we would then rescale the multi-factor scores so that the model weight still adds up to
+100%. Reality of course will be somewhere in between22.
+For example, say our momentum group sub-model consists of two factors, a 12 month
+momentum factor with weight 60% and a three month momentum factor with weight 40%.
+lf a stock has no 12 month momentum data we do not calculate a multi-factor score for it
+(as it is the missing dominant factor score) On the other hand, if a stock had no data for
+three month momentum and we had decided to use the rescaling approach, then we
+would scale the final score up to 100% by dividing the 12 month momentum score by the
+weight of the existing 60% of the entire multi-factor signal (ie we would divide the final z
+score by the block weight of all non-missing factors, Iz,w,/ Iq)
+This rescale rule is quite logical when applied on a factor level within a factor group, due
+to the similarity of the factors within the same group (especially if the factors measure
+across similar time horizons) However it is more difficult to justify on a factor group level
+due to the lower level of correlation between factor groups (ie the missing factor group is
+more difflcult to replace)
+3. Factor weight threshold: we may also require a minimum threshold of the combined
+signal be attained before a score be assigned to a stock. For example a multi-factor model
+may include three factors, with weights of 50%, 30% and 20%. lf the minimum
+requirement is that we must have at least 75% of the signal, a stock that has a score for
+the 50% factor and the 30% factor would satisfy the threshold but another stock with data
+for only the 50% and20% would not lt would not receive a multi-factor score
+For stocks with the minimum required threshold but not 100% of the signal we can do
+either of two things: assign the missing part of the signal a zero score (indicating the
+missing factor signal is not replaceable), or we can rescale the multi-factor score by
+dividing by the final weight (in the 50% and 30% example above, this would involve
+dividing the resultant multi-factor score for the stocks by 0.8).
+22 ln fact, a third alternative is to rescale the multi-factor score only so much as the missing factor is jointly
+correlated with the existing fuctors over the in-sample period This is, however, both compllcated, time
+consuming and questionable as to whether this will make any substantive difference to the model, particularly if
+most stocks have data for most of their individual factors
+28 27 August 2004
+Macquarie Research Equities - Repoft The A-Z of Quant
+A good quant model
+should offer ...
+-.- a diverse array of
+factors to protect
+against some factors
+not working.
+... while still offeing
+parsimony to avoid
+over-fitting th e sample
+data
+It's a difficult juggling act
+It is impoftant to
+consider the time
+horizon when
+calculating factor
+weights
+Parsimony and diversity
+The process of screening factors and building the model tends to wheedle out the less
+successful factors. The final stage of the model building process is to examine both the
+parsimony and diversity of factors within the final model Both parsimony and diversity are
+essential in building Quant models as they offer further protection against data mining:
+. Diversity: this requires the model to comprise of a number of qualitatively different
+factors This is to protect the model against the possibility that some of the factors, which
+have worked well in the past, stop working in the future. Intuitively, when one or more
+factors are not working, other factors may compensate for their underperformance and
+generate a smoother returns profile and hence lower returns volatility or tracking error.
+Past analysis has shown that model diversity improves the Alphas predictive power and
+consistency. One measure of diversity within the final model would be the number of
+factor group sub-models from which the final model was built.
+. Parcimony: on the othezfiand we require the model not have too many factors (much
+more than 10 becomes questionable). Too many factors expose us to the risk of over-
+explaining past results and relying on the specific combination of factors for the future,
+which may or may not generalise beyond that period. Parsimony, therefore, may require
+some factors to be dropped from the final model.
+Excluding less successful factors within a factor group can often satisfy parsimony and
+diversity, but sometimes it is not possible to have both. As mentioned before, it is difficult to
+finesse the model building process but some attempt should be made
+Note that if any factors have been added to or excluded from the final model on the basis of
+diversity or parsimony, it is important to recalculate the model weights (using equation (3)) to
+take into account the presence or absence of these factors (ie repeat the process described
+above)
+Time horizon
+The model construction and determination of the final factor weights within a multi-factor
+model as described above depends on the lC performances of individual factors, as well as
+the factor lC correlations.
+But factor performance may differ depending on the time horizon used (as we discovered in
+the section on lC decay profiles, where some factors get priced into the market quicker than
+other factors). Factors like short term earnings revision and short term price momentum tend
+to be very useful in models for short time horizons as they have high short term lCs, while
+value factors and medium term price momentum (6-12 months) tend to get used in models
+over longer time horizon because they have higher long term lCs
+The ouestion then arises as to what lCs do we use?
+The way to deal with this in model construction is to use Rank lCs
+relevant to your time horizon.
+So, for example, if you wish your portfolio to be rebalanced monthly, you should use monthly
+lCs (as we have described so far). lf you wish the final model to be rebalanced semi-annually
+then Rank lCs over six months should be used
+As long as the lCs are over the same time period, application of equation (3) above is
+identical23.
+23 lt is also arguable that instead of using a correlation matrix composed of the correlations between the factor
+sional oairs. the correlation should be between factor lC oairs over the relevant time horizon
+27 August 2004 29
+Macquarie Research Equities - Report The A-Z of Quant
+Sweet spot analysis (separate models for special
+sectors/stock size groupi ngs)
+Different stock In many equity markets, certain sectors act and react very differently to the rest of the market.
+groupings can behave In fact, previous analysis by MRE has found most Quant models perform differently across
+differently within different types of stocks. Here are some examples:
+markets "' 1. Listed property trusts (LPTs) in Australia are a classic example. Stock prices for LPTs
+are heavily driven by mean reversion but not by earnings certaing (as the LPT cash flows
+tend to be very steady).
+2. Infrastructure stocks are different to the rest of the equity market in that they are more
+asset plays than earnings plays, with stable earnings expected to appear sometime in the
+future. Therefore they are valued differently by the market.
+3. We might also want to ca6duct lC analysis and fractiles across different size
+dimensions of the market. This is justifiable on the basis of both differing liquidity and
+differing amounts of reliable public information available to investors in the market.
+... and separate models In each of these cases, it is usually justifiable to create separate models and by extension to
+are advisable for these exclude these sectors from the model of the main equity market. Care needs to be taken,
+stock groups so /ong as however, in two respects:
+there is sufficient
+breadth and it is not . That the breadth of stocks must be sufficiently large (say more than 10 stocks). ln order
+simpty a data mining to be confident that the final model is picking up actual sector price drivers.
+exercise . To avoid simply mining the data
+As long as you are comfortable that both these issues have been addressed, it is usually
+worthwhile exploring this avenuel
+2n 27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+Various in-sample tests
+can be peiormed ...
+... but a critical
+robusfness check is out-
+of-sample testing
+Testing model robustness
+It is important to test the potential success of a Quant model strategy in an appropriate out-of-
+sample period (see Appendix 4 for a discussion of in-sample model building and out-of-
+sample tests). Model stabilig in different time periods is an important test in the selection of
+a successful Quant model.
+Before the out-of-sample tests are conducted, we may want to test the model has been
+correctly constructed (ie within the in-sample period). We could perform the following tests:
+1. In-sample information analysis: in addition to the run of the mill information analysis,
+we c€rn also test the predicted lC versus the actual lC (equation 5 above).
+2. In-sample multi-factor cross-sectional regressions: regressions can be performed
+without risk factors or with risk factors (pure factors). To ascertain model significance we
+require the t-stat from thTime series of model regression coefficients to be above 2.
+This is a critical test of model robustness. To test whether the optimal in-sample model works
+well in the out-of-sample period, we can perform the following tests:
+1. Out-of-sample information analysis: again, this is a run of the mill test.
+2. Out-of-sample multi-factor cross-sectional regressions: again, regressions can either
+be performed without risk factors or with risk factors. An attribution analysis may also be
+conducted to determine what factors performed well and portfolio factor exposures
+through time.
+Chart 12 is an example of the time series of regression coefficient for a multi-factor model
+over both the in-sample period an out-of-sample period:
+Charl 12:. Model rcgression coefficient
+Factor returns to a regression of excess returns against a multifactor Quant model
+Source: Macquaie Quantitative Research
+Note that unless suitable reasons can be found, an optimal in-sample model that performs
+poorly in the out-of-sample period should be rejected.2a
+'o On the other hand, equity markets can evolve and change, which may result in some factors no longer being
+rewarded as they were in the past. A badly chosen out-of-sample period, which only encompasses a fraction of
+the economic cvcle may also result in model performance quite different to the in-sample period
+E Regression Coefficient
+- 
+12 mth Avg
+27 August 2004 3'1
+Macquarie Research Equities - ReporT The A-Z of Quant
+Portfol io con struction is
+about maximising
+returns while
+constraining risk
+exposures
+Macquarie uses an in-
+house optimisation
+application
+Portfolio simulations
+The final step for any Quant model is the portfolio simulation. This involves both:
+. Constructing investible portfolios (ie determining the weights of the portfolio)
+. Performance analysis of the constructed portfolio in an in and out-of-sample period
+(which includes examining turnover, transaction costs and market impact)
+ln this section of the report, we will look at both of these issues, starting first with how
+Macquarie conducts portfolio construction:
+Gonstructi ng investi ble portfol ios
+Portfolio construction methodglogy is a very important part of the whole investment process. lf
+it is not done correctly your fdrecasts will not flow properly through to your final portfolio. A
+construction process that severely distorts your security level forecasts is unlikely to add any
+value or give you unexpected results. Therefore the aim of portfolio construction is to provide
+the maximum possible expected return given the desired level of risk and realistic constraints.
+There are a variety of ways to quantitatively construct portfolios if you have estimates of the
+stock returns or stock Alphas (as a multi-factor model gives) In Appendix 7 we discuss
+various ways in which portfolios can be quantitatively constructed
+At Macquarie we use an in-house developed portfolio optimisation process.
+The goal of optimisation within a funds management context is really straightforuvard: to
+maximise the expected portfolio active return while minimising expected portfolio risk subject
+to appropriate real life constraints. This involves searching around active weights space for
+the optimal portfolio2s. In particular, we change the active weights of the porffolio until we
+have a portfolio with the highest expected active return but the lowest expected tracking error.
+To do this a quadratic programming algorithm is used.
+There are four main inputs for this optimisation process:
+. the stock Alphas (the expected active returns relative to the benchmark)
+o an appropriate risk model
+. an initial portfolio
+. fund constraints (maximum active bets, target tracking error, sector neutrality, etc)
+This last step is very important because the test portfolio goes much further than simply being
+a paper model. A common criticism of Quant models is that the paper performance is typically
+much better than actual performance, where transaction costs, liquidity considerations and
+market impact due to fund size act as performance drags. A simulation that is as close to real
+life as possible (using various risk, liquidity and size constraints) is therefore an important part
+of testing the potential success of the model.
+By using portfolio optimisation as our portfolio construction technique we can easily do the
+following:
+. Measure tracking error against all equity benchmarks
+. Build portfolios that track benchmarks under a variety of constraints
+. Build portfolios that maximlsing return while minimising risk
+We will now discuss the required inputs and elements of optimisation in turn:
+. Converting the multi-factor scores to an Alpha
+. Dealing with stock and portfolio risk
+. Performing portfolio optimisation
+. Portfolio inputs and constraints
+'u Note that we are considering here only active returns and active risk, rather than expected total returns and
+total risk, because we assume the desired portfolio is an actively managed fund (it also avoids having to
+forecast the exoected return and risk of the benchmark)
+32 27 August 2004
+Macquarie Research Equities - Report The A-Z of Quanl
+Normalisation process
+address problems
+caused by extreme
+outliers and a skewed
+distribution
+Formula for generating
+th e m u lti -f a ctor excess
+return forecast
+Converting the modelto an Alpha
+Once the multifactor signal has been calculated through time we need to perform a multiple
+re-normalisation process to it (winsorising at t3). This ensures that the signal is well behaved
+(as discussed in Appendix 2), otherwise very extreme values can have undue influence on
+the final weights of the portfolio (the final portfolio weights in the optimisation process is the
+most sensitive inputs the stock Alphas).
+We can then convert this score into an Alpha using the following formula:
+ALPHA = VOLATILITY x IC x SCORE
+where
+. Volatility is the cross-sectional volatili$ of the residual returns.
+o lG is the strategy information coefficient, the predictive power of the model
+. Multi-factor score are t{e cross-sectional scores for each stock, E q z;
+Therefore we effectively scale the multifiactor score in equation (6), which is roughly normally
+distributed, by the skill level of the forecaster (the lC) and the volatility of the residual returns.
+The lC in equation (6) is calculated by taking the average lC of the strategy over the required
+time period. The strategy is embodied in the multi-factor score, Zwizi,.In Australia, a $pical
+model of the ASX200 might have an lC of around 10% in-sample.
+The volatility in equation (6) is the cross-sectional volatility of residual returns. Residual
+returns are the returns that cannot be explained by our risk model (which decomposes risk
+into size, sector and momentum). At any given time cross-sectional volatili$ is constant but it
+will change over time. Vvhile volatility is straightforward to calculate we typically assign it a
+value of 30% through time, as it won't impact the optimisation process greatly.
+The result of this simplifying assumption is that Volatility x lG simply becomes a scaling
+factor to turn the multi-factor z score into an Alpha. In particular, for an average lC of 10%, it
+is equal to 10% x 30% = 0.03. Therefore a stock with a multi-factor score of 1, indicating a
+prediction of one standard deviation above the market return, would translate into about 3%
+active return over the forecast period (relative to the benchmark). Similarly a multi-factor
+score of -1 would translate to a -3% active return.
+This will result in an Alpha that will be roughly normally distributed with a market weight mean
+of zero and standard deviation of 3%.
+(6)
+27 August 2004 55
+Macquarie Research Equities - Repoft The A-Z of Quant
+Risk model includes the
+stock variances and
+covanances
+Full stock covariance -
+variance matrix ...
+.. or risk factor matrix +
+stock specific matrix
+We prefer the second
+approach
+Dealing with stock and portfolio risk
+Besides the Alphas, the other key input into our portfolio optimisation process is the stock risk
+model. This is then used to predict risk on a portfolio level We express the stock risk model in
+terms of an NxN risk matrix, where N is the number of stocks in your universe. This risk
+model includes both the stock variances (the diagonal elements) as well as the covariances
+or co-movements between stocks (the off-diagonal elements of the matrix).
+By properly combining a risk model with the multifactor return model in an optimisation, our
+portfolio will be exposed to our return factors without being unduly exposed to risk (relative to
+the benchmark) In effect, we maximises active return while minimise tracking error.
+There are two main ways to characterise the risk matrix:
+1. A full covariance - variance matrix. This linear model involves the full history of each
+stock's price returns. Bollf individual stock's variances and covariances between stocks
+need to be calculated.
+2. A structural full covariance - variance matrix. This linear model involves splitting risk in
+two components. The first component is along various common risk dimensions also
+know as risk factors. Risk factors are forces that affect groups of stocks26 Well known
+risk factors are price to book and company sectors2T. The second component is the
+speciflc or idiosyncratic risk of the stock This is the risk not explained by the common
+risk factors.
+At Macquarie, we use a structural risk model (the second one above). There are many
+reasons why we do this:
+o Structural models are a lot less cumbersome to calculate than a full stock covariance-
+variance matrix
+. Structural models tend to be a lot more stable and a lot less subject to estimation errors.
+Structural models are an acknowledgment that stock covariances are driven by common
+sources of risk/returns (factors) across securitles In other words, this approach
+emphasises sourc€s of risk that have a broad impact across stocks in the market. By
+identifying appropriate risk factors we can better characterise the total portfolio risk in the
+future lt therefore reduces the dimensionality of the problem of estimating the risk
+matrifs.
+26 To get a better idea about how risk factors work, consider a portfolio that has a large positive or negative
+exposure to a risk factor (compared to the benchmark average) By definition this exposure is more likely to
+lead to returns that deviate more from the benchmark return, than a portfolio that has a zero (benchmark)
+exposure to the risk factor In other words, if your portfolio has a positive or a negative skew to a risk factor,
+your portfolio will likely have a higher tracking error (see P6, Singapore Risk Modelling)
+" The key difference between a risk factor and a return factor that gets used in a multifactor model is that risk
+factors tend to predict that a stock may be risky, which includes both upside risk and downside risk On the
+other hand a return fuctor tends to predict the direction the risk factor will be risky in (i e either upside or
+downside risk, but not both) Structural risk models are therefore like multifactor return models as they use
+several risk factors in combination See Appendix 9 for a discussion of risk fuctors, return factors and factors in
+general
+" A similar approach, known as principle components analysis (PCA), also reduces the dimensionality of
+estimating the stock variance-covariance matrix by characterising risk in terms of a small number of "risk
+factors" known as principle components lt does this via orthoganalising stock returns of your universe into
+many principle components (stripping out the correlated parts of each risk factor from each other) However,
+typically only the first few factors to come out of PCA are used as they have the greatest risk explanatory
+power. One of the advantages of PCA over structural risk models is that structural risk models will typically
+involve risk fuctors that are often highly collinear, which can cause difficulties with structural risk model
+estimation But the disadvantage is that the components from a PCA will not be intuitive and difficult to
+interpret Hence,wehaveoptedtouseastructural riskmodel Interestingly,PCAtendstobeusedmorein
+bond markets
+34 27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+Look for a isk model
+with overall explan atory
+power > 30%o
+Risk factors should be
+meaningful and stable
+over time
+. Structural risk models are conditional models in that they can take the current risk
+fundamentals (risk factors) of the stocks into account. On the other hand, historical risk
+models (unconditional) give equal weight to the entire history of the stock's covariances.
+. Structural risk models also have the advantage of estimating covariances for stocks that
+have little or no historic data. To do this we only need to estimate the current factor
+exposures of the new stock (using similar business and observable market parameters),
+as well as an estimate of the stock's speciftc vanance.
+. Structural risk models don't result in selection bias, unlike the full covariance-variance
+matrix which requires the relevant history of data to calculate the covariances and
+variances in the matrix.
+. Lastly, structural risk models are able to cope with the case when a company's nature
+changes, unlike a full covariance-variance matrix.
+A well constructed structural risk model may explain up to 30-40% (the adjusted R2; of the
+variation in cross-sectional returns of a universe of stocks, with the balance being attributed to
+stock specific risk.
+Like the return factors that go into the final Alpha model, it is important to select risk factors
+which are meaningful, provide a useful proxy for other risk factors and are stable over time.
+Risk factors need to be intuitive, gpically arising from recognisable investment themes.
+Based on past research (see Balancing Fear and Greed, May 2000), our structural risk
+models for each country take into account market factors/signals that are known risk factors.
+These risk factors best capture the variation in cross-sectional returns. Some examples of
+common risk factors we use are as follows:
+. Size (log of market capitalisation): size has long been recognised as a risk variable
+(see Fama and French, 1992) In particular, large caps, mid caps and small caps often
+act and react differently to each other. For example, this may be due, in part, to the
+greater level of stability large companies have over smaller companies.
+. Sector: sectors provide perhaps the most useful proxy for commonly used risk factors
+Stocks within the same industry face similar risks, similar Beta, similar volatility, similar
+earnings yields (PEs), similar book to price and similar leverage. Thus, well defined
+sector definitions eliminate the need for a host of these factors in a risk model (P8,
+Singapore Risk Modelling).
+Our risk sectors are partly based on GICS sectors and are specifically created to
+achieve the greatest explanatory power of cross sectional returns, while at the same
+time ensuring enough market breadth within each sector to ensure confidence in the
+sector classification The number of sectors varies from country to country. For example
+our Australian risk model has eight sectors, while our Singapore risk model has six and
+our Hong Kong risk model has seven sectors29.
+. Momentum: it is well documented that the momentum of stocks over the 3-12 month
+horizon is auto-correlated (see Jegadeesh & Titman, 1993), which is a typical
+investment horizon of many fund managers. So, besides being a return factor, we can
+also use it as a risk factor (return factors are actually a subset of risk factors, which we
+explain further in Appendix 8). There is also some evidence to suggest that sector
+momentum and individual stock momentum are correlated (see Moskowitz and Grinblatt,
+1999) but we have found the best explanatory power by including both individual sectors
+and momentum as risk factors3o.
+Other examples of popular risk factors are PE, book to price, and the debUequity ratio (to
+model financial risk).
+2e One of the main functions of GICS (global industry classification system) was to help mainly US investors
+knowing what to invest in non-US countries As with most non-Us equity markets, the GICS classification
+system is not necessarily the optimal classification system for domestic investors, but a good starting point
+to BARRA risk factors are quite similar to ours For example they use size, value (eg book-to-price), momentum
+and volatilitv
+27 August 2004 35
+Macquarie Research Equities - Repoft The A-Z of Quant
+To create a structural risk model, we first need to regress all the stock's factor exposures (in
+our case size, the sectors and momentum) against the stock's foruvard returns (in excess of
+the risk-free rate). This is done every month for the entire universe over the desired time
+oeriod3l:
+r"(t) = tx",(t).bs(t) + u"6; Q)
+Where r"(t) = ex@ss log return of stock n (ie relative to the risk free rate). Log
+returns are used, as we assume stock returns are normally distributed
+Xn,i(t) = exposure of stock n to factor k at t (this is 0 or 1 if it is a sector, as
+the footnote below explains, otherwise they are standardised cross-
+sectional scores)
+b(t) = factor return to factor k from t to (t+1)
+u"(t) = stock's specific return from t to (t+1) for stock n This is the
+component not explained by any of the risk factors
+In the OLS regression we weight each observation by the square root of market cap, in order
+to mimic inverse variance. Also, we constrain the regression to go through zero. This is
+because of potential problems with multi-colinearity that lead non-unique regression result,
+and also we want to explain all returns by their risk factors
+This then gives us a time series of factor returns for each risk factor, as well as stock specific
+risks. The factor returns then allow us to generate the unconditional factor covariance-
+variance matrix, F. In particular, they are simply generated from calculating the co-variances
+between the different factor returns. Note that because covariance of Stock A with Stock B is
+the covariance of Stock B and A, F will be a symmetric matrix.
+The time series of stock specific risks also allow us to generate the matrix of specific
+variances, A. In particular, the diagonal (stock) elements of this matrix are simply the
+variances of each stock's specific risk time series, Var (e). The off-diagonal elements, which
+are the covariance's between all the stocks specific risk time series, are assumed to be
+uncorrelated and hence zero. This, therefore, makes A a diagonal matrix.
+And finally, the stock covariance-variance matrix combines these together with the current
+factor exoosure as follows:
+v=xrFx+a (7)
+Where X = matrix of current normalised stock risk factor exposures (NxK)
+F = factor covariance-variance matrix (KxK)
+A = Var (et), the variance of the time series of the risk regression residuals, et,
+where that €r =rt - I z;fi, (f; =factor excess returnS)
+The first part of this equation therefore represents the common risk components due to the
+risk factors, while the second part, A, represents the stock specific risk components Note
+that because A and F are symmetric, V will also be symmetric3'. For a more detailed
+discussion of risk and risk models please see Chapter 3 of Grinold & Khan (2OOO).33
+In the next section we explore how we combine the Alpha model and risk model together to
+construct portfolios.
+31 Four further points about this are: first is that we use dummy variables for stocks within sectors. Second is
+that we also force the monthly regression through zero otherwise we get nonsensical results This is due to
+rank problems in the matrix calculations. Thirdly, if any given sector has no stocks in it for a given month, we
+exclude this sector from the regression for that month Fourthly, we use Log returns and use a weighting of the
+square root of market cap in the weighted least squares regressron
+32 For the Australian benchmark S&P/ASX 2OO, this will be roughly a 2OO by 2OO stock covariance matrix
+tt A bottle of Chamoaone for the first oerson to read this Call Macouarie Quant Team to claim your prize
+JO 27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+Optimisation is all about
+maximising the risk
+adjusted active return
+Performi ng portfolio optimisation
+Wth both the Alphas and a structural risk model we are ready to construct the portfolio
+through time We do this using a mathematical technique called optimisation Optimisation
+allows an active manager to get exposure to quantitative views (as characterised by the
+return factors), while minimising active risk (as characterised by exposure to the common risk
+factors and stock specific risk of the risk model)
+Portfolio optimisation works by changing the weights of the stocks within the portfolio until the
+risk adjusted active return of the portfolio is maximised (subjectto the required constraints, of
+course) This risk adjusted active return is also traditionally known as the utility function but
+also goes under the guise of value add. Mathematically, it is defined as:
+Value Added = Risk Tolerance x Portfolio Alpha - Portfolio Risk (8)
+Or mathematically
+ValueAdded=Aqp-up'
+where op = q' hn, the Portfolio Alpha (active return)
+and v"' = herV hs, the Portfolio Tracking Error (active risk)
+and hA = ha, the active portfolio weights (relative to the benchmark)
+and Ihn = 0, the constraint that the active portfolio weights sum to zero
+(or equivalently the portfolio weights sum to 1).
+\Mat is so neat about equation (8) is that it quantifies the trade off between increasing active
+portfolio return, while minimising the tracking error. lt does this by using the Risk Tolerance
+parameter A, which scales the Portfolio Alpha into a Portfolio Variance3a. This scaling
+therefore specifies the fund manager's required tolerance to active risk relative to the active
+return. Of course different fund managers will have different Risk Tolerances, depending on
+their attitude toward risk, and their fund mandate. For example, a lower risk tolerance will
+reduce the impact of returns in the optimisation, while a higher risk tolerance will have the
+opposite effect3s. The default value we use is 0.1 (a typical value).
+Note that implementation of optimisation can be tricky. The standard spreadsheet
+functionality of Excel cannot efficiently perform optimisations with large covariance matrices
+(for example this would be impossible for the 200 by 200 stock covariance matrix for the
+Australian benchmark S&P/ASX 2OO).36
+34 Most optimisers tend to use the risk aversion parameter instead of a risk tolerance parameter A risk aversion
+parameter measures the aversion to residual risk and transforms the portfolio variance into a loss in portfolio
+Alpha There is little difference between using a risk aversion factor and a risk tolerance parameter in an
+optimisation, except equation 8 above becomes: Value Added = op - 1/A rfp2 That is, you convert a risk
+tolerance parameter into a risk aversion parameter by inverting it (dividing 1 by I)
+t' Note that mnstruction of portblios via the optimisation pro@ss will usually depend much more on the return
+model than the risk model
+36 The traditional approach to modem portfolio theory is the Markowitz-sharpe optimisation with respect total
+return space This is used when managers are concerned about total returns and total risk, rather than by being
+benchmarked to benchmark Here the portfolio active return in equation (8) is replaced with the portfolio total
+return, (or w) the portfolio active risk is replaced with the portfolio total risk, tl,p'= w' V w, and the stock
+(8)
+27 August 2004
+weiqhts add to 1
+37
+Macquarie Research Equities - Repoft The A-Z of Quant
+Instead we use the in house Macquarie Bank Portfolio Optimiser. Using the Macquarie Bank
+Portfolio Optimiser also has the added benefit of allowing transaction costs to be included in
+the utility function for optimisation (ie Value Added = tr qp - qrp2 - Ts). Besides reducing
+turnover, this helps to reduce the impact of errors in the forecast returns and risk model by
+discouraging the size of positions taken in the resultant portfolio.
+In the next section, we discuss some of the inputs and constraints the Macquarie Bank
+Portfolio Optimiser can handle.
+38 27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+Portfolio inputs and constraints
+Constraints and One of the great strengths of our in house optimiser is the ability to perform simulations that
+parameters that reproduce real market conditions and constraints The following parameters and optional
+simulate real market restrictions (constraints) can be input into our optimiser:
+conditions o select a benchmark (official index or customised benchmark)
+. Select an initial portfolio
+o Select fund size
+. Select active bet size (eg maximum 3% overweighVunderweight relative to benchmark)
+o Select a risk model
+o Select transaction costs (eg 50 basis points). This can also be included in part of the
+optimisation equation (ie Value Added = tr op - typ2 - T6)
+r Select and modifu the risk tolerance parameter (eg to target a certain tracking error)
+. Restrict short selling (ie long only)
+. Restrict the maximum amount of liquidity traded in any stock at any rebalance date
+. Restricting the number of stocks in the portfolio (including choosing the best N stocks to
+track an index, including stocks not in the benchmark)
+o Restricting the level of factor in a portfolio (including zero weights or market weights)
+. Restricting the weights of stocks and sector exposures in a portfolio (upper/lower bounds,
+or equality)
+. Restrict oortfolio Beta
+Note, however, that the more constraints (restrictions) that are put on the optimisation
+oroblem. the more distorted the views on the stock's risk and returns will be.
+27 August 2004 39
+Macquarie Research Equities - Report The A-Z of Quant
+Performance metrics
+Performance analysis
+As mentioned above, the Macquarie Bank Portfolio Optimiser produces the following output:
+. The optimal portfolio weights
+o The portfolio's total risk
+. The portfolio's tracking error
+. The portfolio's expected return
+. The trades required to move to the optimal portfolio
+. The transaction costs incurred when moving to the optimal portfolio
+On top of this, it can produce the following statistics and graphs from a portfolio simulation:
+. Portfolio summary statistics (total return, active return, tracking error, information ratio,
+monthly hit rate, CAPM Beta, CAPM Alpha, Alpha T-Stat)
+. Turnover/liquidity analysis (portfolio turnover, average number of stocks in portfolio
+and percentage of trades not completed).
+. Graph of number of stocks and portfolio turnover against time
+. Graph of portfolio against the chosen benchmark
+. Graph of monthly and annual portfolio relative return
+Chart 13 demonstrates these types of statistics:
+Chart 13: Summary statistics
+Before After n
+Costs Costs
+Retum 10 1Vo I 4Y. 6
+Retum 3.20% 2.5O'h
+Eror 1 86% 'l 87%
+ion Ratio 1.72 1.33
+Hit Rate 68Yo 62Vo
+Beta 098 098
+Afpha 31Yo 25o/o
+Tstat 522 425
+a
+^ RAA/\
+,^f N ' " \fAAr4
+"/ -v\fv v vw-
+- 
+Before Costs 
+-After 
+Costs 
+- 
+Benchmark
+ll IIIII
+Tumover {annual average - one my)
+Number of stocks
+'15
+10
+5
+0
+Source: Maceuaie Quantitative Research
+70%
+60%
+50%
+400
+30%
+20%
+1 00h
+00%
+40 27 August 2004
+Macquarie Research Equities - Repoft The A-Z of Quant
+Sensitivity to portfolio constraints
+Besides performance metrics, we c€rn also examine how sensitive the portfolio performance
+is to the various parameters and constraints of the backtest. Typical parameters varied in a
+sensitivig analysis are:
+. Maximum size of the active bets (relative to the benchmark)
+. Size of the Portfolio
+. LiquidiV constraints (the maximum amount of trading volume allowed for any stock at
+each rebalance date, eg restricting change in holdings to 25o/o of average daily volume)
+. Target Tracking enor
+The following table demonstrates an example of sensitivity analysis we can do:
+Table 8: Sensitivity analysis
+Max Active Bet (rel Portfolio Size Liquidity
+benchmark) (x $100 mln) Constraint (%)
+Bet Size Scenan'o's
+1.OOok
+2000/0
+3.00%
+Liguidity Scenario\
+1 00%
+3 00%
+I OOV,
+3.00%
+Pottfol i o s i ze s cena rio's
+'l .QQo/o
+3.00%
+1.00%
+3.00%
+10 25o/o
+10 25%
+10 25./,
+'t 0 soo/o
+10 50%
+10 75./"
+l0 75o/o
+Alpha Tracking Information
+Error Ratio
+3.00% 't 480/0 203
+4.25% 2't8% 1 95
+4.63% 2500/0 185
+3'12% 1 48o/o 2.'l'l
+4 60% 2.63vo 175
+3 '17% 1.47o/o 2.'16
+4.64% 2*o/o 176
+2.600/o 1430k 182
+4.260/o 2 30Vo 'l .85
+2.670/o 1 50% 1.78
+3 75% 2.260/o 1.66
+Hit Ratio Turnover
+69% 470/0
+69% 580/0
+660/o 640/0
+720/0 50%
+73o/o 71o/o
+73o/o 51o/o
+690/6 73o/o
+25'/o
+25%
+25'/o
+250/0
+30
+30
+CU
+50
+68%
+66o/o
+640/o
+66%
+8%
+47%
+33%
+400h
+Source: Maquaie Quantitative Research
+Generally speaking the information ratio drops as
+. the size of the portfolio increase
+. the smaller the active bet
+o the smaller the liquidig constraints
+. the larger the tracking error, the lower the information ratio37.
+tt The frictional costs of market impact and tumover have a detrimental effect on performance as fund size
+becomes larger Managers of small funds have greater flexibility and can more freely trade a variety of
+quantitative strategies, while larger funds are much more limited and tend to focus on lower turnover fuctors
+like value and long term momentum. Past Macquarie research suggests that the ideal number of factors to
+include in your Alpha model decreases with the size of your portfolio (see De Souza, et al, Jun 2002)
+27 August 2004 41
+Macquarie Research Equities - Repori The A-Z of Quant
+Factor aftribution
+\y'Vhen examining ex-post portfolio performance, it is useful to determine the contribution of
+various factors to the actual return. Typically, the factors of interest would include (but are not
+limited to) the factors that have been used to derive the Alpha The procedure employed for
+the attribution involves using regression over each performance period to estimate the
+market3s return associated with each factor. These returns are then multiplied into the
+portfolio exposures to these factors, giving an indication of the contribution made by each
+factor. This allows us to monitor those factors that are currently performing well and those
+that aren't and the proportion of systematic versus non-systematic returns. lt may also identify
+other factors that are currently significant in driving returns. In addition, it gives an indication
+of the extent to which portfolio construction constraints and risk control are eroding the Alpha.
+We can also monitor ex-post tracking error and compare this with the predicted tracking error
+based on the risk model. This provides information on how well the risk model is currently
+performing.
+An example of some results from the attribution analysis is below for an alpha model. Here
+the attribution is against the exposures of components of the alpha model (namely Sentiment,
+Value, Growth and Momentum). The unexplained component in the pie chart is large, but if
+size and sector (i.e risk factors) was also included in the attribution this unexplained would
+drop dramatically:
+Ghart 14: Factor Attribution Analysis
+l$ntmenl
+Summary of Atribulion Resulb
+aValue !Growth I Momentum trUnexplained
+Source: Macquarie Quantitative Research
+38 
+Typically, the benchmark is used as the universe over which the market return is estimated, however, this is
+42 27 August 2004
+Macquarie Research Equities - Repod The A-Z of Quant
+Appendix 1: Addressing data
+mrnrng
+Data mining is a common criticism of quantitative models. Indeed, it is relatively easy to
+search through historical data and find patterns that seem to exist. In this appendix, we
+discuss the various ways we minimise the possibility of mining the data:
+. Meaningful factos: requiring factors to have some theoretical rational based on the
+behaviour biases that drive stock prices. This is the top-level protection against data
+mrnrng.
+o Avoid factor construction pitfalls: as described in Appendix 2, care must be taken in
+constructing factors so that forward looking bias and survivorship bias do not occur.
+Share dilution and financial year adjustments must also be made to historical data where
+necessary.
+. Factor parsimony and diversity: requiring the Alpha model to be both parsimonious (to
+minimising the risk of over explaining the in-sample results), while keeping the model
+diverse (to minimise the risk overdependence on the staple factors in the model).
+. Risk-adjusted tests: making sure the factors we use in the final model still perform after
+the risk factors have been taken into account (eg size, sector and momentum).
+. Out-of-sample tests: testing the in-sample model in an out-of-sample period is another
+top level protection against data mining. This is the acid test as to whether the model is
+likely to succeed in practise.
+. The reality test using real life constraints and conditions in portfolio simulations, such as
+transaction costs, market impact and liquidity constraints. lf the model does not add any
+value after cost then we can't be confident that the model will perform in the future.
+. Sensible results: information ratios above 1, for example, happen only about 10% of the
+time, while those above 2 occur only very rarely. lf a strategy exhibits a strong
+information ratio, there must be an easily justifiable reason, otherwise we should be
+sceptical (Grinold & Kahn, P339).
+lf a model passes all these requirements and tests, we are a lot more comfortable with using
+it in oractice.
+27 August 2004 43
+Macquarie Research Equities - Report The A-Z of Quant
+Appendix 2: Dealing with data
+In this appendix we discuss three important issues in dealing with data:
+1. Data sources: where to get the data from
+2 Building factor databases: exploring the pitfalls of factor database creation
+3 Normalising factor data: how to convert raw data into comparable data
+Data sources
+To help construct meaningful factors various financial data sources can be subscribed to. At
+Macquarie, the following data sources have been used:
+1 The Australian Stock Exchange (for Australian market and financial data)
+2. I/B/E/S (lnternational Broker Estimation Services) for consensus data (Thomson
+Financial)
+3 Worldscope for GAAP accounting data (Thomson Financial)
+4. Datastream for market data (Thomson Financial)
+5 Bloomberg
+6 MSCI
+Typically, the raw data from these sources need to be turned into meaningful factor signals
+(which will require correctly matching each vendors stock codes and dates if the factor is
+composed of data from across data sources). Factor construction is quite an art form and new
+methods are continually being developed as markets evolve.
+Building factor databases
+There are a couple of considerations in the construction of any factor database:
+1. Periodicity and the timeliness of data: typically, the shorter the periodicity the more
+timely the data but the larger and more cumbersome the factor database. However,
+monthly is a typical standard to start off with.
+2. Matching across data sources: it is better not to create factors from across data
+sources, as data vendors may have based their calculations on different core information
+(eg one data vendor may have taken into account a recent share dilution, while another
+may not have). lf you do have to match across data sources, the data will need to be
+matched both by the listed entity (using either local market ticker or an international
+identification ticker like SEDOLs) and by date (if it is a monthly database, then by month).
+Care should be taken here, because if securities aren't matched across data sources you
+could end uo with survivorshio bias
+3 Survivorship bias: this arises when stocks included in the sample data do not provide a
+realistic representation of stocks trading during the sample period. A common cause of
+survivorship bias is the exclusion of delisted securities. lf a stock went bankrupt in the
+past and is not in the database this potentially gives an upward bias to any results
+derived from the database This is particularly problematic for momentum based trading
+strategies. For example, a trading strategy based on buying long term underperforming
+stocks looks artificially attractive if bankrupt stocks are excluded from the analysis.
+Attempts should be made to retrieve as much accurate historical data as possible
+5. Look ahead bias: it is imoortant not to create factors from data that did not exist at the
+time For example, it takes typically 2-4 months after a company's year end for it to
+release the results to the public. To calculate historical factors based on the company's
+accounts for that financial year, based on information that wasn't available during those
+2-4 months, will give upward biased results from factor strategy tests.
+44 27 August 2004
+Macquarie Research Equities - Repoft The A-Z of Quant
+Financial year adjustments: when using analyst forecast data to calculate factors like
+earnings revisions, a forecast year rollover will be required if a company announces its
+results during the revision period. For example, take the FYI six month earnings
+revisions factor, where FY1 is currently 2006. This factor then compares the forecasts for
+EPS in 2006 now with the EPS six months ago. But say the company has just announced
+its results and analysts have just rolled over their FYI estimates to the next year, 2006.
+This means that six months ago the FYI would have been estimates for 2005 Therefore
+to calculate the FY1 six month earnings revisions properly we will need the FY1 EPS
+data now (for 2006), as well as the FY2 EPS data from six months prior (which was 2006
+six months ago). Thus, we ensure we are matching on the same financial year.
+Diluting per share data: when using per share and price data and calculating return
+data it is essential to take into account certain corporate events like rights issues, bonus
+shares issues and share splits. The intention is to make sure investors are able to
+compare like with like before and after the corporate event. For example, if a stock
+undergoes a 1 :1 share split, the investor receives one share for each share they already
+have. However, the DPS would have to be halved historically so that the total dollar
+dividends received by the investor remains the same:
+$Div = No*xDPS'*
+= Npost x DPSpo.t
+where Nposr - 2xNpo
+andDPSpo"t-%DPSp-
+By not taking into account dilutions, you potentially add unwanted noise to your factor
+signals and incorrectly calculate the share's returns.
+Normalising factor data
+lf you intend combining factors into a Quant model, the raw factor signals need to be
+comparable Raw data will have different scales and some may have units (eg market cap
+has a dollar unit, although yields and many earnings revisions are unitless but all have very
+different scales). So lt makes sense to find a way to treat them on the same basis. Two
+common approaches are:
+1 Ranking the factors scores: the resulting ranked distribution will be flat and therefore
+easily comparable. Composite rank factor models are the logical extension of ranked
+factors. Here the ranks of each factor are assigned a weight to combine into the final
+model (if stocks are missing factor data it might be assigned the average rank scores).
+2 Normalise the factor scores: we perform this in two steps. The first step standardises
+the data to a mean 0 and standard deviation '1 distribution Note that this keeps the
+original shape or distribution of the data. Then we winsorise the scores at +3 standard
+deviations (ie any scores greater than 3 or less than -3 are set to 3 and -3 respectively)
+Doing this decreases the severig of the outliers (skewness) in the distribution, thereby
+making the data more normal (although kurtosis/fat tails may increase due to this
+winsorising). lf no stocks were winsorised at t3 then we do not need to do anything more;
+we have our final normalised factor scores. lf we had to winsorise any stock's factor
+scores. however. we then restandardise the scores and re-winsorise. We repeat this until
+we no longer have to winsorise the data. This repeated two stage process ensures that
+any outliers will not skew or dominate any results we may derive lt also makes
+combining factors into the flnal model very simple (ie by weighting the factor scores;3s.
+27 August 2004
+t' Notinq that multi-factor models should never use raw data
+45
+Macquarie Research Equities - Repod The A-Z of Quant
+There are a variety of differences between the two approaches, the main one being that multi-
+factor models assume a greater amount of information can be found in the tails of the factor
+scores than the ranking approach assumes. On the downside, multi-factor models may also
+aceentuate data errors at the extremes. However, tests we have conducted on multi-factor
+scores versus composite rank models show they are typically above 8G-95% correlated.
+Normalised data are also an appropriate form to perform regressions on, build risk models
+withao and perform optimisations on.
+Therefore at Macquarie we typically use the normalising approach.
+There a few variations on standardising raw data. The way we use is a market capitalisation
+weighted standardisation, rather than an equally weighted normalisation:
+{tucton", -_l4ean_facter,"*)}
+StDev (fuctor,"")
+where Mean (factor.*) = the market capitalisation weighted mean of the required universe
+We prefer to use a market cap weighted standardisation because most fund managers
+benchmark against market cap weighted benchmarks. Market cap weighted standardisation
+also has the advantage that it minimises data errors arising from small stocks. Data for larger
+stocks are typically trustworthier than smaller stocks, so by using the market cap weighted
+mean in the standardisation formula any aberration caused by smaller stocks is minimised
+(which would have smaller weight)41.
+Also, the universe of stocks that a standardisation is calculated over should match with
+whatever portfolio benchmark is being used for the model. All stocks not in the universe will
+have no factor score (alternately, we could use the mean and standard deviation from the
+standardisation to standardise stocks outside the universe).
+Note that at Macquarie, we have orientated our factors such that a higher factor score is
+preferable to a lower one (the orientation being determined by both financial intuition and
+historical experience). That is, we expect higher factor scores to result in a better
+performance than a lower factor score. This makes interpretation easy In the event that we
+find the opposite and can't explain why, we tend to exclude the factor from the model (in case
+the factor starts behaving strangely or mean reverting).
+a0 The standardisation process also allows the results of any multi-factor linear regression of excess returns to
+be easily interpreted In particular, the factor coefficients (or factor returns) will be in excess of return units
+Hence, the regression coefficients can be interpreted as what excess return you would receive if you had a one
+standard deviation exoosure to this factor and zero to all other factors
+o' Because we perform a market capitalisation weighted standardisation, the factor exposures of the resultant
+portfolio will effectively be the active portfolio's factor exposures (ie the benchmark by definition has factor
+exposures of zero)
+factorr.rn"o = (1)
+46 27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+Appendix 3: Return factor types
+Factor types
+In this appendix we briefly explore three of the more common return factors types used in
+Quant models There are, however, many other varieties of factors.
+Value factors
+A cheap stock is preferable to an expensive stock, all else being equal. Market prices and
+expectations tend to be more realistic for value stocks than for growth stocks, which have a
+greater tendency to disappoint. \Men growth stocks disappoint, they underperform value
+stocks.
+Value factors can be constructed using prospective data or historical data (or both). Typical
+historic value factors are earnings yield (ie 1/PE) and dividend yield based on the most recent
+company data. Typical prospective value factors are FY1 earnings yields and dividend yield
+using the consensus mean analyst estimates for FYI .
+In terms of performance of value factors, less mature equity markets tend to have more
+earnings volatility (ie analysts and market proponents are more uncertain about the future
+earnings potential of listed companies). In these cases, historical value factors tend to work
+better than prospective value factors. The reason is largely due to lack of confidence in
+analysts' earnings and dividend forecasts, so historical yields are relied upon instead, which
+in turn makes them stock price drivers. A good example is in Asian markets, as well as for
+small cap stocks in the Australian market, where there is less analyst and media coverage
+Value factors are also typically a highly autocorrelated factor. Historical value factors in
+particular change only once a year while prospective value factors change slowly as analysts
+change their forecasts. This results in less turnover for value factors than for high burn factors
+like momentum and sentiment. Hence, value factors are a good counterbalance to high
+turnover strategies in a multi-factor model, as well as potentially reducing the impact of poor
+performance for periods when momentum and sentiment strategies aren't working.
+Price momentum
+Despite academic genuflection, markets are not efficient News takes time to get reflected in
+share prices Turnaround plays take time to gain momentum and market popularitya2, while
+darling stocks typically need a consistent sequence of bad news to become unpopular. But
+when markets finally react to news they tend to overreact. ln fact, recent research indicates
+that there is a whole life cycle to this process (see Lee & Swminathan, Oct 2000).
+The evidence from many developed equity markets is that momentum works differently over
+different horizons. In particular, share prices mean revert over the short term, outperform over
+the medium term, and underperform over the long term Momentum factors are therefore
+typically constructed over the short term horizon (1-2 months), medium term (3, 6 and 12
+months) and long term (2448 months). Momentum factors are common factors within multi-
+factor models.
+o' Fund managers don't want to disclose long term underperformers among their holdings and are therefore
+reluctant to buy, even if there is a credible turnaround story No one wants to admit holding stocks that invoke
+neqative connotations.
+27 August 2004 47
+Macquarie Research Equities - Repoft The A-Z of Quant
+Forecast revisions
+It has long been recognised that analyst earnings revisions can provide a powerful tool for
+forecasting stock returns. Changes in earnings estimates by brokers are a way of measuring
+changing market sentiment and expectations of company earnings. These changes often end
+up getting reflected in the listed stock price (although it has also been shown that analysts are
+typically overconfident with their earnings estimates relative to what companies actually
+report). Earnings revisions are often quite highly correlated with momentum and tend to be a
+higher turnover strategy.
+Typical earnings revision signals (derived from |/B/E/S analyst estimates of EPS) are
+percentage change of earnings revisions for FYI over one, three and six months. Note that
+the percentage earnings revision signal can be problematic when mean EPS is very small, so
+sometimes price normalised earnings revisions are used instead.
+Besides revisions based on EPS, signals can also be constructed from
+o DPS: dividends per share
+. BFS: book value per share
+. CPS: cash flow oer share
+48 27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+Appendix 4: In-sample model
+building and out-of-sample tests
+Whether we use a univariate regression based approach or a univariate information analysis
+approach when constructing an Alpha model, it is useful to divide the time period in two parts:
+1 an in-sample period from which the optimal factors of the period are selected and
+combined into a model;
+2. an out-of-sample period to test the stability and predictability of the in-sample model
+The in-sample period can be before or after the out-of-sample period but typically it is before
+and is longer than the out-of-sample period, so as to capture the significant drivers of a
+market in a variety of economic and financial eras. The resulting model will then cater for
+these different conditions allowing for model diversity and less reliance on factors that may
+dominate in only one time period. For example, a long in-sample period in the Australian
+equity market might be from 1990-2003. This would include the recession lows of 1991-
+1992, exposure to the Asian market crisis in 1998, the last couple of years of downwards
+movement in world equity markets from 2001-2003 and the general bull market from 1996-
+1 999.
+Of course, the prime purpose of the out-of-sample period is to guard against the possibility of
+data mining. lf the out-of-sample results are substantially different to the in-sample results,
+then it is difficult to fend off criticism that the in-sample model has been the result of data
+mrnrng
+The underlying assumption here is that the drivers of the equity market do not
+substantially change from the in-sample period to the out-of-sample period.
+Having said that, however, out-of-sample results will typically be inferior to the optimal model
+generated from the in-sample period This is due to the weights within the factor model having
+been optimised for the best performance during the in-sample period. But the hope is that by
+building a model using the in-sample period we are at least capturing the most significant
+drivers (factors) of stock prices in the equity market, and in the rough proportions according to
+their importance so as to best capture future outperformance
+Having said that, however, there are some problems with in- and out-of-sample periods:
+1. Short out-of-sample period: the in-sample period is designed to capture the general
+market drivers over most economic periods However, if the out-of-sample period only
+encompasses a fraction of the economic cycle, it may result in model performance quite
+different to the model performance in the rest of the economic cycle. In other words, it
+may be the case that the drivers of the out-of-sample period are not well represented by
+the best drivers over the entire in-sample period. A way to get around this might be to
+have an in-sample period the same length as the out-of-sample period, which might imply
+long in- and out-of-sample periods.
+2. Changing and evolving drivers: given the requirement of a long in-sample period, and
+hence a long out-of-sample period, this raises questions about the effect of the market
+evolution and the value of factors that drove the market many years ago. In particular,
+drivers of equity markets change over time and a long in-sample period may not capture
+current factors driving the market. We believe, therefore, that shorter in- and out-of-
+sample periods may be required, so as to capture more medium term and short term
+autocorrelation in factor performance.
+27 August 2004 49
+Macquarie Research Equities - Reporl The A-Z of Quant
+Appendix 5: Factor
+autocorrelation
+This test shows how fast the factor signal changes, hence the term factor autocorrelation. lt is
+also a way to test the turnover of a factor and is calculated similarly to an lC decay profile. But
+instead of comparing the factor signal with the lagged monthly return, we compare the factor
+signal with itself lagged in time. So, while an lC decay profile tells us how fast a signal gets
+priced into the market, factor autocorrelations ask "how fast does the signal change?"
+Examples of factors that are highly autocorrelated are historic value factors like book-to-price
+and dividend yield The book value of a company changes only once a year and the price
+changes monthly for a monthly series. On the other hand, one month momentum (or one
+month mean revision) has very low autocorrelation; hence it is a high turnover strategy
+As stated earlier in this report, while higher factor autocorrelation will increase turnover, it will
+also increase the number of independent bets being made, thereby increasing the breadth of
+a strategy. This in turn increases the risk adjusted performance metric "the information ratio",
+according to the fundamental law of active management:
+tR = tc lBR
+Therefore, in determining the weight of a high turnover factor, we need to balance the impact
+of high turnover with maximising the number of independent bets.
+Chart 15 and Chart 16 illustrate factor autocorrelation for the two factors we explored early in
+this report, namely 12 month momentum and consensus recommendation:
+Chart 15: Twelve month momentum for S&P/ASX200 (Factor autocorrelation)
+tc
+100.0%
+80.0%
+60.0%
+40.lYo
+20.0%
+0 lYo
+-20.0%
+-40.0%
+-60.0%
+-80.0%
+-100 0%
+Although a slow signal, 12 month momentum changes more
+quickly than consensus recommendations does
+Source: Macquarie Quantitative Research
+10 11 12
+50 27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+Ghart 16: Gonsensus Fecommendation for S&P/ASX200 (Factor autocorrelation)
+tc
+100.00/o
+80.0%
+60 0%
+40 0%
+2O lYo
+Q.Oo/o
+-2O.OYo
+4O.OYo
+-60 0%
+-80 0%
+-100 0%
+Consensus recommendations is a signal that changes slowly.
+Source: Ma@uaie Quantitative Research
+27 August 2004 51
+Macquarie Research Equities - Repoft The A-Z of Quant
+Appendix 6: Goverage
+Coverage is important as it allows us to see how much data there is for each factor through
+time relative to the whole universe. The shorter or sparser the history, the less confidence we
+may have in the results we have derived (although this will also show up as less significant
+stats in the lC decay profile and fractile analysis).
+We calculate coverage by measuring how well populated the factor signal is over the period
+relative to all the stocks in the universe that we are considering (eg S&P/ASX 200 in
+Australia). We examine and compare this proportion both by number of stocks and by market
+weight represented (the latter will typically be higher than the former, as larger stocks tend to
+have more accessible information than smaller stocks).
+Charl 17 and Chart 18 illustrate coverage for the two factors we explored early in this report,
+namely 12 month momentum and consensus recommendation:
+Chart 17: Twelve month momentum for S&P/ASX200 (Coverage)
+o/o of All Ords
+-- % Coverage
+-% 
+MKCap Coverage
+31/01/1995 3110111997 31/01/1999 31t01t2001 31t91t2003
+Twelve month momentum has reasonably high coverage through time, both by percentage of
+market cap and by number. This gives confidence in the results we have calculated.
+Sou rce: M acfl uaie Quantitative Research
+1Oo/o
+Oo/o
+52 27 August 2004
+Macquarie Research Equities - Repoft The A-Z of Quant
+Chart l8: Gonsensus recommendation for S&P/ASX200 (Coverage)
+o/o of All Ords
+lOOo/o
+90o/o
+SOYo
+70%
+600h
+50o/o
+4OYo
+3Oo/o
+2Oo/o
+1Oo/o
+Oo/o
+31/01/1995 31t0111997 31/01/1999 3110112001 3110112003
+Because analysts typically only cover the mid to large cap stocks, coverage for
+this factor is not as high as for 12 month momentum.
+Source: Maquarie Quantitative Researvll
+27 August 2004 53
+Macquarie Research Equities - Repori The A-Z of Quant
+Appendix 7: Quantitative
+techniq ues for constructi ng
+investible portfolios
+Portfolio construction methodology is a very important part of the whole investment process lf
+it is not done correctly your forecasts will not flow properly through to your final portfolio A
+construction process that severely distorts your security level forecasts is unlikely to add any
+value or give you unexpected results The aim of portfolio construction should be to provide
+the maximum possible expected return given the desired level of risk and realistic constraints.
+We discuss below a few examples for long only portfolios (we present them in increasing
+order of sophistication) :
+. Screens: these are a very popular method. They are essentially a simplified multi-factor
+Quant model in disguise, as they involve screening a universe of stocks for various
+desirable characteristics These characteristics, however, use raw data, not
+standardised data like multi-factor scores do.
+For example, a screen may involve selecting all those stocks whose three monthly
+outperformance is greater than 10% and dividend yield is greater than 4% (this is
+essentially a simplified two-factor Quant model). Typical attributes used to screen stocks
+are a combination of value factors and momentum/growth factors. By being exposed to
+stocks which have both attributes you likely reduce the volatility of your earnings but
+hopefully capture most of the outperformance Of course, attributes should be
+quantitatively tested before being used as screens One might then either cap-weight or
+equal weight the final list of stocks to form the portfolio.
+There are some downfalls with screens. First, they will ignore the relative power of each
+factor/attribute, potentially under utilising the relative information embodied within each
+factor. They also tend to result in riskier portfolios with higher turnover. Lastly, equally
+weighted portfolios based on screens may run into problems with liquidity and market
+impact if the top stocks are skewed to small cap stocks (which is often the case)
+. Stratification: this is basically screening along certain risk or return dimensions. We
+give two examples, both using two different types of dimensions:
+1 . Strata by risk categories only: one could split the universe of stocks by the two
+commonly used risk dimensions, size and sector Sector could be split, say, by the
+10 GICS Level 1 sectors, while size could be split into three: large caps, mid caps
+and small caps (relevant to the country/exchange). This would result in 30 portfolios
+along sector and size dimensions. Stocks could then be placed within each
+category (or strata portfolio) and ranked by their Alpha Each strata portfolio could
+then be weighted so that the stocks portfolio weight matches the benchmark weight
+in that category (and perhaps taking liquidity into account). The resultant portfolio is
+therefore designed to outperform the benchmark but has some risk implicitly in-
+built.
+2 Strata by risk and return categories; one could split the universe of stocks by
+both their Alpha (return category) and by a risk category. lf the universe of stocks
+was large enough the Alphas could be split into five equally numbered groups,
+while the risk categories could be broken into five risk categories (eg not risky, low
+risk, average risk, high risk, extremely risk). The combining of the Alphas five
+categories and the five risk categories would results in 25 portfolio Wthin each
+portfolio one could then assign a prespecified weight relative to the benchmark (eg
+the low risk high Alpha category might be given a 10% overweight, while a high risk
+low Alpha category might be given a -10 underweight).
+Both the above strata methods will result in far better risk control than screens but there can
+still be unintended risks the manaoer takes on
+54 27 August 2004
+Macquarie Research Equities - Reporl The A-Z of Quant
+. Heuristic model (linear programming): this is a level of sophistication above
+stratification. Here, risk can be mapped along as many dimensions as required (eg size,
+sector, volatility, Beta). The linear program then assigns stock weights relative to the
+benchmark by taking into account their Alphas and these risk dimensions. You can also
+program in "explicit transaction costs, a limit on turnover and upper and lower position
+limits on each stock' (P396, Grinold & Kahn, 2000).
+. Optimisation (quadratic programming): the goal of optimisation is really
+straightforward: to maximise expected portfolio return while minimising portfolio risk
+subject to appropriate real life constraints (which is precisely the goal of active funds
+management). lmplementation, however, can be tricky The inputs for the optimisation
+process are the expected returns, a risk model, the initial portfolio and the fund
+constraints (maximum active bets, target tracking error, sector neutrality, etc).
+Stock weights within the portfolio are then altered using a quadratic programming algorithm
+until the expected portfolio return is maximised and the portfolio risk is minimised. From this, it
+might seem that optimisation requires a great deal of inputs. This may mean a lot more input
+noise and potentially sub-optimal portfolios. But as long as care is adequately taken with the
+inputs, this problem is surmountable.
+Comparing the heuristic approach against optimisation, the portfolio weights will obviously
+differ but the more constraints put on either, the more the final portfolio weights of each will
+tend to converge. This is because the number of unique solutions diminishes with the number
+of constraints put on the fund (maximum stocks bets, maximum factor exposures and liquidity
+constraints).
+27 August 2004 55
+Macquarie Research Equities - Reporf The A-Z of Quant
+Appendix 8: Risk factors and
+return factors
+As discussed at the beginning of this report, factors are stock price signals. Factors embody
+various forms of information about a publicly listed company. They could be characteristics of
+the company, the company's share price performance or vital statistics of an analyst's
+company model. As new information arrives and becomes embodied in these factor signals,
+there may be an associated change in a listed company's future share price.
+Factors therefore can be used to predict future stock price returns or future stock price
+volatility. We call the former return factors and the latter risk factors. We will be discussing
+risk factors first.
+An active positive or negative exposure to a risk factor will mean your portfolio performance
+will more likely differ from the benchmark portfolio than a portfolio of stocks with the
+benchmark exposure to this factor. In this context, exposure to the factor could mean being
+more exposed than the benchmark is or being less exposed than the benchmark is.
+For example, take one portfolio composed of high dividend yielding stocks (which has a
+positive factor exposure) and another portfolio composed of non-dividend yielding stocks
+(which has a negative factor exposure). lf dividend yield was a risk factor (ie its performance
+was associated with variance from the benchmark), then you would expect both the high
+dividend yielding portfolio as well as the low dividend yielding portfolio to have a lot greater
+tracking error than the benchmark portfolio. For an average dividend yielding portfolio, on the
+other hand, one would expected much less variance from benchmark performance, holding
+constant all other risk factors.
+An easy way to illustrate this is by dividing stocks into fractiles and rebalancing them each
+month, as described earlier. From the resulting time series of fractile returns, we can then
+measure each fractile's tracking errors (ie the active risk relative to the benchmark). To
+illustrate this, we have done this for a variety of factors:
+Chart 19: Tracking error across the quintile for S&P/ASX200
+18.0%
+16.0%
+14 0%
+12.OYo
+10 0%
+------ 12 Month Momentum
+---*- 1 Month Price Acceleration
+-EPS 
+Growth
+Quintile 1 Quintile 2 Quintile 3 Quintile 4 Quintile 5
+80%
+60%
+40%
+20%
+oo%
+56
+Source: Macquarie Quantitative Research
+27 August 2004
+Macquarie Research Equities - Repoft The A-Z of Quant
+Factors that you can be confident will affect share prices (risk factors) are those that have the
+greatest quintile smile. That is, if you have an active exposure within your portfolio to those
+factors that have the greatest smiles, your portfolio is likely to deviate the most from your
+benchmark. Of course, the factors we have selected here are factors that we have used at
+times in various models, so their smiles are fairly obvious (especially EPS growth).
+Then there are return factors. Return factors can often be risk factors where the risk of
+deviation from the benchmark performance for a high positive factor exposure is to the
+upside, while the risk of deviation from the benchmark for a high negative factor exposure is
+to the downside.
+In building multi-factor models, we seek to identify return factors. Essentially, we want to build
+multi-factor models using factors that give us a better indication of which stocks are likely to
+go up and which stocks are likely to go down. lf we use a factor that has high risk attached
+but doesn't tell us which way this risk is biased (ie up or down), we reduce the probability that
+the multi-factor model will outperform the benchmark but increase the portfolio risk
+(essentially we add noise). In other words, we like to see skew to the upside for positive
+exposures and skew to the downside for negative exposures.
+To see an example of skew and non-skewed risk factors, we chart the active returns across
+the quintiles of the factors we examined before:
+Chart 20: Active retum across quintiles
+1 5.00%
+10 00%
+5.00%
+0 00%
+-5 QQo/o
+-10 00%
+-1 5 00%
+-20.00%
+-25 QOYo
+Sou rce: Macqu arie Qu antitative Research
+Take EPS growth above. lt is an example of a factor we don't want to have in our model. First
+both a high, negative exposure (Quintile 5) and a high, positive exposure (Quintile 1) have a
+high tracking error, as we have established in the prior chart. In itself, this is not bad but in the
+chart above the shape of the graph doesn't show any skew. In fact it is roughly concave,
+meaning that both a high, negative portfolio factor exposure and a high, positive portfolio
+factor exposure would result in underperformance relative to the benchmark. This factor
+would be classified as a risk factor only.
+On the other hand, take 12 month momentum. lt has a strong slope downward from Quintile 1
+to Quintile 5. This strong downwards slope shows that for a portfolio with high, positive
+exposure to momentum (ie those stocks that have performed well over the last 12 month),
+there is greater chance of upside relative to the benchmark. Conversely for portfolios with
+high, negative exposure to momentum (ie those stocks that have underperformed over the
+last 12 months) there is a greater chance of downside relative to the benchmark. This makes
+12 month momentum a perfect example of a return factor.
+27 August 2004 57
+Macquarie Research Equities - Repoft The A-Z of Quant
+So effectively, the tracking error chart tells us which factors are associated with strong price
+movements (by seeing how great the fractile smile is) and the active return chart tells us
+which are potential return factors (ie skewed risk factors).
+Using the active return chart allows us an insight into the type of risk of each factor (as
+measured by the tracking error). lf total risk is roughly equally distributed between upside risk
+and downside risk across each fractile, then the active return chart above will show random or
+close to zero returns across the ftactiles. In this case the risk factor cannot be used as a
+return factor. lf total risk is systematically unevenly distributed across the fractiles, then we
+will see a slope for active return across the fractiles. In other words, net upside risk, as
+measured by the difference between upside risk and downside risk, changes systematically
+across the fractiles.
+In summary, then:
+r A risk factor is a factor where a large positive or negative exposure to the factor has
+historically been associated with both upside risk and downside risk.
+. A return factor is a factor where a positive exposure to the factor has histodcally been
+associated with upside risk only, rather than both upside risk and downside risk (and
+conversely a negative exposure to the factor has historically been associated with
+downside risk only).
+58 27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+Appendix 9: Macquarie's
+information analysis and portfolio
+simulations
+Information analysis
+At Macquarie, we are continually developing systems to better assist us in developing
+sophisticated models of the market. The latest application we have developed is Info
+Analysis. With short turnaround, we can test any factor on any dataset or data subset of the
+market over the last 1f15 years.
+We offer this across the following Asia Pacific markets:
+Developed markets: Emerging markets:
+. Australia o China
+o Hong Kong . Malaysia
+. Japan o Indonesia
+o New Zealand . India
+. Singapore . Philippines
+. South Korea
+. Taiwan
+. Thailand
+Info Analysis consists of the following types of analysis:
+1) Univariate correlation tests:
+. lC monthly tests (including rolling 12 month average and t-stats)
+. lC decays
+. Factorautocorrelations
+o Fractiles (1-20)
+. Coverage
+2) Factor correlation matrices
+In addition, we can also build you multi-factor models and run through these univariate
+correlation tests.
+Furthermore, we can conduct pure factor return analysis where return factors are purified of
+their correlation with the required risk factors (at Macquarie we typically use size, sector and
+momentum as our risk factors).
+27 August2004 59
+Macquarie Research Equities - Report The A-Z of Quant
+Figure 1: The Macquarie Information Analysis Tool
+t" Asia FW a MSC lAsia FW . Autalian FW
+Analyst Sentiment
+: Otr 1 tu1onth Rerrommendatjon Revis
+: trE 2 f,r10nth Rec0mmendati0n Revis
+, trE 3 [4onth Recommendation Revis
+I trE E h'lonth Recommendation Revis
+trE Equal Weightecl Consensus Rec
+flf, Composite
+EI Debt Protection
+fif, Earnings Cenainty
+E
+save cort$rztim 
+I
+Load ftrf q
+O- *O", 
+I
+t.Gr.'s.--." tr
+T.rtil.5.--..r tr
+rr...il. Br..t".i.u E
+t.:t.r Grr..rt. (Hrrrf lrl
+ltu (Hrrtllrl
+lC Or<rr PrrfiL
+f .ct.r ArtrGrrr.l.airr
+tr..rilE (irGlrar Trrrrt.rJ
+t.crrr lG E.trit
+JJ
+E
+E
+E
+E
+!
+tr
+| : g@ Composite Earnings Cefiaint/ (5
+i : [@ Composite Earnings Certainty (5
+| : g@ Composite: 50% FY1 and 50% F
+i : trE FY1 : NextYear Forecast Normali
+I I EE FY2: Second Year F0recast Norrr
+E EI Financial Data
+E fif, Forecast Revisions
+E Ell Growth
+E EE Indexweiqht
+E flfl other Factors
+H g[! rrice Momentum
+E fift Profiiability
+E gf, vatue
+tcD,.{rPr!til4M.xio{hL{r
+MirinoNr Strcbrar Frrctil*
+Minihkfl! StE.k
+Gororol ExlroSdL Critoric
+E{wll/HktW,iqIrad
+PqtSOtirdoxcrJolere-r
+Fill tf, Li^t.,xl.rtt.,*aa.n.l fila
+o..r.... i lroi{bd(parrtq
+,^ n E ro*bodr
+r sDg! tbfiboa{ trail.td!5
+IEI ate c.ait
+t0
+tt
++
+t6 l
+17 l
+f
+t+
+?t
+22l
+24 I
+View Insert Formdt Toos qdta Active Link Window QadUtilities llelp lalculations Iless
+2g
+e3
+30
+Source: Macouarie Quantitative Research
+3)
+{2
+{0
+4t
+Portfolio simulations
+With the use of the Macquarie Bank Portfolio Optimiser we can simulate real portfolios, with
+liquidity and risk constraints that give the following statistics and graphs:
+. Portfolio summary statistics (total return, active return, tracking error, information ratio,
+monthly hit rate, CAPM Beta, CAPM Alpha, Alpha tstat)
+. Turnover/liquidity analysis (portfolio turnover, average number of stocks in portfolio
+and percentage of trades not completed)
+. Graph of number of stocks and portfolio turnover against time
+. Graph of portfolio against the chosen benchmark
+. Graph of monthly and annual portfolio relative return
+OU 27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+References
+Bird, N., "singapore Risk Modelling", Macquaie Research Equities (Aug 2002)
+Fama, E. and French, K., "The Cross-Section of Expected Stock Returns", The Joumal of
+Finance, vol 47, no.2, Jun 1992, pp427465
+Farrell, J., "Portfolio Management: Theory and Applications" (1995), McGraw-Hill
+Grinold, R. and Kahn, R., "Active Portfolio Management', 2nd edition (2OOO), McGraw-Hill
+Gujarati, D., "Basic Econometrics", 4h edition (2003), McGraw-Hill
+Haugen, R. and Baker, N , "Commonality in the determinants of expected stock returns", Ihe
+Journal of Financial Economics, vol 41, 1996, pp407439
+Jegadeesh, N. and Titman, S., "Return to Buying \Mnners and Selling Loser: lmplications for
+Stock Market Efficiency', The Joumal of Finance, vol 48, March 1993, pp. 65-91
+Lee, C and Swaminathan, B., "The effect of trading volumes and price momentum", The
+Journal of Finance, vol 55 Oct 2000
+Alexander, C., "Market Models: A guide to Financial Data Analysis", (2001), Wley
+Platt, G., "Balancing Fear & Greed" , Macquarie Research Equities (May 2000)
+Platt, G., "Stress Testing Quantitative Portfolios", Macquarie Research Equities (July 2000)
+de Souza, R., Platt, G. & Bird, N. "Quant weighting for your size", Macquaie Research
+Equities (June 2002)
+27 August 2004 61
+Macquarie Research Equities - Report The A-Z of Quant
+Notes
+62 27 August 2004
+Macquarie Research Equities - Report The A-Z of Quant
+lmportant disclosures:
+Recommendation definitions
+MRE Australia/New Zealand
+Outoerbrm - return >5% in excess of
+benchmark retum (>2.5% in excess for listed
+property trusts)
+Neutral - retum within 5% of benchmark
+return (within 2 5% for listed property trusts)
+Undemerform - return >5% below benchmark
+retum (>2.5% belo,v for listed property trusts)
+MRE Asia
+Outperform - return >10% relative to US cash
+return
+Neutral - retum within 10% of US cash retum
+UnderDerficrm - retum <10% relative to US
+cash retum
+Long term - 12 months to 2 years
+Short term - 3 to 12 months
+Volatility index defi nition"
+This is calculated from the volatility of historic
+price movements.
+Very high-highest risk - Stock should be
+expected to move up or down 60-100% in a
+year - investors should be aware this stock is
+highly speculative.
+High - stock should be expected to move up
+or down at least 40-60% in a year - investors
+should be aware this stock could be
+soeculative.
+Medium - stock should be exoected to move
+up or down at least 30-40% in a year.
+Low-medium - stock should be expected to
+move up or down at least 2$30% in a year.
+Low - stock should be expected to move up
+or down at least 1$25% in a year.
+* Applicable to Australian/Nz stocks only
+MRE adjusted profit definition
+The MRE adjusted profit number is pre-
+goodwill amortisation and pre-individually
+significant items, that is:
+Adjusted profit = net profit - individually
+significant items + tax on individually
+significant items - preference dividends -
+minority interests + goodwill amortisation
+Analyst Certification: The views expressed in this research accurately reflect the personal views of the analyst(s) about the subject securities or
+issuers and no part of the compensation of the analyst(s) was, is, or will be directly or indirectly related to the inclusion of specific recommendations or
+views in this research. The analyst principally responsible for the preparation of this research receives compensation based on Macquarie Group's
+overall revenues, including investment banking revenues
+Disclaimers: Macquarie Securities (Australia) Ltd; Macquarie Europe Ltd; Macquarie Securities (USA) Inc; Macquarie Securities Ltd; Macquarie
+Securities (Singapore) Pte Ltd; and Macquarie Equities New Zealand Ltd are not authorised deposit-taking institutions for the purposes of the Banking
+Act 1959 (Commonwealth of Australia), and their obligations do not represent deposits or other liabilities of Macquarie Bank Ltd ABN 46 008 583 542
+Macquarie Bank Limited provides a guarantee to the Monetary Authority of Singapore in respect of Macquarie Securities (Singapore) Pte Ltd for up to
+SGD25mundertheSecuritiesandFuturesAct200l MacquarieBankLtddoesnototherwiseguaranteeorprovideassuranceinrespectofthe
+obligations of any of the above mentioned entities This research has been prepared for the general use of the wholesale clients of Macquarie Bank Ltd
+and its wholly-owned subsidiaries (the "Macquarie Group') and must not be copied, either in whole or in part, or distributed to any other person lf yo-
+are not the intended recipient you must not use or disclose the information in this research in any way Nothing in this research shall be construed as a
+solicitation to buy or sell any security or product, or to engage in or refrain from engaging in any transaction In preparing this research, we did not take
+into account the investment objectives, financial situation and particular needs of the reader Before making an investment decision on the basis of this
+research, the reader needs to consider, with or without the assistance of an adviser, whether the advice is appropriate in light of their particular
+investmentneeds,objectivesandfinancial circumstances Therearerisksinvolvedinsecuritiestrading Thepriceofsecuritiescananddoesfluctuate,
+andanindividual securitymayevenbecomevalueless International investorsareremindedoftheadditional risksinherentininternational investments,
+such as currency fluctuations and international stock market or economic mnditions, which may adversely affect the value of the investment This
+research is based on information obtained from sources believed to be reliable but we do not make any representation or warranty that it is accurate,
+complete or up to date We accept no obligation to correct or update the information or opinions in it Opinions expressed are subject to change without
+notice No member of the Macquarie Group accepts any liability whatsoever for any direct, indirect, consequential or other loss arising from any use of
+this research and/or further communication in relation to this research This research has been issued and distributed by Macquarie Securities
+(Australia) Ltd (AFSL Licence No. 238947\ in Australia, a participating organisation of the Australian Stock Exchange; Macquarie Equities New Zealand
+Ltd in New Zealand, a licensed sharebroker and member of the New Zealand Stock Exchange; Macquarie Europe Ltd in the United Kingdom, which is
+authorisedandregulatedbytheFinancial ServicesAuthority(No 193905); MacquarieSecuritiesLtdinHongKong,whichislicensedandregulatedby
+the Securities and Futures Commission and Macquarie Securities (Singapore) Pte Ltd (Company Registration Number: 198702912C) in Singapore, a
+Capital Markets Services licence holder under the Securities and Futures Act to deal in securities and provide custodial services in Singapore Clients
+should contact analysts at, and execute transactions through, a Macquarie Group entity in their home jurisdiction unless governing law permits
+otherwise This research may be distributed in the United States only to major institutional investors Macquarie Securities (USA) Inc., which is a
+member of the NASD, accepts responsibility for the content of each research report prepared by one of its non-US affiliates when the research report is
+distributed in the United States by Macquarie Securities (USA) Inc Any US person receiving this research who wishes to effect transactions in any
+securities discussed in this research should contact Macquarie Securities (USA) Inc and not any other Macquarie Group entity that may have prepared
+this research. Disclosures with respect to the issuers, if any, mentioned in this research are available at www macquarie com au/research/disclosures
+@ Macouarie Grouo
+Auckland
+Tel: (649) 377 6433
+Bangkok
+Tel: (662)2632888
+Hong Kong
+Tel: (852) 2823 3588
+Jakarta
+Tel: (6221)515 1818
+Kuala Lumpur
+Tel. (60 3) 2166 8803
+London
+rel: (44 20) 7065 2000
+Manila
+Tel: (63 2) 840 8885
+Melbourne
+Tel: (613) 9635 8139
+Munich
+Tel: (48 89) 290530
+New York
+Tel: (1 212) 548 6500
+Perth
+Tel: (618) 92240888
+Seoul
+Tel: (82 2)37058788
+Shanghai
+Tel: (86 21) 6841 3355
+Singapore
+Tel: (65) 6539 7700
+Sydney
+Tel: (612) 82329555
+Taipei
+Tel: (8862)27347500
+Tokyo
+Tel: (81 3) 5210 1400
+Wellington
+Tel: (644) 498 2800
+Available to clients on the world wide web at www.macquarie.com/research and through Thomson Financial, Reuters and Bloomberg
+27 August 2004
+Feedback
+David Rickards
+Head of Equities Research
+(852) 2913 8834
+John O'Connell
+Head of Equities Research, Australia
+(6121 82327544
+Adrian Faure
+Head of Equities Research, Asia
+(852) 2846 8559
+Consumer Staples
+Food & Beverages
+Callum Bramah
+Greg Dring
+Andrew Kova6
+Consumer Discretionary
+Autocomponents
+Greg Dring
+Tourism & Leisure
+Michael Petschler
+Steve Wheen
+Media
+Stephen Freundlich (New Zealand)
+David Gibson (New York)
+Andrew Levy
+Michael Petschler
+Alex Pollak
+Retailing
+Warren Doak (New Zealand)
+Andrew Kova6
+Ron Sargeant
+Michael Young
+Energy
+Andrew Blakely
+Jodie Phillips
+Financials
+(612) 8232 8531
+(612) 8232 9692
+Transportation - Airlines
+Sam Catalano
+Paul Huxford
+lan lvlyles
+Transportation - Infrastructure
+Sam Catalano (612) 8232 6377
+Waren Doak (New Zealand) (649) 363 1416
+lan NIyles (612) 8232 4157
+Transportation - Marine, Road I Rail
+Sam Catalano (612) 8232 6377
+Waren Doak (New Zealand) (649) 363 1416
+Alex Nlilton
+tai.\ a.a. a2ja Adam Simpson
+i;;t\;r;;;;;; Pau'staines
+iatz\ ezsz ctst Andrew wackett
+Industrials (cont) Emerging Leaders
+(6121 8232 4572
+(612]'8232 4r'.39
+(6121 8232 7781
+(6181 9224 0867(612) 8232 7647
+(612) 8232 3104
+(612) 8232 4246 Quantitative
+Nick Bird (Asia ex Japan)
+Riccardo Briganti
+Raelene De Souza
+Martin Emery
+Richard Lawson
+George Platt (Head)
+(612\ 8232 3142
+1612) 8232 4089
+(612) 8232 8388
+1612) 8232 3147
+(612) 8232 4391
+(612) 8232 6539
+(612) 8232 3104
+(612]' 8232 4OO5
+1612\ 8232 4130
+(649) 363 1418
+(1 212) 548 6553
+(612) 8232 5165
+(612) 8232 4OO5
+1612) 8232 3172
+(649) 363 1416
+(612) 8232 4246
+(612) 8232 6306
+(612) 8232 6834
+Paul Huxford
+lnformation Technology
+(612) 8232 3437
+(612) 8232 4572 Sandra Kemp
+Data Services (Australia & New Zealand)
+Sheridan Duffy (612) 82329786
+(612) 82327628Alex Milton
+Materials Economics and Strategy
+John Purtell
+Andrew S@tt
+Chemicals/Containers, Packaging/Paper &
+Forest Products. Construction Materials
+Mark Cotton 1612\ 8232 7782
+Stephen Hudson (New Zealand) (649) 363 1414
+(612) 8232 8633
+(612) 8232 3114
+Liz Dinh (Strategy)
+Richard Gibbs (Head of E@nomics)
+Roland Randall (NZ Economi6)
+Brian Redican (Aus E@nomi6)
+Rory Robertson (Strategy)
+Tim Rocks (Equities Strategy)
+Mark Tiemey (lnt'l Economi6)
+Economic & Market Statistics
+Daniel Been
+Tim Bowring
+Simone Larkins
+Sales
+(612) 8232 8423
+(612) 8232 3935
+(612) 8232 6934
+(612) 82327016
+1612) 8232 8569
+(612) 82327562
+(612) 8232 3121
+\612l, 8232 8317
+(612) 8232 3649
+(612) 8232 3976
+Global Metals & Mining
+Wktor Bielski (London) (44 20) 7065 2140
+Lee Bowers
+Brendan Harris
+Ben Lyons
+Steven l\4ichael
+John Santul
+Sophie Spartalis
+Real Estate
+(618) 9224 0701
+(612) 8232 3575
+(612) 8232 4931
+(61 8) 9224 0833
+(61 8) 9224 0863
+(612) 8232 5159Banks
+Wlliam Ammentorp
+Andrew Hokin
+Stephen Kench
+Ben Koo
+Diversified Financials
+Andrew Hokin
+Stephen Kench
+lnsurance
+Tony Jackson
+Deana l\4itchell
+Healthcare & Biotech
+(612) 8232 5096
+(612) 8232 3296
+(612) 8232 6089
+(61 2) 8232 5989
+(612) 8232 3296
+(612) 8232 6089
+(612) 8232 4442
+(612) 8232 4576
+Property Trusts
+i/ark Cotton
+Stephen Freundlich (New Zealand)
+Richard Jones
+Matt Na€rd
+Anthony Shields
+Rob Stanton
+Head of lnstitutional Sales
+Basil Mcllhagga (652) 2848 8055
+Europe
+Charles Nelson, UK (44 20) 7065 2032
+Rob Fabbro Continental Europe (44 20) 7065 2031
+Munich
+Wlhelm Schrdder
+New York
+Luke Sullivan
+New Zealand
+l\ilick Carolan
+Australia
+Sydney
+lvlartin Dacron
+Melbourne
+Duane O'Donnell
+Asia
+Hong Kong
+Paul lsgrove
+Singapore
+Bernard Thien
+Email addresses
+FirstName. Surname@macquarie.com
+eg. David. Rickards@macquarie.com
+(612) 82327782
+(649) 363 1418
+(612) 82327148
+(612) 8232 6948
+(612) 8232 6308
+1612) 82327786
+Real Estate Management & Development
+Andrew Hokin
+Telecomm unications
+(612) 8232 3296
+(49 89) 29 0530
+(1 212) 548 6507
+(649) 363 1 404
+(612) 82327421
+(61 3) 9635 91 83
+(854 2423 3728
+(65) 6231 1185
+Steve Hodgson (New Zealand)
+Paul Hughes
+Maras Wlson
+Industrials
+(649) 363 1415
+(612\ 8232 5384
+(612t 8232 5387
+Steve Hodgson (New Zealand)
+lan lvlartin
+Gaurish Pinge
+S@lt Ryall
+Tim Smart
+Utilities
+(649) 363 1415
+(61 3) 9635 81 37
+(612) 8232 6846
+(612) 8232 7124
+(612\ 8232 4203Capital Goods
+Mark Cotton (6'12\ 82327782
+Waren Doak (New Zealand) (649) 363 1416
+Greg Dring (612) 8232 3104
+Commercial Services & Supplies
+lan lvlyles \612) 8232 4157
+Find our research at
+Macquarie: wW macquarie com aulresarcir
+Thomson: www thomson.com/financial
+Reuters: www rbr.reuters com
+Bloomberg: MAC GO
+Contact Gareth Warfield for access G12\ 8232 3207
+Commodities & Precious Metals
+Stephen Hudson (New Zealand)
+Gavin Maher
+Ed Reekie
+(649) 363 1414
+(612\ 8232 415'l
+(6121 8232 6844
+Jim Lennon (London)
+Adam Rowley (London)
+Toll free from oveFeas
+Canada
+Hong Kong
+Japan
+New York
+Singapore
+(44 20) 7065 2014
+(44 20) 7065 2013
+1800 989 8159
+800 96 2049
+0053 161 6437
+1Aa8 622 7862
+800 616 1037
+August 04

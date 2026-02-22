@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Primary Joubert+QuantAtoZ - Primary Model Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b1220;
+      --bg2: #111a2d;
+      --panel: #142039;
+      --panel2: #1d2b46;
+      --line: #2a3b5d;
+      --ink: #e6edf7;
+      --ink2: #9fb3cf;
+      --cyan: #0ea5e9;
+      --teal: #14b8a6;
+      --green: #22c55e;
+      --orange: #f59e0b;
+      --red: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 15% -10%, #17335e 0%, transparent 45%),
+        radial-gradient(circle at 90% 0%, #134e4a 0%, transparent 30%),
+        var(--bg);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+      line-height: 1.45;
+    }
+    .wrap { max-width: 1440px; margin: 0 auto; padding: 24px; }
+    h1, h2, h3 { margin: 0 0 10px; letter-spacing: 0.01em; }
+    h1 { font-family: "DM Serif Display", serif; font-size: 42px; line-height: 1.08; }
+    h2 { font-size: 28px; }
+    h3 { font-size: 19px; }
+    .sub { color: var(--ink2); margin-bottom: 18px; }
+    .section {
+      background: linear-gradient(180deg, rgba(29,43,70,0.94) 0%, rgba(20,32,57,0.94) 100%);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .tile {
+      background: rgba(11,18,32,0.72);
+      border: 1px solid #334969;
+      border-radius: 12px;
+      padding: 10px;
+    }
+    .tile .k { font-size: 12px; color: var(--ink2); margin-bottom: 5px; }
+    .tile .v { font-size: 18px; font-weight: 700; color: #f3faff; font-family: "JetBrains Mono", monospace; }
+    .imgs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .imgbox {
+      background: #0f172a;
+      border: 1px solid #334969;
+      border-radius: 12px;
+      padding: 8px;
+    }
+    .imgbox img { width: 100%; border-radius: 8px; display: block; }
+    .tbl {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      margin-top: 8px;
+    }
+    .tbl th, .tbl td {
+      border: 1px solid #2f4467;
+      padding: 6px 8px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .tbl th:first-child, .tbl td:first-child { text-align: left; }
+    .tbl th { background: #14213a; color: #d5e7ff; }
+    .small { color: var(--ink2); font-size: 12.5px; }
+    .list { margin: 8px 0 0 20px; color: var(--ink); }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #102944;
+      border: 1px solid #2f4667;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: #d4e9ff;
+    }
+    .bench-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .bench-card {
+      background: rgba(11,18,32,0.68);
+      border: 1px solid #334969;
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .dl-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 8px 20px;
+      margin-top: 8px;
+      font-size: 12.5px;
+    }
+    .mono { font-family: "JetBrains Mono", monospace; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Primary Joubert+QuantAtoZ</h1>
+    <div class="sub">Single-model report generated from <span class="mono">primary_model_joubert_quantatoz.py</span> outputs only. Generated 2026-02-19 20:31:02 UTC.</div>
+
+    <div class="section">
+      <h2>1. Executive Summary</h2>
+      <div class="small">High-level snapshot of the primary strategy, with explicit required metrics.</div>
+      <div class="grid">
+        <div class="tile"><div class="k">Annualized Return</div><div class="v">6.04%</div></div>
+        <div class="tile"><div class="k">Volatility</div><div class="v">13.59%</div></div>
+        <div class="tile"><div class="k">Sharpe Ratio</div><div class="v">0.444</div></div>
+        <div class="tile"><div class="k">Max Drawdown</div><div class="v">-42.15%</div></div>
+        <div class="tile"><div class="k">Win Rate</div><div class="v">53.97%</div></div>
+        <div class="tile"><div class="k">Cumulative Return</div><div class="v">221.29%</div></div>
+        <div class="tile"><div class="k">Information Ratio</div><div class="v">-0.405</div></div>
+        <div class="tile"><div class="k">Strategy-SPX Correlation</div><div class="v">0.890</div></div>
+        <div class="tile"><div class="k">Indicator Pair Correlation</div><div class="v">0.282</div></div>
+        <div class="tile"><div class="k">Indicator-to-SPX Correlation</div><div class="v">0.036</div></div>
+        <div class="tile"><div class="k">Precision</div><div class="v">56.63%</div></div>
+        <div class="tile"><div class="k">Recall</div><div class="v">81.02%</div></div>
+        <div class="tile"><div class="k">F1 Score</div><div class="v">66.67%</div></div>
+      </div>
+      <div class="imgs">
+        <div class="imgbox"><img src="primary_model_report_assets/executive_metric_bars.png" alt="Executive metric bars"></div>
+        <div class="imgbox"><img src="primary_model_report_assets/executive_equity_curve.png" alt="Executive equity curve"></div>
+      </div>
+      <table class="dataframe tbl">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Model</th>
+      <th>Annualized Return</th>
+      <th>Volatility</th>
+      <th>Sharpe Ratio</th>
+      <th>Max Drawdown</th>
+      <th>Win Rate</th>
+      <th>Cumulative Return</th>
+      <th>Information Ratio</th>
+      <th>Strategy-SPX Correlation</th>
+      <th>Indicator Pair Correlation</th>
+      <th>Indicator-to-SPX Correlation</th>
+      <th>Precision</th>
+      <th>Recall</th>
+      <th>F1 Score</th>
+      <th>Periods</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Primary Joubert+QuantAtoZ</td>
+      <td>6.04%</td>
+      <td>13.59%</td>
+      <td>0.444</td>
+      <td>-42.15%</td>
+      <td>53.97%</td>
+      <td>221.29%</td>
+      <td>-0.405</td>
+      <td>0.890</td>
+      <td>0.282</td>
+      <td>0.036</td>
+      <td>56.63%</td>
+      <td>81.02%</td>
+      <td>66.67%</td>
+      <td>239</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+      <h2>2. Benchmarks Section</h2>
+      <div class="small">Four benchmarks, each with relevance and inclusion rationale.</div>
+      <div class="bench-cards">
+
+        <div class="bench-card">
+          <div class="pill"><b>Buy & Hold SPX</b></div>
+          <div class="small"><b>Why meaningful:</b> Represents passive equity beta and the default alternative to any timing model.</div>
+          <div class="small" style="margin-top:6px;"><b>Why include:</b> Checks whether the primary strategy adds value above a simple market exposure.</div>
+        </div>
+
+        <div class="bench-card">
+          <div class="pill"><b>60/40 SPX-Treasury</b></div>
+          <div class="small"><b>Why meaningful:</b> Institutional policy mix with built-in diversification between growth and duration.</div>
+          <div class="small" style="margin-top:6px;"><b>Why include:</b> Tests if dynamic timing improves on a standard portfolio allocation.</div>
+        </div>
+
+        <div class="bench-card">
+          <div class="pill"><b>EqualWeight 25/25/25/25</b></div>
+          <div class="small"><b>Why meaningful:</b> Neutral cross-asset baseline across equities, rates, commodities, and credit.</div>
+          <div class="small" style="margin-top:6px;"><b>Why include:</b> Separates true signal value from concentration in a single risk bucket.</div>
+        </div>
+
+        <div class="bench-card">
+          <div class="pill"><b>Simple Trend (SMA10/12)</b></div>
+          <div class="small"><b>Why meaningful:</b> Classic low-complexity trend-following rule.</div>
+          <div class="small" style="margin-top:6px;"><b>Why include:</b> Validates whether richer indicator engineering beats a transparent trend baseline.</div>
+        </div>
+
+      </div>
+      <div class="small" style="margin-top:10px;">Benchmark metrics are aligned to the primary strategy date range for fair side-by-side evaluation.</div>
+      <table class="dataframe tbl">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Model</th>
+      <th>Annualized Return</th>
+      <th>Volatility</th>
+      <th>Sharpe Ratio</th>
+      <th>Max Drawdown</th>
+      <th>Win Rate</th>
+      <th>Cumulative Return</th>
+      <th>Information Ratio</th>
+      <th>Strategy-SPX Correlation</th>
+      <th>Indicator Pair Correlation</th>
+      <th>Indicator-to-SPX Correlation</th>
+      <th>Precision</th>
+      <th>Recall</th>
+      <th>F1 Score</th>
+      <th>Periods</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Primary Joubert+QuantAtoZ</td>
+      <td>6.04%</td>
+      <td>13.59%</td>
+      <td>0.444</td>
+      <td>-42.15%</td>
+      <td>53.97%</td>
+      <td>221.29%</td>
+      <td>-0.405</td>
+      <td>0.890</td>
+      <td>0.282*</td>
+      <td>0.036*</td>
+      <td>56.63%</td>
+      <td>81.02%</td>
+      <td>66.67%</td>
+      <td>239</td>
+    </tr>
+    <tr>
+      <td>Buy & Hold SPX</td>
+      <td>8.78%*</td>
+      <td>15.12%</td>
+      <td>0.581</td>
+      <td>-52.56%</td>
+      <td>65.69%*</td>
+      <td>434.77%*</td>
+      <td>0.000*</td>
+      <td>1.000</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>57.32%</td>
+      <td>100.00%*</td>
+      <td>72.87%*</td>
+      <td>239</td>
+    </tr>
+    <tr>
+      <td>60/40 SPX-Treasury</td>
+      <td>6.84%</td>
+      <td>18.20%</td>
+      <td>0.376</td>
+      <td>-46.82%</td>
+      <td>61.51%</td>
+      <td>273.26%</td>
+      <td>-0.085</td>
+      <td>0.601*</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>57.32%</td>
+      <td>100.00%*</td>
+      <td>72.87%*</td>
+      <td>239</td>
+    </tr>
+    <tr>
+      <td>EqualWeight 25/25/25/25</td>
+      <td>4.16%</td>
+      <td>12.29%</td>
+      <td>0.338</td>
+      <td>-34.40%</td>
+      <td>60.25%</td>
+      <td>125.08%</td>
+      <td>-0.386</td>
+      <td>0.613</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>57.32%</td>
+      <td>100.00%*</td>
+      <td>72.87%*</td>
+      <td>239</td>
+    </tr>
+    <tr>
+      <td>Simple Trend (SMA10/12)</td>
+      <td>7.34%</td>
+      <td>11.98%*</td>
+      <td>0.613*</td>
+      <td>-22.53%*</td>
+      <td>52.30%</td>
+      <td>310.03%</td>
+      <td>-0.190</td>
+      <td>0.786</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>57.67%*</td>
+      <td>79.56%</td>
+      <td>66.87%</td>
+      <td>239</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+      <h2>3. Indicators Research</h2>
+      <div class="small">Three candidate strategies reviewed at conceptual and analytical level.</div>
+      <div style="margin-top:10px;">
+        <h3>Primary Joubert+QuantAtoZ</h3>
+        <div class="small"><b>Concept:</b> Directional primary model combining multi-theme macro and market state factors with correlation-aware aggregation and walk-forward thresholding.</div>
+        <div class="small"><b>Why it can make sense:</b> The design emphasizes opportunity recall without ignoring quality controls on factor stability, significance, and out-of-sample behavior.</div>
+        <div class="small"><b>Indicator selection:</b> Indicators cover momentum, cross-asset spreads, rates, credit carry, volatility regime, and drawdown so the signal is not dependent on a single market regime.</div>
+
+        <h3 style="margin-top:10px;">Trend Aware (Original)</h3>
+        <div class="small"><b>Concept:</b> Cross-asset allocation model that reads cyclical phase behavior from rates, credit, equities, and commodities.</div>
+        <div class="small"><b>Why it can make sense:</b> If cycle phase and short-term momentum align, asset allocation can tilt toward assets with stronger next-period edge.</div>
+        <div class="small"><b>Indicator selection:</b> Indicators are Hilbert-style phase proxies plus short-horizon SPX momentum to capture regime direction and acceleration.</div>
+
+        <h3 style="margin-top:10px;">Primary Unified V1</h3>
+        <div class="small"><b>Concept:</b> Compact primary signal that blends trend, cross-asset, credit, and risk-breadth into one composite directional score.</div>
+        <div class="small"><b>Why it can make sense:</b> Lower model complexity can improve robustness and simplify operational monitoring.</div>
+        <div class="small"><b>Indicator selection:</b> Indicators were selected to combine macro-sensitive and risk-sensitive information with minimal feature count.</div>
+      </div>
+      <div class="small" style="margin-top:10px;"><b>Outperformer on the defined research score:</b> Trend Aware (Original)</div>
+      <table class="dataframe tbl">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Model</th>
+      <th>Annualized Return</th>
+      <th>Volatility</th>
+      <th>Sharpe Ratio</th>
+      <th>Max Drawdown</th>
+      <th>Win Rate</th>
+      <th>Cumulative Return</th>
+      <th>Information Ratio</th>
+      <th>Strategy-SPX Correlation</th>
+      <th>Indicator Pair Correlation</th>
+      <th>Indicator-to-SPX Correlation</th>
+      <th>Precision</th>
+      <th>Recall</th>
+      <th>F1 Score</th>
+      <th>Periods</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Trend Aware (Original)</td>
+      <td>12.15%*</td>
+      <td>12.06%</td>
+      <td>1.008*</td>
+      <td>-23.68%</td>
+      <td>66.01%*</td>
+      <td>2901.91%*</td>
+      <td>0.232*</td>
+      <td>0.558</td>
+      <td>0.169*</td>
+      <td>0.154</td>
+      <td>63.76%</td>
+      <td>100.00%*</td>
+      <td>77.87%*</td>
+      <td>356</td>
+    </tr>
+    <tr>
+      <td>Primary Unified V1</td>
+      <td>6.49%</td>
+      <td>7.70%*</td>
+      <td>0.843</td>
+      <td>-18.76%*</td>
+      <td>63.41%</td>
+      <td>552.76%</td>
+      <td>-0.140</td>
+      <td>-0.189*</td>
+      <td>0.587</td>
+      <td>0.318</td>
+      <td>68.75%*</td>
+      <td>57.64%</td>
+      <td>62.71%</td>
+      <td>358</td>
+    </tr>
+    <tr>
+      <td>Primary Joubert+QuantAtoZ</td>
+      <td>6.04%</td>
+      <td>13.59%</td>
+      <td>0.444</td>
+      <td>-42.15%</td>
+      <td>53.97%</td>
+      <td>221.29%</td>
+      <td>-0.405</td>
+      <td>0.890</td>
+      <td>0.282</td>
+      <td>0.036*</td>
+      <td>56.63%</td>
+      <td>81.02%</td>
+      <td>66.67%</td>
+      <td>239</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+      <h2>4. Primary Strategy Deep Dive</h2>
+      <h3>What Goes Into Primary Joubert+QuantAtoZ</h3>
+      <ul class="list">
+<li>Input layer: monthly SPX, commodities, rates, and credit data aligned to a consistent timestamp grid.</li><li>Feature layer: momentum, cross-asset spread, rate change, credit carry, volatility regime, and drawdown indicators.</li><li>Stability layer: orientation-aware normalization and outlier control make factors comparable through time.</li><li>Combination layer: correlation-aware weighting reduces double-counting of similar indicators.</li><li>Decision layer: probability thresholding with hysteresis converts factor evidence into a practical side signal.</li>
+      </ul>
+      <div class="small" style="margin-top:8px;">
+        Intuition: in the wave view, indicators move in and out of phase. Consistent phase alignment usually signals stronger regime conviction, while mixed phase states suggest lower conviction.
+      </div>
+      <div class="imgs">
+        <div class="imgbox"><img src="primary_model_report_assets/wave_visualization.png" alt="Wave visualization"></div>
+        <div class="imgbox"><img src="primary_model_report_assets/indicator_corr_heatmap.png" alt="Indicator correlation heatmap"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>5. Performance Visualizations</h2>
+      <div class="small">Visual diagnostics and explicit metric table for Primary vs the 4 benchmarks.</div>
+      <div class="imgs">
+        <div class="imgbox"><img src="primary_model_report_assets/equity_curves.png" alt="Equity curves"></div>
+        <div class="imgbox"><img src="primary_model_report_assets/drawdown_curves.png" alt="Drawdown curves"></div>
+        <div class="imgbox"><img src="primary_model_report_assets/rolling_sharpe.png" alt="Rolling Sharpe"></div>
+        <div class="imgbox"><img src="primary_model_report_assets/executive_metric_bars.png" alt="Metric bars"></div>
+      </div>
+      <div class="small" style="margin-top:10px;"><b>Side-by-side comparison:</b> Primary strategy vs the 4 benchmarks.</div>
+      <table class="dataframe tbl">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Model</th>
+      <th>Annualized Return</th>
+      <th>Volatility</th>
+      <th>Sharpe Ratio</th>
+      <th>Max Drawdown</th>
+      <th>Win Rate</th>
+      <th>Cumulative Return</th>
+      <th>Information Ratio</th>
+      <th>Strategy-SPX Correlation</th>
+      <th>Indicator Pair Correlation</th>
+      <th>Indicator-to-SPX Correlation</th>
+      <th>Precision</th>
+      <th>Recall</th>
+      <th>F1 Score</th>
+      <th>Periods</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Primary Joubert+QuantAtoZ</td>
+      <td>6.04%</td>
+      <td>13.59%</td>
+      <td>0.444</td>
+      <td>-42.15%</td>
+      <td>53.97%</td>
+      <td>221.29%</td>
+      <td>-0.405</td>
+      <td>0.890</td>
+      <td>0.282*</td>
+      <td>0.036*</td>
+      <td>56.63%</td>
+      <td>81.02%</td>
+      <td>66.67%</td>
+      <td>239</td>
+    </tr>
+    <tr>
+      <td>Buy & Hold SPX</td>
+      <td>8.78%*</td>
+      <td>15.12%</td>
+      <td>0.581</td>
+      <td>-52.56%</td>
+      <td>65.69%*</td>
+      <td>434.77%*</td>
+      <td>0.000*</td>
+      <td>1.000</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>57.32%</td>
+      <td>100.00%*</td>
+      <td>72.87%*</td>
+      <td>239</td>
+    </tr>
+    <tr>
+      <td>60/40 SPX-Treasury</td>
+      <td>6.84%</td>
+      <td>18.20%</td>
+      <td>0.376</td>
+      <td>-46.82%</td>
+      <td>61.51%</td>
+      <td>273.26%</td>
+      <td>-0.085</td>
+      <td>0.601*</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>57.32%</td>
+      <td>100.00%*</td>
+      <td>72.87%*</td>
+      <td>239</td>
+    </tr>
+    <tr>
+      <td>EqualWeight 25/25/25/25</td>
+      <td>4.16%</td>
+      <td>12.29%</td>
+      <td>0.338</td>
+      <td>-34.40%</td>
+      <td>60.25%</td>
+      <td>125.08%</td>
+      <td>-0.386</td>
+      <td>0.613</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>57.32%</td>
+      <td>100.00%*</td>
+      <td>72.87%*</td>
+      <td>239</td>
+    </tr>
+    <tr>
+      <td>Simple Trend (SMA10/12)</td>
+      <td>7.34%</td>
+      <td>11.98%*</td>
+      <td>0.613*</td>
+      <td>-22.53%*</td>
+      <td>52.30%</td>
+      <td>310.03%</td>
+      <td>-0.190</td>
+      <td>0.786</td>
+      <td>N/A</td>
+      <td>N/A</td>
+      <td>57.67%*</td>
+      <td>79.56%</td>
+      <td>66.87%</td>
+      <td>239</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+
+    <div class="section">
+      <h2>6. Conclusion</h2>
+      <ul class="list">
+        <li><b>Backtest summary:</b> Primary Joubert+QuantAtoZ delivered 6.04% annualized return, Sharpe 0.444, and max drawdown -42.15%.</li>
+        <li><b>Implications for M2:</b> Use this primary layer as an opportunity generator; M2 should focus on confidence filtering, sizing, and cost-aware execution.</li>
+        <li><b>Key takeaway:</b> Evaluate return metrics together with precision/recall/F1 and correlation structure, not in isolation.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>7. Deliverables</h2>
+      <div class="small">Complete HTML plus all supporting tables and figures exported separately.</div>
+      <div class="dl-list">
+        <div>HTML: <span class="mono">reports/primary_model_report.html</span></div>
+        <div>CSV: <span class="mono">reports/primary_model_report_assets/executive_summary_metrics.csv</span></div>
+        <div>CSV: <span class="mono">reports/primary_model_report_assets/benchmarks_comparison.csv</span></div>
+        <div>CSV: <span class="mono">reports/primary_model_report_assets/side_by_side_primary_vs_benchmarks.csv</span></div>
+        <div>CSV: <span class="mono">reports/primary_model_report_assets/alternative_models_research.csv</span></div>
+        <div>CSV: <span class="mono">reports/primary_model_report_assets/focus_indicator_correlation_matrix.csv</span></div>
+        <div>CSV: <span class="mono">reports/primary_model_report_assets/benchmark_explanations.csv</span></div>
+        <div>PNG: <span class="mono">reports/primary_model_report_assets/executive_metric_bars.png</span></div>
+        <div>PNG: <span class="mono">reports/primary_model_report_assets/executive_equity_curve.png</span></div>
+        <div>PNG: <span class="mono">reports/primary_model_report_assets/equity_curves.png</span></div>
+        <div>PNG: <span class="mono">reports/primary_model_report_assets/drawdown_curves.png</span></div>
+        <div>PNG: <span class="mono">reports/primary_model_report_assets/rolling_sharpe.png</span></div>
+        <div>PNG: <span class="mono">reports/primary_model_report_assets/wave_visualization.png</span></div>
+        <div>PNG: <span class="mono">reports/primary_model_report_assets/indicator_corr_heatmap.png</span></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
