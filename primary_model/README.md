@@ -31,6 +31,25 @@ Run immediately with bundled sample data/results root:
 python cli.py run-all --root project_results
 ```
 
+Validation workflows in an isolated test root:
+```bash
+python scripts/run_validation_suite.py --root test --clean-root
+```
+
+Manual isolated steps:
+```bash
+python scripts/setup_test_root.py --target-root test --clean
+pytest -q
+python cli.py run-all --root test
+python scripts/run_robustness.py --root test --out-dir test/reports/robustness
+python scripts/run_walk_forward.py --root test --out-dir test/reports/walk_forward
+```
+
+Detailed replication guide:
+```text
+INSTRUCTIONS.txt
+```
+
 Or through the installed entrypoint:
 ```bash
 primary-model run-all

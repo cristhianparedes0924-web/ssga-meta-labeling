@@ -1,0 +1,86 @@
+PRIMARY MODEL - REPRODUCTION INSTRUCTIONS
+=========================================
+
+This project supports two independent execution modes:
+
+1) Main project mode (uses root-level data/ and reports/)
+2) Isolated validation mode (uses test/data/ and test/reports/ only)
+
+Use isolated validation mode when you want clean reproducibility without mixing
+outputs into the main project artifacts.
+
+
+PREREQUISITES
+-------------
+- Python 3.10 or newer
+- pip
+
+Setup:
+
+1. Create and activate a virtual environment
+   python -m venv .venv
+   source .venv/bin/activate
+
+2. Install dependencies
+   pip install -e .[dev]
+
+
+FASTEST WAY TO RUN EVERYTHING (RECOMMENDED)
+-------------------------------------------
+Run the full isolated validation suite in one command:
+
+python scripts/run_validation_suite.py --root test --clean-root
+
+What this command does:
+- Copies bundled raw inputs into test/data/raw
+- Runs pytest
+- Runs the full pipeline (prepare-data, data-qc, primary-v1, benchmarks)
+- Runs robustness grid (costs, thresholds, duration)
+- Runs strict walk-forward evaluation
+- Writes logs and a reproducibility manifest with file hashes
+
+Primary outputs:
+- test/reports/benchmarks_summary.csv
+- test/reports/primary_v1_summary.csv
+- test/reports/robustness/robustness_grid_results.csv
+- test/reports/walk_forward/walk_forward_summary.csv
+- test/reports/reproducibility/validation_manifest.json
+
+
+STEP-BY-STEP (MANUAL) ISOLATED WORKFLOW
+---------------------------------------
+If you prefer to run each stage explicitly:
+
+1. Prepare isolated root
+   python scripts/setup_test_root.py --target-root test --clean
+
+2. Run tests
+   pytest -q
+
+3. Run full project pipeline in isolated root
+   python cli.py run-all --root test
+
+4. Run robustness analysis
+   python scripts/run_robustness.py --root test --out-dir test/reports/robustness
+
+5. Run strict walk-forward analysis
+   python scripts/run_walk_forward.py --root test --out-dir test/reports/walk_forward
+
+
+MAKEFILE SHORTCUTS
+------------------
+Equivalent commands are available:
+
+- make setup-test
+- make run-all-test
+- make robustness-test
+- make walk-forward-test
+- make validate-test
+
+
+NOTES
+-----
+- The isolated workflow writes only under test/.
+- Main project artifacts (project_results/, reports/) are not required for the
+  isolated run outputs.
+- If you rerun with --clean-root, previous isolated reports are replaced.
