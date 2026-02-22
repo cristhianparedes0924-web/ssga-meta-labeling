@@ -1,2 +1,0 @@
-oos_gate_pass,reject_reason,min_test_periods,min_test_recall,min_test_precision,min_test_sharpe,max_f1_drop,test_periods,test_recall,test_precision,test_f1,test_sharpe,test_ann_return,train_f1,train_sharpe
-True,passed,24,0.55,0.6,0.0,0.4,96,0.8947368421052632,0.6,0.7183098591549296,0.7888249991168453,0.12460224088198002,0.6282722513089005,0.16381233550682991

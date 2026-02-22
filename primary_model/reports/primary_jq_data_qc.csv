@@ -1,6 +1,0 @@
-scope,asset,start_date,end_date,history_obs,coverage_target_obs,missing_price_rate,missing_return_rate,return_gap_p95_abs,missing_pass,corporate_action_proxy_pass,history_pass,asset_pass,universe_consistent,date_monotonic,timestamp_alignment_rate,timestamp_alignment_pass,survivorship_proxy_ratio,survivorship_proxy_pass,overall_data_qc_pass
-asset,BCOM,1996-01-31,2025-12-31,360.0,192.0,0.0,0.0,4.826524242636157e-07,True,True,True,True,,,,,,,
-asset,SPX,1996-01-31,2025-12-31,360.0,192.0,0.0,0.0,4.764093334485773e-05,True,True,True,True,,,,,,,
-asset,Treasury10Y,1996-01-31,2025-12-31,360.0,192.0,0.0,0.0,2.9940606909048518e-05,True,True,True,True,,,,,,,
-asset,IG_Corp,1996-01-31,2025-12-31,360.0,192.0,0.0,0.0,4.6605551396888115e-05,True,True,True,True,,,,,,,
-global,__GLOBAL__,,,,,,,,,,,,True,True,1.0,True,1.0,True,True

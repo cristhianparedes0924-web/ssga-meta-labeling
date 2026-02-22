@@ -17,8 +17,16 @@ env/
 .idea/
 .vscode/
 
-# Data files
+# Data artifacts
 data/raw/*
 !data/raw/.gitkeep
-data/clean/*.csv
+!data/raw/README.md
+data/clean/*
 !data/clean/.gitkeep
+
+# Generated reports
+reports/*
+!reports/.gitkeep
+!reports/assets/
+reports/assets/*
+!reports/assets/.gitkeep
