@@ -1,4 +1,4 @@
-.PHONY: install install-dev test lint prepare-data data-qc run-primary-v1 run-benchmarks run-all setup-test run-all-test robustness-test walk-forward-test validate-test
+.PHONY: install install-dev test lint prepare-data data-qc run-primary-v1 run-benchmarks run-all setup-test run-all-test robustness-test walk-forward-test validate-test run-mode-project run-mode-test run-mode-both
 
 install:
 	python -m pip install -e .
@@ -41,3 +41,12 @@ walk-forward-test:
 
 validate-test:
 	python scripts/run_validation_suite.py --root test --clean-root
+
+run-mode-project:
+	python scripts/run_modes.py --mode project
+
+run-mode-test:
+	python scripts/run_modes.py --mode test
+
+run-mode-both:
+	python scripts/run_modes.py --mode both

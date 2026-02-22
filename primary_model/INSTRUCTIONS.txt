@@ -1,86 +1,79 @@
-PRIMARY MODEL - REPRODUCTION INSTRUCTIONS
-=========================================
+PRIMARY MODEL - SIMPLE RUN GUIDE
+================================
 
-This project supports two independent execution modes:
+This project can be run in 3 simple ways:
 
-1) Main project mode (uses root-level data/ and reports/)
-2) Isolated validation mode (uses test/data/ and test/reports/ only)
-
-Use isolated validation mode when you want clean reproducibility without mixing
-outputs into the main project artifacts.
+1) Run only the main project
+2) Run only the isolated test/validation workflow
+3) Run both (main project first, then isolated test workflow)
 
 
-PREREQUISITES
--------------
-- Python 3.10 or newer
-- pip
-
-Setup:
-
-1. Create and activate a virtual environment
+SETUP (DO THIS ONCE)
+--------------------
+1. Create virtual environment:
    python -m venv .venv
+
+2. Activate it:
    source .venv/bin/activate
 
-2. Install dependencies
+3. Install dependencies:
    pip install -e .[dev]
 
 
-FASTEST WAY TO RUN EVERYTHING (RECOMMENDED)
--------------------------------------------
-Run the full isolated validation suite in one command:
+OPTION A - RUN THE MAIN PROJECT ONLY
+------------------------------------
+Single command:
+python scripts/run_modes.py --mode project
 
-python scripts/run_validation_suite.py --root test --clean-root
+What it runs:
+- python cli.py run-all
 
-What this command does:
-- Copies bundled raw inputs into test/data/raw
-- Runs pytest
-- Runs the full pipeline (prepare-data, data-qc, primary-v1, benchmarks)
-- Runs robustness grid (costs, thresholds, duration)
-- Runs strict walk-forward evaluation
-- Writes logs and a reproducibility manifest with file hashes
+Where outputs go:
+- reports/
 
-Primary outputs:
-- test/reports/benchmarks_summary.csv
-- test/reports/primary_v1_summary.csv
-- test/reports/robustness/robustness_grid_results.csv
-- test/reports/walk_forward/walk_forward_summary.csv
-- test/reports/reproducibility/validation_manifest.json
+Equivalent Make command:
+- make run-mode-project
 
 
-STEP-BY-STEP (MANUAL) ISOLATED WORKFLOW
----------------------------------------
-If you prefer to run each stage explicitly:
+OPTION B - RUN TESTS/VALIDATION ONLY (SEPARATE, ISOLATED)
+----------------------------------------------------------
+Single command:
+python scripts/run_modes.py --mode test
 
-1. Prepare isolated root
-   python scripts/setup_test_root.py --target-root test --clean
+What it runs:
+- python scripts/run_validation_suite.py --root test --clean-root
 
-2. Run tests
-   pytest -q
+This includes:
+- pytest
+- full pipeline in isolated root
+- robustness grid
+- strict walk-forward run
+- reproducibility logs + manifest
 
-3. Run full project pipeline in isolated root
-   python cli.py run-all --root test
+Where outputs go:
+- test/reports/
 
-4. Run robustness analysis
-   python scripts/run_robustness.py --root test --out-dir test/reports/robustness
-
-5. Run strict walk-forward analysis
-   python scripts/run_walk_forward.py --root test --out-dir test/reports/walk_forward
-
-
-MAKEFILE SHORTCUTS
-------------------
-Equivalent commands are available:
-
-- make setup-test
-- make run-all-test
-- make robustness-test
-- make walk-forward-test
-- make validate-test
+Equivalent Make command:
+- make run-mode-test
 
 
-NOTES
------
-- The isolated workflow writes only under test/.
-- Main project artifacts (project_results/, reports/) are not required for the
-  isolated run outputs.
-- If you rerun with --clean-root, previous isolated reports are replaced.
+OPTION C - RUN BOTH (PROJECT + TEST) IN ONE COMMAND
+----------------------------------------------------
+Single command:
+python scripts/run_modes.py --mode both
+
+Order:
+1. Main project run (reports/)
+2. Isolated test/validation run (test/reports/)
+
+Equivalent Make command:
+- make run-mode-both
+
+
+USEFUL NOTES
+------------
+- Main project outputs and test outputs are separated by design.
+- Main project data/output path: data/, reports/
+- Isolated validation path: test/data/, test/reports/
+- If you rerun test mode, previous isolated artifacts are replaced because
+  --clean-root is applied.
