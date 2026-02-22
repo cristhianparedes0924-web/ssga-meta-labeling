@@ -1,4 +1,4 @@
-"""Portfolio construction adapters."""
+"""Portfolio construction helpers."""
 
 from .weights import (
     primary_signal_to_weights,

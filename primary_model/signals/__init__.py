@@ -1,4 +1,4 @@
-"""Signal-construction adapters."""
+"""Signal construction and scoring utilities."""
 
 from .variant1 import (
     build_primary_signal_variant1,

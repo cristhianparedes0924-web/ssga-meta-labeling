@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "primary-model"
 version = "0.1.0"
-description = "Primary model research/backtesting pipeline with a frozen unified core"
+description = "Primary model research/backtesting pipeline"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [{ name = "Primary Model Team" }]
@@ -27,7 +27,7 @@ dev = [
 primary-model = "cli:main"
 
 [tool.setuptools]
-py-modules = ["primary_model_unified", "cli"]
+py-modules = ["cli"]
 packages = ["backtest", "data", "portfolio", "qc", "signals"]
 
 [tool.pytest.ini_options]

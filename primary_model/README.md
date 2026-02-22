@@ -1,14 +1,9 @@
 # primary_model
 
-Professional project scaffold around a **frozen core engine** in `primary_model_unified.py`.
-
-## Project Contract
-- `primary_model_unified.py` is the source of truth for pipeline behavior.
-- Wrapper modules in `data/`, `signals/`, `portfolio/`, `backtest/`, and `qc/` delegate to that file.
-- The goal is modular architecture and clean tooling **without changing core model logic**.
+Standalone primary-model research/backtesting pipeline.
 
 ## What This Runs
-The unified core supports the following workflows:
+The project supports these workflows:
 - `prepare-data`
 - `data-qc`
 - `run-primary-v1`
@@ -31,6 +26,11 @@ python cli.py run-benchmarks
 python cli.py run-all
 ```
 
+Run immediately with bundled sample data/results root:
+```bash
+python cli.py run-all --root project_results
+```
+
 Or through the installed entrypoint:
 ```bash
 primary-model run-all
@@ -39,22 +39,21 @@ primary-model run-all
 ## Directory Layout
 ```text
 primary_model/
-  primary_model_unified.py   # frozen core logic and canonical CLI behavior
-  cli.py                     # stable entrypoint delegating to unified main
+  cli.py
   data/
-    cleaner.py               # cleaning wrappers
-    loader.py                # loading/treasury wrappers
+    cleaner.py
+    loader.py
   signals/
-    variant1.py              # signal construction wrappers
+    variant1.py
   portfolio/
-    weights.py               # allocation wrappers
+    weights.py
   backtest/
-    engine.py                # backtest/metrics wrappers
-    reporting.py             # benchmark/reporting wrappers
+    engine.py
+    reporting.py
   qc/
-    reports.py               # data-QC wrappers
-  tests/                     # smoke/integration tests
-  docs/                      # architecture notes
+    reports.py
+  tests/
+  docs/
 ```
 
 ## Data Expectations
@@ -77,7 +76,3 @@ Run quality checks:
 ruff check .
 pytest
 ```
-
-## Notes
-- This repo intentionally keeps `primary_model_unified.py` unchanged.
-- All package-facing modules are thin adapters to preserve behavior parity.

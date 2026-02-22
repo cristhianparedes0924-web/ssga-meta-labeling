@@ -1,4 +1,4 @@
-"""Backtest and performance-reporting adapters."""
+"""Backtest engine and reporting API."""
 
 from .engine import (
     annualized_return,
@@ -7,7 +7,14 @@ from .engine import (
     max_drawdown,
     sharpe_ratio,
 )
-from .reporting import perf_table, plot_drawdowns, plot_equity_curves, plot_rolling_sharpe, run_benchmarks
+from .reporting import (
+    perf_table,
+    plot_drawdowns,
+    plot_equity_curves,
+    plot_rolling_sharpe,
+    run_benchmarks,
+    run_primary_variant1,
+)
 
 __all__ = [
     "annualized_return",
@@ -19,5 +26,6 @@ __all__ = [
     "plot_equity_curves",
     "plot_rolling_sharpe",
     "run_benchmarks",
+    "run_primary_variant1",
     "sharpe_ratio",
 ]
