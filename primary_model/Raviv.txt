@@ -1,0 +1,52 @@
+SPEAKER 1: RAVIV (Slides 1-4)
+
+--- Slide 1: Title Slide & Dashboard ---
+Action: (Leave this slide up as people settle in. Begin speaking to formally kick off the meeting.)
+
+"Good morning, everyone, and thank you for joining us. 
+
+Today, we are presenting the final project report for the PrimaryV1 Meta-Labeling Framework. For this stage of the project, we have fully architected and validated the 'Primary Model'—which serves as the foundational decision layer of our pipeline. 
+
+Its job is simple but critical: to constantly monitor macroeconomic and cross-asset signals, and convert them into clear 'BUY', 'HOLD', or 'SELL' regimes. 
+
+As you can see from the top-line metrics on the dashboard here, the framework has been highly successful. Over a 29-year backtest, it generated a 6.33% annualized return and an impressive 0.838 Sharpe Ratio, all while keeping our maximum drawdown strictly contained at negative 22%.
+
+Let's look at exactly how we are achieving this."
+
+--- Slide 2: Agenda ---
+Action: (Pace through this quickly. Don't read every bullet point; just summarize the flow of the presentation.)
+
+"Here is our roadmap for today's briefing. 
+
+I’ll be covering the overarching architecture—how the PrimaryV1 engine actually works—followed by a high-level executive summary of our performance. 
+
+After that, I will hand it over to my colleagues, who will take you through a deep dive into the four specific macro indicators we use, how the composite scoring generates our signals, and finally, a strict side-by-side comparison against our benchmark universe to prove our alpha generation and validation integrity.
+
+Let's dive right into the architecture."
+
+--- Slide 3: Strategy Architecture ---
+Action: (Speak with authority here. Emphasize that it is a 'continuous' score, not a basic voting system.)
+
+"At the core of PrimaryV1 is our continuous Z-Score Composite engine. I want to emphasize that this is *not* a simplistic 'majority rules' voting system. 
+
+It works in five distinct steps. 
+1. First, we listen to four distinct macro signals: Equity Trends, Commodity Trends, Credit Spreads, and Cross-Asset Risk Breadth. 
+2. Second, we normalize these inputs using an expanding historical z-score, ensuring there is absolutely zero look-ahead bias. 
+3. Third, those normalized signals are aggregated into a continuous composite score.
+4. Fourth, we decide. By applying strict active thresholds, if the score is above 0.0001, we trigger a risk-on BUY signal. If it's below negative 0.0001, we trigger a defensive SELL signal. 
+5. And finally, we allocate—shifting into Equities and Commodities when risk is on, and retreating to safe Treasuries when risk is off.
+
+This 4-indicator stack gives us a remarkably unified and mathematically sound directional edge."
+
+--- Slide 4: Executive Summary ---
+Action: (Highlight the balance between risk and reward. Point out that this model prioritizes survival over reckless growth.)
+
+"Before we break down the individual indicators, I want to frame our ultimate performance profile from 1996 through 2025. 
+
+PrimaryV1 delivered the highest risk-adjusted return across our entire benchmark group. We aren't just achieving an annualized return of 6.33% and a 65% monthly win rate; we are doing it with strictly controlled volatility at just 7.7%. 
+
+More importantly, our capital preservation is best-in-class. Our maximum drawdown over nearly three decades was only -22.08%. This means the model successfully navigated the dot-com bust, the 2008 financial crisis, and the COVID-19 shock without suffering the catastrophic 50-plus percent losses seen in pure equity portfolios. 
+
+With a low monthly turnover of just 0.18%, the strategy is highly tradeable and efficient. 
+
+Now, to explain exactly *what* is driving these signals, I'm going to pass it over to Cristhian to take you through our Indicator Deep Dive."

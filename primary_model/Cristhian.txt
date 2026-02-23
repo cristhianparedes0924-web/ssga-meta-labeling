@@ -1,0 +1,54 @@
+SPEAKER 2: CRISTHIAN (Slides 5-8)
+
+--- Slide 5: Indicators Deep Dive ---
+Action: (Start by acknowledging Raviv. Pace this slide evenly, touching on the four cards without reading them verbatim.)
+
+"Thank you, Raviv. So, to understand how we achieved that 0.838 Sharpe ratio, we have to look under the hood at our 4-indicator stack.
+
+We intentionally kept our inputs simple and robust to avoid overfitting. We use no complex 'black box' predictive models. Instead, we use four highly reliable macro measures:
+
+1. First is SPX Trend, capturing the core direction of equities relative to their 12-month average.
+2. Second is BCOM Trend, which gives us commodity macro confirmation so we know if the broader environment supports risk.
+3. Third is Credit vs Rates. By measuring corporate bond performance against Treasuries, we get a direct, real-time gauge of institutional risk appetite. 
+4. And fourth is our Risk Breadth indicator, ensuring that rallies are supported by broad cross-asset participation, not just a handful of stocks.
+
+As you can see in the correlation table at the bottom, these indicators have very low-to-negative correlation with pure S&P 500 forward returns. That is exactly what we want: they are highly diversified data points that provide unique macro context."
+
+--- Slide 6: Composite Score Engine ---
+Action: (Gesture to the three horizontal steps. Emphasize the "Signal Distribution" numbers at the bottom to show the model is highly active.)
+
+"So, how do we turn those four raw data points into actionable trades? That brings us to our Composite Score Engine.
+
+Rather than a simple majority vote—like saying '3 out of 4 indicators are positive'—we use an expanding Z-score window. We normalize each indicator on the fly, and blend them into a single continuous score that heavily penalizes correlated signals. 
+
+This means if all our equity metrics are flashing green but credit is suddenly collapsing, the score aggressively adjusts to protect capital. 
+
+The output is clean and decisive. If the score is strictly positive, we trigger a risk-on BUY signal. If it goes strictly negative, we trigger a defensive SELL signal. 
+
+And as you can see from our historical distribution at the bottom, this engine is highly decisive. It maintained an active stance—either BUY or SELL—95.8% of the time, meaning we rarely sit on the sidelines in cash."
+
+--- Slide 7: Benchmark Universe ---
+Action: (Move briskly here. You don't need to read every stat, just quickly define what each benchmark represents so the audience trusts the comparison on the next slide.)
+
+"To prove that PrimaryV1 actually adds value, we tested it against a strict set of four benchmarks. We didn't want to just beat a localized index; we wanted to prove superiority against actual institutional alternatives.
+
+Our universe includes:
+* EqualWeight25: A mechanical, 'dumb' allocator that buys 25% of each asset every month.
+* Buy & Hold SPX: The pure equity baseline. This gives us the highest raw returns, but at the cost of massive drawdowns.
+* The 60/40 Portfolio: The classic, static institutional standard.
+* And finally, SimpleTrend: A low-complexity timing model to prove we are generating more alpha than a basic moving-average strategy.
+
+So, how did we stack up against them?"
+
+--- Slide 8: Benchmark Comparison ---
+Action: (Pause a moment as the slide transitions. Draw the audience's attention specifically to the highlighted 'PrimaryV1' row at the bottom, and focus heavily on Sharpe and Max Drawdown.)
+
+"Here are the final comparative results. PrimaryV1, highlighted in gold at the bottom, decisively wins where it matters most: risk-adjusted performance.
+
+We achieved the highest Sharpe ratio in the group at 0.838. But more importantly, look at the Max Drawdown column.
+
+The 'Buy and Hold' benchmark suffered brutal 52% losses during the dot-com and 2008 crashes. Even the vaunted 60/40 portfolio lost over 30% of its value. By detecting regime shifts through our macro indicators, PrimaryV1 successfully compressed its maximum peak-to-trough loss to just -22.08%. 
+
+We delivered 6.33% annualized growth with nearly *two-and-a-half times* less downside risk than holding pure equity. This confirms that PrimaryV1 is a uniquely stable base layer for our Meta-Labeling pipeline.
+
+I'll now turn it over to Samweg, who will walk you through our signal intelligence and the rigorous methodology validation that confirms these results are reproducible."
