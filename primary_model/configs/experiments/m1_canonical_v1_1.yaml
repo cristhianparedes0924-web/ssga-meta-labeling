@@ -1,0 +1,128 @@
+# PrimaryV1.1 Canonical Baseline Configuration
+# Stage 1 freeze artifact for reproducible control runs.
+
+experiment:
+  name: "m1_canonical_baseline"
+  stage: "stage_1_freeze"
+
+model:
+  canonical_id: "PrimaryV1.1-baseline"
+  version: "1.1"
+  description: "Frozen control specification for all future M1 experiments."
+
+paths:
+  root: "artifacts"
+
+run:
+  validate_determinism: true
+  determinism_runs: 2
+  aggregation_mode: "equal_weight"
+  out_dir: "reports/reproducibility"
+
+timing:
+  frequency: "monthly_end_of_period"
+  decision_timestamp: "month_end_t"
+  execution_return_application: "returns_at_t_plus_1"
+  lookahead_policy: "strict_causal_history_only"
+
+data:
+  universe_assets:
+    - "spx"
+    - "bcom"
+    - "treasury_10y"
+    - "corp_bonds"
+  raw_sources:
+    spx: "artifacts/data/raw/spx.xlsx"
+    bcom: "artifacts/data/raw/bcom.xlsx"
+    treasury_10y: "artifacts/data/raw/treasury_10y.xlsx"
+    corp_bonds: "artifacts/data/raw/corp_bonds.xlsx"
+  required_raw_columns:
+    - "Date"
+    - "PX_LAST"
+    - "CHG_PCT_1D"
+  canonical_columns:
+    - "Date"
+    - "Price"
+    - "Return"
+  cleaning_notes:
+    - "Return percent strings are converted to decimal returns."
+    - "Rows are sorted by Date and invalid Date/Price rows are dropped."
+
+transformations:
+  treasury_total_return_proxy:
+    enabled: true
+    method: "duration_based_yield_level_approximation"
+    duration: 8.5
+    include_carry: true
+    periods_per_year: 12
+    formula: "return_t = -duration * (yield_t - yield_t-1) + yield_t-1 / 12"
+
+signal:
+  required_assets:
+    - "spx"
+    - "bcom"
+    - "treasury_10y"
+    - "corp_bonds"
+  indicators:
+    spx_trend:
+      definition: "spx_price_t / SMA_12(spx_price)_t - 1"
+      params:
+        trend_window: 12
+    bcom_trend:
+      definition: "bcom_price_t / SMA_12(bcom_price)_t - 1"
+      params:
+        trend_window: 12
+    credit_vs_rates:
+      definition: "SMA_3(corp_return_t - treasury_return_t)"
+      params:
+        relative_window: 3
+    risk_breadth:
+      definition: "SMA_3(mean(spx_return_t, bcom_return_t, corp_return_t) - treasury_return_t)"
+      params:
+        relative_window: 3
+  normalization:
+    method: "expanding_zscore_with_lagged_history"
+    min_periods: 12
+    ddof: 1
+    policy: "z_t uses history up to t-1 only"
+  composite:
+    method: "equal_weight_average_of_indicator_zscores"
+    aggregation_mode: "equal_weight"
+    fallback: "equal_weight_when_insufficient_history_or_all_masked"
+  thresholds:
+    buy: 0.0001
+    sell: -0.0001
+    hold: "between sell and buy inclusive"
+
+allocation:
+  long_only: true
+  rebalance_mode: "monthly"
+  pre_signal_mode: "equal_weight"
+  hold_mode: "carry"
+  signal_to_weights:
+    BUY:
+      spx: 0.3333333333
+      bcom: 0.3333333333
+      corp_bonds: 0.3333333333
+      treasury_10y: 0.0
+    SELL:
+      spx: 0.0
+      bcom: 0.0
+      corp_bonds: 0.0
+      treasury_10y: 1.0
+    HOLD:
+      behavior: "carry_previous_weights"
+
+costs:
+  transaction_cost_bps: 0.0
+  turnover_formula: "0.5 * sum(abs(w_t - w_t-1))"
+
+outputs:
+  canonical_artifacts:
+    - "reports/data_qc.html"
+    - "reports/primary_v1_backtest.csv"
+    - "reports/primary_v1_summary.csv"
+    - "reports/primary_v1_signal.csv"
+    - "reports/primary_v1_weights.csv"
+    - "reports/benchmarks_summary.csv"
+    - "reports/benchmarks_summary.html"

@@ -1,0 +1,30 @@
+# Signal Validation Experiment Config (Stage 2)
+
+experiment:
+  name: "signal_validation_stage2"
+
+run:
+  duration: 8.5
+  buy_threshold: 0.0001
+  sell_threshold: -0.0001
+  risk_on_assets: "spx,bcom,corp_bonds"
+  risk_off_asset: "treasury_10y"
+  bins: 10
+  top_quantile: 0.75
+  bottom_quantile: 0.25
+  bootstrap_samples: 2000
+  bootstrap_seed: 42
+  min_pairs: 36
+  subperiods:
+    - label: "1996-2003"
+      start: "1996-01-01"
+      end: "2003-12-31"
+    - label: "2004-2012"
+      start: "2004-01-01"
+      end: "2012-12-31"
+    - label: "2013-2019"
+      start: "2013-01-01"
+      end: "2019-12-31"
+    - label: "2020-2025"
+      start: "2020-01-01"
+      end: "2025-12-31"

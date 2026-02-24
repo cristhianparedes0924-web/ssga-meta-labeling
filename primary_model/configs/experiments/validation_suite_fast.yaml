@@ -1,0 +1,15 @@
+# Validation Suite Fast Config
+# Optimized for development loops by skipping redundant steps and using lightweight experiment configs.
+
+experiment:
+  name: "validation_suite_fast"
+
+run:
+  skip_pytest: true
+  skip_run_all: true
+  skip_robustness: false
+  skip_walk_forward: false
+  run_m1_readiness: false
+  robustness_config: "configs/experiments/robustness_fast.yaml"
+  walk_forward_config: "configs/experiments/walk_forward_fast.yaml"
+  m1_readiness_config: "configs/experiments/m1_readiness.yaml"

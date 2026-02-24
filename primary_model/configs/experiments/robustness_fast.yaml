@@ -1,0 +1,11 @@
+# Robustness Fast Config
+# Reduced grid for quick iteration; use robustness.yaml for full research runs.
+
+experiment:
+  name: "robustness_fast"
+
+run:
+  tcost_grid_bps: "0,10"
+  buy_grid: "0.0001,0.25"
+  sell_grid: "-0.0001,-0.25"
+  duration_grid: "8.5,10.0"

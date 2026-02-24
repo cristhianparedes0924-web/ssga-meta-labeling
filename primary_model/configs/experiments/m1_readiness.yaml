@@ -1,0 +1,27 @@
+# M1 Readiness Gate Config (Stage 5)
+
+experiment:
+  name: "m1_readiness_stage5"
+
+run:
+  criteria_version: "m1_readiness_v1"
+  out_dir: "reports/readiness"
+  signal_validation_dir: "reports/signal_validation"
+  ablations_dir: "reports/ablations"
+  decision_diagnostics_dir: "reports/decision_diagnostics"
+  decision_variant: "dynamic_all"
+
+  # Signal quality thresholds
+  min_composite_spearman: 0.0
+  max_composite_pvalue: 0.25
+  min_monotonic_top_bottom_gap: 0.0
+  min_positive_subperiod_fraction: 0.75
+
+  # Ablation robustness thresholds
+  max_single_indicator_dominance_ratio: 1.15
+  max_loo_sharpe_drop: 0.25
+
+  # Decision-quality thresholds
+  min_transition_avg_switch_value: 0.0
+  max_false_flip_rate: 0.60
+  min_net_transition_after_whipsaw: 0.0

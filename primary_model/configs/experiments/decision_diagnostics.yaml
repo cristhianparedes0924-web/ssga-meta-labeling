@@ -1,0 +1,18 @@
+# Decision Diagnostics Config (Stage 4)
+
+experiment:
+  name: "decision_diagnostics_stage4"
+
+run:
+  duration: 8.5
+  buy_threshold: 0.0001
+  sell_threshold: -0.0001
+  tcost_bps: 0.0
+  bins: 10
+  min_pairs: 36
+  variants: "dynamic_all,equal_weight_all"
+  risk_on_assets: "spx,bcom,corp_bonds"
+  risk_off_assets: "treasury_10y"
+  trend_window: 12
+  relative_window: 3
+  zscore_min_periods: 12

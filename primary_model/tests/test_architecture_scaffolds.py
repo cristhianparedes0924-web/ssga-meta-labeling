@@ -3,8 +3,6 @@ Tests for architecture scaffolds.
 Validates that new packages are import-safe and that their paths cleanly resolve.
 """
 
-from pathlib import Path
-
 def test_utils_paths_resolve():
     """Verify that the utils package exposes and resolves paths properly."""
     from primary_model.utils.paths import get_project_root, get_artifacts_root
@@ -51,6 +49,9 @@ def test_research_scaffolds_import():
     import primary_model.research.ablations
     import primary_model.research.sensitivity
     import primary_model.research.subperiods
+    import primary_model.research.signal_validation
+    import primary_model.research.decision_diagnostics
+    import primary_model.research.m1_readiness
     
     assert hasattr(primary_model.research.walk_forward, "run_experiment")
 

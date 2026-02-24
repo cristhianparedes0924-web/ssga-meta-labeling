@@ -1,0 +1,13 @@
+# Walk-Forward Fast Config
+# Uses cached causal engine for fast development iteration.
+
+experiment:
+  name: "walk_forward_fast"
+
+run:
+  min_train_periods: 120
+  duration: 8.5
+  buy_threshold: 0.0001
+  sell_threshold: -0.0001
+  tcost_bps: 0.0
+  engine_mode: "cached_causal"

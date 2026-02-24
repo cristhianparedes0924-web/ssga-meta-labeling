@@ -8,7 +8,12 @@ from typing import Any, Mapping
 
 import pandas as pd
 
-from primary_model.analytics.performance import perf_table
+from primary_model.analytics.performance import (
+    annualized_return,
+    annualized_vol,
+    max_drawdown,
+    sharpe_ratio,
+)
 from primary_model.backtest.engine import backtest_from_weights
 from primary_model.data.loader import (
     DEFAULT_ASSETS,
@@ -29,6 +34,35 @@ class RobustnessRunConfig:
     buy_grid: list[float]
     sell_grid: list[float]
     duration_grid: list[float]
+
+
+def _scenario_metrics_from_base(
+    base_backtest: pd.DataFrame,
+    tcost_bps: float,
+) -> dict[str, float]:
+    gross = pd.to_numeric(base_backtest["gross_return"], errors="coerce")
+    turnover = pd.to_numeric(base_backtest["turnover"], errors="coerce")
+    net = gross - turnover * (tcost_bps / 10000.0)
+    equity_net = (1.0 + net).cumprod()
+
+    ann_return = annualized_return(net, periods_per_year=12)
+    ann_vol = annualized_vol(net, periods_per_year=12)
+    sharpe = sharpe_ratio(net, rf_annual=0.0, periods_per_year=12)
+    mdd = max_drawdown(equity_net)
+    calmar = float("nan")
+    if pd.notna(ann_return) and pd.notna(mdd) and mdd < 0.0:
+        calmar = float(ann_return / abs(mdd))
+
+    return {
+        "ann_return": float(ann_return),
+        "ann_vol": float(ann_vol),
+        "sharpe": float(sharpe),
+        "max_drawdown": float(mdd),
+        "calmar": float(calmar),
+        "avg_turnover": float(turnover.mean()),
+        "ending_equity_net": float(equity_net.iloc[-1]),
+        "periods": int(len(base_backtest)),
+    }
 
 
 def _parse_float_list(value: str) -> list[float]:
@@ -125,17 +159,20 @@ def run_experiment(
                     returns_columns=list(returns.columns),
                 )
                 weights = weights.reindex(returns.index).ffill().fillna(equal_weight_row)
+                base_backtest = backtest_from_weights(
+                    returns=returns,
+                    weights=weights,
+                    tcost_bps=0.0,
+                )
 
                 scenario_counter += 1
                 scenario_name = f"S{scenario_counter:03d}"
 
                 for tcost_bps in run_config.tcost_grid:
-                    backtest = backtest_from_weights(
-                        returns=returns,
-                        weights=weights,
+                    metrics = _scenario_metrics_from_base(
+                        base_backtest=base_backtest,
                         tcost_bps=tcost_bps,
                     )
-                    summary = perf_table({"PrimaryV1": backtest}).iloc[0]
 
                     rows.append(
                         {
@@ -144,17 +181,17 @@ def run_experiment(
                             "buy_threshold": buy_threshold,
                             "sell_threshold": sell_threshold,
                             "tcost_bps": tcost_bps,
-                            "ann_return": float(summary["ann_return"]),
-                            "ann_vol": float(summary["ann_vol"]),
-                            "sharpe": float(summary["sharpe"]),
-                            "max_drawdown": float(summary["max_drawdown"]),
-                            "calmar": float(summary["calmar"]),
-                            "avg_turnover": float(summary["avg_turnover"]),
-                            "ending_equity_net": float(backtest["equity_net"].iloc[-1]),
+                            "ann_return": metrics["ann_return"],
+                            "ann_vol": metrics["ann_vol"],
+                            "sharpe": metrics["sharpe"],
+                            "max_drawdown": metrics["max_drawdown"],
+                            "calmar": metrics["calmar"],
+                            "avg_turnover": metrics["avg_turnover"],
+                            "ending_equity_net": metrics["ending_equity_net"],
                             "buy_count": int(signal_counts["BUY"]),
                             "hold_count": int(signal_counts["HOLD"]),
                             "sell_count": int(signal_counts["SELL"]),
-                            "periods": int(len(backtest)),
+                            "periods": metrics["periods"],
                         }
                     )
 

@@ -1,0 +1,19 @@
+# PrimaryV1.1 Fast Baseline Config
+# Single-run baseline for development loop; canonical baseline remains m1_canonical_v1_1.yaml.
+
+experiment:
+  name: "m1_canonical_baseline_fast"
+  stage: "stage_1_freeze_fast"
+
+model:
+  canonical_id: "PrimaryV1.1-baseline-fast"
+  version: "1.1-fast"
+
+paths:
+  root: "artifacts"
+
+run:
+  validate_determinism: false
+  determinism_runs: 1
+  aggregation_mode: "equal_weight"
+  out_dir: "reports/reproducibility"

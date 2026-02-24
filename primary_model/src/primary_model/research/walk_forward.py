@@ -30,6 +30,7 @@ class WalkForwardRunConfig:
     buy_threshold: float
     sell_threshold: float
     tcost_bps: float
+    engine_mode: str
 
 
 def _resolve_run_config(
@@ -48,9 +49,13 @@ def _resolve_run_config(
     buy_override = getattr(cli_args, "buy_threshold", None) if cli_args else None
     sell_override = getattr(cli_args, "sell_threshold", None) if cli_args else None
     tcost_override = getattr(cli_args, "tcost_bps", None) if cli_args else None
+    engine_mode_override = getattr(cli_args, "engine_mode", None) if cli_args else None
 
     root = Path(root_override or paths_cfg.get("root", "artifacts")).resolve()
     out_dir = Path(out_dir_override or (root / "reports" / "walk_forward")).resolve()
+    engine_mode = str(engine_mode_override or run_cfg.get("engine_mode", "recompute_history"))
+    if engine_mode not in {"cached_causal", "recompute_history"}:
+        raise ValueError("run.engine_mode must be one of {'cached_causal', 'recompute_history'}.")
 
     return WalkForwardRunConfig(
         root=root,
@@ -60,10 +65,20 @@ def _resolve_run_config(
         buy_threshold=float(buy_override or run_cfg.get("buy_threshold", 0.0001)),
         sell_threshold=float(sell_override or run_cfg.get("sell_threshold", -0.0001)),
         tcost_bps=float(tcost_override or run_cfg.get("tcost_bps", 0.0)),
+        engine_mode=engine_mode,
     )
 
 
-def _strict_walk_forward(
+def _normalize_weight_row(weight_row: pd.Series) -> pd.Series:
+    weight_t = pd.to_numeric(weight_row, errors="coerce").fillna(0.0)
+    weight_t = weight_t.clip(lower=0.0)
+    denom = float(weight_t.sum())
+    if denom > 0.0:
+        weight_t = weight_t / denom
+    return weight_t
+
+
+def _walk_forward_recompute_history(
     adjusted_universe: dict[str, pd.DataFrame],
     returns: pd.DataFrame,
     min_train_periods: int,
@@ -95,11 +110,65 @@ def _strict_walk_forward(
         signal_t = str(signal_series.iloc[-1]) if pd.notna(signal_series.iloc[-1]) else "NaN"
 
         weights_hist = weights_from_primary_signal(signal_series, returns_columns=columns)
-        weight_t = pd.to_numeric(weights_hist.iloc[-1], errors="coerce").fillna(0.0)
-        weight_t = weight_t.clip(lower=0.0)
-        denom = float(weight_t.sum())
-        if denom > 0.0:
-            weight_t = weight_t / denom
+        weight_t = _normalize_weight_row(weights_hist.iloc[-1])
+
+        next_rets = returns.loc[realized_date, columns]
+        gross_return = float((weight_t * next_rets).sum())
+
+        if prev_weight is None:
+            turnover = 0.0
+        else:
+            turnover = 0.5 * float((weight_t - prev_weight).abs().sum())
+        cost = turnover * (tcost_bps / 10000.0)
+        net_return = gross_return - cost
+
+        row: dict[str, float | str | pd.Timestamp] = {
+            "decision_date": decision_date,
+            "realized_date": realized_date,
+            "signal": signal_t,
+            "gross_return": gross_return,
+            "net_return": net_return,
+            "turnover": turnover,
+        }
+        for col in columns:
+            row[f"w_{col}"] = float(weight_t[col])
+
+        rows.append(row)
+        prev_weight = weight_t
+
+    out = pd.DataFrame(rows).set_index("decision_date").sort_index()
+    out["equity_gross"] = (1.0 + out["gross_return"]).cumprod()
+    out["equity_net"] = (1.0 + out["net_return"]).cumprod()
+    return out
+
+
+def _walk_forward_cached_causal(
+    returns: pd.DataFrame,
+    signal_series: pd.Series,
+    weights: pd.DataFrame,
+    min_train_periods: int,
+    tcost_bps: float,
+) -> pd.DataFrame:
+    """Fast causal engine: compute full causal signal once, then slice OOS decisions."""
+    if len(returns) <= min_train_periods + 1:
+        raise ValueError("Not enough data for requested min_train_periods.")
+
+    columns = list(returns.columns)
+    rows: list[dict[str, float | str | pd.Timestamp]] = []
+    prev_weight: pd.Series | None = None
+
+    aligned_signal = signal_series.reindex(returns.index)
+    aligned_weights = weights.reindex(returns.index).ffill()
+    equal_weight_row = pd.Series(1.0 / len(columns), index=columns, dtype=float)
+    aligned_weights = aligned_weights.fillna(equal_weight_row)
+
+    for i in range(min_train_periods - 1, len(returns.index) - 1):
+        decision_date = returns.index[i]
+        realized_date = returns.index[i + 1]
+
+        raw_signal = aligned_signal.loc[decision_date]
+        signal_t = str(raw_signal) if pd.notna(raw_signal) else "NaN"
+        weight_t = _normalize_weight_row(aligned_weights.loc[decision_date])
 
         next_rets = returns.loc[realized_date, columns]
         gross_return = float((weight_t * next_rets).sum())
@@ -144,15 +213,6 @@ def run_experiment(
     adjusted_universe = apply_treasury_total_return(universe, duration=run_config.duration)
     returns = universe_returns_matrix(adjusted_universe)
 
-    wf_backtest = _strict_walk_forward(
-        adjusted_universe=adjusted_universe,
-        returns=returns,
-        min_train_periods=run_config.min_train_periods,
-        buy_threshold=run_config.buy_threshold,
-        sell_threshold=run_config.sell_threshold,
-        tcost_bps=run_config.tcost_bps,
-    )
-
     full_signals = build_primary_signal_variant1(
         adjusted_universe,
         buy_threshold=run_config.buy_threshold,
@@ -166,6 +226,25 @@ def run_experiment(
         1.0 / len(returns.columns), index=returns.columns, dtype=float
     )
     full_weights = full_weights.reindex(returns.index).ffill().fillna(equal_weight_row)
+
+    if run_config.engine_mode == "cached_causal":
+        wf_backtest = _walk_forward_cached_causal(
+            returns=returns,
+            signal_series=full_signals["signal"],
+            weights=full_weights,
+            min_train_periods=run_config.min_train_periods,
+            tcost_bps=run_config.tcost_bps,
+        )
+    else:
+        wf_backtest = _walk_forward_recompute_history(
+            adjusted_universe=adjusted_universe,
+            returns=returns,
+            min_train_periods=run_config.min_train_periods,
+            buy_threshold=run_config.buy_threshold,
+            sell_threshold=run_config.sell_threshold,
+            tcost_bps=run_config.tcost_bps,
+        )
+
     full_backtest = backtest_from_weights(
         returns=returns,
         weights=full_weights,
@@ -197,6 +276,7 @@ def run_experiment(
         "- Train window: expanding from first observation to decision date `t`.",
         "- Decision at `t`: compute signal using only data through `t`.",
         "- Realization at `t+1`: apply weight decided at `t` to next-period return.",
+        f"- Engine mode: `{run_config.engine_mode}`.",
         (
             "- Minimum train periods before first OOS decision: "
             f"`{run_config.min_train_periods}`."
@@ -223,4 +303,5 @@ def run_experiment(
         "artifacts_written": 4,
         "out_dir": str(run_config.out_dir),
         "periods_evaluated": len(wf_backtest),
+        "engine_mode": run_config.engine_mode,
     }

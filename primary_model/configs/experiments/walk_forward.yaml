@@ -10,3 +10,4 @@ run:
   buy_threshold: 0.0001
   sell_threshold: -0.0001
   tcost_bps: 0.0
+  engine_mode: "recompute_history"

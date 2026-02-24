@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 
 _REQUIRED_ASSETS = ("spx", "bcom", "treasury_10y", "corp_bonds")
+_VALID_AGGREGATION_MODES = {"dynamic", "equal_weight"}
 
 
 def expanding_zscore(
@@ -158,16 +159,31 @@ def _dynamic_composite_score(zscores: pd.DataFrame, target_ret: pd.Series) -> pd
     return (zscores * weights).sum(axis=1).rename("composite_score")
 
 
+def _validate_aggregation_mode(aggregation_mode: str) -> str:
+    mode = str(aggregation_mode).strip().lower()
+    if mode not in _VALID_AGGREGATION_MODES:
+        raise ValueError(
+            "aggregation_mode must be one of {'dynamic', 'equal_weight'}."
+        )
+    return mode
+
+
 def build_primary_signal_variant1(
     universe: dict[str, pd.DataFrame],
     trend_window: int = 12,
     relative_window: int = 3,
     zscore_min_periods: int = 12,
+    aggregation_mode: str = "dynamic",
     indicator_weights: Mapping[str, float] | None = None,
     buy_threshold: float = 0.0001,
     sell_threshold: float = -0.0001,
 ) -> pd.DataFrame:
-    """Build Variant 1 indicators, z-scores, composite score, and signal."""
+    """Build Variant 1 indicators, z-scores, composite score, and signal.
+
+    When `indicator_weights` is provided, those explicit weights are used regardless
+    of `aggregation_mode`.
+    """
+    mode = _validate_aggregation_mode(aggregation_mode)
     indicators = build_variant1_indicators(
         universe=universe,
         trend_window=trend_window,
@@ -181,12 +197,16 @@ def build_primary_signal_variant1(
     )
     zscores.columns = [f"{col}_z" for col in zscores.columns]
 
-    if indicator_weights is None:
+    if indicator_weights is not None:
+        score = composite_score(zscores=zscores, weights=indicator_weights).rename(
+            "composite_score"
+        )
+    elif mode == "dynamic":
         spx_price = pd.to_numeric(universe["spx"]["Price"], errors="coerce")
         target_ret = spx_price.pct_change()
         score = _dynamic_composite_score(zscores=zscores, target_ret=target_ret)
     else:
-        score = composite_score(zscores=zscores, weights=indicator_weights).rename("composite_score")
+        score = composite_score(zscores=zscores).rename("composite_score")
 
     signal = score_to_signal(
         score=score,

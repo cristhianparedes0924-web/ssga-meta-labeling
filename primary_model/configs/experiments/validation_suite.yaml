@@ -6,5 +6,10 @@ experiment:
 
 run:
   skip_pytest: false
+  skip_run_all: false
   skip_robustness: false
   skip_walk_forward: false
+  run_m1_readiness: false
+  robustness_config: "configs/experiments/robustness.yaml"
+  walk_forward_config: "configs/experiments/walk_forward.yaml"
+  m1_readiness_config: "configs/experiments/m1_readiness.yaml"

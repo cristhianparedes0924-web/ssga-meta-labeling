@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "checks": {
+    "contribution_ranking_clear_and_reproducible": true,
+    "no_hidden_dependence_undocumented": true,
+    "composite_logic_justified_by_evidence_not_assumption": true
+  },
+  "details": {
+    "baseline_sharpe": 0.8378592241870834,
+    "equal_weight_sharpe": 0.9337938790632342,
+    "recommended_aggregation": "equal_weight",
+    "dynamic_minus_equal_sharpe": -0.09593465487615083,
+    "best_single_variant": "single_indicator_spx_trend",
+    "best_single_sharpe": 0.9167728214768568,
+    "worst_single_variant": "single_indicator_bcom_trend",
+    "worst_single_sharpe": 0.610911974125624,
+    "single_indicator_dominance_ratio_vs_baseline": 1.0941847926378536,
+    "largest_sharpe_drop_removed_indicator": "risk_breadth",
+    "largest_sharpe_drop_value": 0.01664526642044284,
+    "top_3_sensitivity_contributors": [
+      {
+        "removed_indicator": "risk_breadth",
+        "sharpe_drop_vs_baseline": 0.01664526642044284
+      },
+      {
+        "removed_indicator": "credit_vs_rates",
+        "sharpe_drop_vs_baseline": -0.010715955663435639
+      },
+      {
+        "removed_indicator": "spx_trend",
+        "sharpe_drop_vs_baseline": -0.047851033370951535
+      }
+    ],
+    "complete_indicator_coverage": true
+  },
+  "findings": {
+    "dynamic_underperforms_equal_weight": true,
+    "single_indicator_outperforms_baseline": true
+  }
+}

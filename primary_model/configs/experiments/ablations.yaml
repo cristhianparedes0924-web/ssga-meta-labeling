@@ -1,0 +1,15 @@
+# Ablation Suite Config (Stage 3)
+
+experiment:
+  name: "ablations_stage3"
+
+run:
+  duration: 8.5
+  buy_threshold: 0.0001
+  sell_threshold: -0.0001
+  tcost_bps: 0.0
+  trend_window: 12
+  relative_window: 3
+  zscore_min_periods: 12
+  pre_signal_mode: "equal_weight"
+  hold_mode: "carry"

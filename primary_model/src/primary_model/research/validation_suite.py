@@ -27,8 +27,13 @@ class ValidationSuiteRunConfig:
     target_root_relative: Path
     clean_root: bool
     skip_pytest: bool
+    skip_run_all: bool
     skip_robustness: bool
     skip_walk_forward: bool
+    run_m1_readiness: bool
+    robustness_config: Path
+    walk_forward_config: Path
+    m1_readiness_config: Path
 
 
 def _git_commit_sha(project_root: Path) -> str:
@@ -123,22 +128,45 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _artifact_key(path: Path, project_root: Path) -> str:
+    try:
+        return str(path.relative_to(project_root))
+    except ValueError:
+        return str(path)
+
+
 def _resolve_run_config(
     project_root: Path,
     target_root_relative: Path,
     clean_root: bool,
     skip_pytest: bool,
+    skip_run_all: bool,
     skip_robustness: bool,
     skip_walk_forward: bool,
+    run_m1_readiness: bool,
+    robustness_config: Path,
+    walk_forward_config: Path,
+    m1_readiness_config: Path,
 ) -> ValidationSuiteRunConfig:
     return ValidationSuiteRunConfig(
         project_root=project_root,
         target_root_relative=target_root_relative,
         clean_root=clean_root,
         skip_pytest=skip_pytest,
+        skip_run_all=skip_run_all,
         skip_robustness=skip_robustness,
         skip_walk_forward=skip_walk_forward,
+        run_m1_readiness=run_m1_readiness,
+        robustness_config=robustness_config,
+        walk_forward_config=walk_forward_config,
+        m1_readiness_config=m1_readiness_config,
     )
+
+
+def _resolve_project_config_path(project_root: Path, config_path: Path) -> Path:
+    if config_path.is_absolute():
+        return config_path
+    return (project_root / config_path).resolve()
 
 
 def run_experiment(
@@ -146,8 +174,13 @@ def run_experiment(
     target_root_relative: Path,
     clean_root: bool,
     skip_pytest: bool,
+    skip_run_all: bool,
     skip_robustness: bool,
     skip_walk_forward: bool,
+    run_m1_readiness: bool = False,
+    robustness_config: Path = Path("configs/experiments/robustness.yaml"),
+    walk_forward_config: Path = Path("configs/experiments/walk_forward.yaml"),
+    m1_readiness_config: Path = Path("configs/experiments/m1_readiness.yaml"),
 ) -> int:
     """
     Execute the full validation suite natively where possible.
@@ -158,8 +191,13 @@ def run_experiment(
         target_root_relative=target_root_relative,
         clean_root=clean_root,
         skip_pytest=skip_pytest,
+        skip_run_all=skip_run_all,
         skip_robustness=skip_robustness,
         skip_walk_forward=skip_walk_forward,
+        run_m1_readiness=run_m1_readiness,
+        robustness_config=robustness_config,
+        walk_forward_config=walk_forward_config,
+        m1_readiness_config=m1_readiness_config,
     )
 
     target_root = (run_config.project_root / run_config.target_root_relative).resolve()
@@ -198,26 +236,31 @@ def run_experiment(
             return 1
 
     # 3. CLI Run-All Main Pipeline (Subprocess - External Boundary for now as `cli.py` is an independent router)
-    cli_cmd = [
-        sys.executable,
-        "cli.py",
-        "run-all",
-        "--root",
-        str(run_config.target_root_relative),
-    ]
-    manifest_commands.append(" ".join(cli_cmd))
-    if not _run_and_log_subprocess(
-        cli_cmd, repro_dir / "03_cli_run_all.log", run_config.project_root
-    ):
-        return 1
+    if not run_config.skip_run_all:
+        cli_cmd = [
+            sys.executable,
+            "cli.py",
+            "run-all",
+            "--root",
+            str(run_config.target_root_relative),
+        ]
+        manifest_commands.append(" ".join(cli_cmd))
+        if not _run_and_log_subprocess(
+            cli_cmd, repro_dir / "03_cli_run_all.log", run_config.project_root
+        ):
+            return 1
 
     # 4. Robustness Grid (Native Execution)
     if not run_config.skip_robustness:
         manifest_commands.append("import research.robustness.run_experiment(...)")
         from primary_model.research.robustness import run_experiment as run_robustness
         from primary_model.utils.config_loader import load_merged_config
+        robustness_config = _resolve_project_config_path(
+            run_config.project_root,
+            run_config.robustness_config,
+        )
         config = load_merged_config(
-            "base.yaml", Path("configs/experiments/robustness.yaml")
+            "base.yaml", robustness_config
         )
 
         ok = _run_and_log_native(
@@ -235,8 +278,12 @@ def run_experiment(
         manifest_commands.append("import research.walk_forward.run_experiment(...)")
         from primary_model.research.walk_forward import run_experiment as run_walk_forward
         from primary_model.utils.config_loader import load_merged_config
+        walk_forward_config = _resolve_project_config_path(
+            run_config.project_root,
+            run_config.walk_forward_config,
+        )
         config = load_merged_config(
-            "base.yaml", Path("configs/experiments/walk_forward.yaml")
+            "base.yaml", walk_forward_config
         )
 
         ok = _run_and_log_native(
@@ -249,12 +296,39 @@ def run_experiment(
         if not ok:
             return 1
 
-    # 6. Artifact Compilation
+    # 6. Optional Stage 5 Readiness Hook (Native Execution)
+    if run_config.run_m1_readiness:
+        manifest_commands.append("import research.m1_readiness.run_experiment(...)")
+        from primary_model.research.m1_readiness import run_experiment as run_m1_readiness
+        from primary_model.utils.config_loader import load_merged_config
+        m1_readiness_config = _resolve_project_config_path(
+            run_config.project_root,
+            run_config.m1_readiness_config,
+        )
+
+        config = load_merged_config(
+            "base.yaml", m1_readiness_config
+        )
+        # Route readiness output into the isolated target root.
+        config.setdefault("paths", {})
+        config["paths"]["root"] = str(target_root)
+
+        ok = _run_and_log_native(
+            "research.m1_readiness.run_experiment",
+            run_m1_readiness,
+            repro_dir / "06_m1_readiness.log",
+            config=config,
+            cli_args=None,
+        )
+        if not ok:
+            return 1
+
+    # 7. Artifact Compilation
     artifacts: dict[str, str] = {}
     if reports_dir.exists():
         for path in sorted(reports_dir.rglob("*")):
             if path.is_file():
-                artifacts[str(path.relative_to(run_config.project_root))] = _sha256(path)
+                artifacts[_artifact_key(path, run_config.project_root)] = _sha256(path)
 
     manifest = {
         "created_utc": datetime.now(timezone.utc).isoformat(),

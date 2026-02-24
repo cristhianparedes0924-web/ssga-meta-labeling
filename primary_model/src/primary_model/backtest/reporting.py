@@ -101,7 +101,7 @@ def plot_rolling_sharpe(
     return path
 
 
-def run_primary_variant1(root: Path) -> None:
+def run_primary_variant1(root: Path, aggregation_mode: str = "equal_weight") -> None:
     """Run primary strategy pipeline and save backtest summary outputs."""
     clean_dir = root / "data" / "clean"
     reports_dir = root / "reports"
@@ -109,7 +109,10 @@ def run_primary_variant1(root: Path) -> None:
 
     universe = load_universe(clean_dir, DEFAULT_ASSETS)
     adj_universe = apply_treasury_total_return(universe, duration=8.5)
-    signals = build_primary_signal_variant1(adj_universe)
+    signals = build_primary_signal_variant1(
+        adj_universe,
+        aggregation_mode=aggregation_mode,
+    )
     returns = universe_returns_matrix(adj_universe)
 
     weights_raw = weights_from_primary_signal(
@@ -140,6 +143,7 @@ def run_primary_variant1(root: Path) -> None:
     print()
 
     print(f"Average turnover: {avg_turnover:.6f}")
+    print(f"Aggregation mode: {aggregation_mode}")
 
     backtest_path = reports_dir / "primary_v1_backtest.csv"
     summary_path = reports_dir / "primary_v1_summary.csv"

@@ -36,6 +36,15 @@ from primary_model.portfolio.weights import weights_from_primary_signal
 from primary_model.signals.variant1 import build_primary_signal_variant1
 
 
+def _resolve_aggregation_mode(config: dict, cli_args: Any = None) -> str:
+    run_cfg = config.get("run", {})
+    cli_mode = getattr(cli_args, "aggregation_mode", None) if cli_args else None
+    mode = str(cli_mode or run_cfg.get("aggregation_mode", "equal_weight")).strip().lower()
+    if mode not in {"dynamic", "equal_weight"}:
+        raise ValueError("run.aggregation_mode must be one of {'dynamic', 'equal_weight'}.")
+    return mode
+
+
 def run_experiment(
     config: dict,
     cli_args: Any = None,
@@ -45,9 +54,11 @@ def run_experiment(
         A dict holding the paths to generated artifacts and execution summary stats.
     """
     paths_cfg = config.get("paths", {})
-    run_cfg = config.get("run", {})
-    
-    root = (cli_args.root if cli_args and getattr(cli_args, 'root', None) else Path(paths_cfg.get("root", "artifacts"))).resolve()
+    root = (
+        cli_args.root
+        if cli_args and getattr(cli_args, "root", None)
+        else Path(paths_cfg.get("root", "artifacts"))
+    ).resolve()
     
     clean_dir = root / "data" / "clean"
     reports_dir = root / "reports"
@@ -58,7 +69,11 @@ def run_experiment(
     universe = load_universe(clean_dir, DEFAULT_ASSETS)
     adj_universe = apply_treasury_total_return(universe, duration=8.5)
     returns = universe_returns_matrix(adj_universe)
-    primary_signals = build_primary_signal_variant1(adj_universe)
+    aggregation_mode = _resolve_aggregation_mode(config, cli_args=cli_args)
+    primary_signals = build_primary_signal_variant1(
+        adj_universe,
+        aggregation_mode=aggregation_mode,
+    )
 
     weights_by_name = {
         "EqualWeight25": weights_equal_weight(returns),
@@ -106,6 +121,7 @@ def run_experiment(
     print(primary_signal_counts.to_string())
     print()
     print(f"PrimaryV1 average turnover: {primary_avg_turnover:.6f}")
+    print(f"PrimaryV1 aggregation mode: {aggregation_mode}")
     print()
 
     print("Excess vs EqualWeight25:")
