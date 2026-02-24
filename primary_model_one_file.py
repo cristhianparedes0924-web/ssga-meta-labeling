@@ -898,7 +898,7 @@ def _asset_sanity_table(returns: pd.DataFrame) -> pd.DataFrame:
 def run_primary_variant1(root: Path) -> None:
     """Run primary strategy pipeline and save backtest summary outputs."""
     clean_dir = root / "data" / "clean"
-    reports_dir = root / "reports"
+    reports_dir = root / "reesults"
     reports_dir.mkdir(parents=True, exist_ok=True)
 
     universe = load_universe(clean_dir, DEFAULT_ASSETS)
@@ -947,7 +947,7 @@ def run_primary_variant1(root: Path) -> None:
 def run_benchmarks(root: Path) -> None:
     """Run benchmark comparisons and export summary reports/plots."""
     clean_dir = root / "data" / "clean"
-    reports_dir = root / "reports"
+    reports_dir = root / "reesults"
     reports_dir.mkdir(parents=True, exist_ok=True)
     assets_dir = reports_dir / "assets"
     assets_dir.mkdir(parents=True, exist_ok=True)
@@ -1135,7 +1135,7 @@ def annualized_stats(returns: pd.DataFrame) -> pd.DataFrame:
 def run_data_qc(root: Path) -> None:
     """Run data quality checks and write a compact HTML QC report."""
     clean_dir = root / "data" / "clean"
-    reports_dir = root / "reports"
+    reports_dir = root / "reesults"
     reports_dir.mkdir(parents=True, exist_ok=True)
     html_path = reports_dir / "data_qc.html"
 
@@ -1236,7 +1236,7 @@ def run_all(root: Path) -> None:
 
 def setup_test_root(
     target_root: Path = Path("test"),
-    source_raw: Path = Path("project_results/data/raw"),
+    source_raw: Path = Path("data/raw"),
     clean: bool = False,
 ) -> None:
     """Bootstrap an isolated test root with bundled raw input files."""
@@ -1248,7 +1248,7 @@ def setup_test_root(
 
     target_raw = target_root / "data" / "raw"
     target_clean = target_root / "data" / "clean"
-    target_reports = target_root / "reports"
+    target_reports = target_root / "reesults"
 
     if clean:
         if target_clean.exists():
@@ -1293,7 +1293,7 @@ def run_robustness(
 ) -> None:
     """Run robustness grid for costs, thresholds, and treasury duration."""
     root = root.resolve()
-    out_dir = (out_dir or (root / "reports" / "robustness")).resolve()
+    out_dir = (out_dir or (root / "reesults" / "robustness")).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
 
     tcost_grid = _parse_float_list(tcost_grid_bps)
@@ -1500,7 +1500,7 @@ def run_walk_forward(
 ) -> None:
     """Run strict walk-forward validation for PrimaryV1."""
     root = root.resolve()
-    out_dir = (out_dir or (root / "reports" / "walk_forward")).resolve()
+    out_dir = (out_dir or (root / "reesults" / "walk_forward")).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
 
     clean_dir = root / "data" / "clean"
@@ -1630,7 +1630,7 @@ def run_validation_suite(
 ) -> None:
     """Run full isolated validation suite and write reproducibility artifacts."""
     target_root = (PROJECT_ROOT / root).resolve()
-    reports_dir = target_root / "reports"
+    reports_dir = target_root / "reesults"
     repro_dir = reports_dir / "reproducibility"
     repro_dir.mkdir(parents=True, exist_ok=True)
 
@@ -1670,7 +1670,7 @@ def run_validation_suite(
                     "--root",
                     str(root),
                     "--out-dir",
-                    str(target_root / "reports" / "robustness"),
+                    str(target_root / "reesults" / "robustness"),
                 ],
             )
         )
@@ -1686,7 +1686,7 @@ def run_validation_suite(
                     "--root",
                     str(root),
                     "--out-dir",
-                    str(target_root / "reports" / "walk_forward"),
+                    str(target_root / "reesults" / "walk_forward"),
                 ],
             )
         )
@@ -1725,10 +1725,10 @@ def run_validation_suite(
         f"- Hashed artifacts: `{len(artifacts)}`",
         "",
         "## Key Outputs",
-        f"- `{target_root / 'reports' / 'benchmarks_summary.csv'}`",
-        f"- `{target_root / 'reports' / 'primary_v1_summary.csv'}`",
-        f"- `{target_root / 'reports' / 'robustness' / 'robustness_grid_results.csv'}`",
-        f"- `{target_root / 'reports' / 'walk_forward' / 'walk_forward_summary.csv'}`",
+        f"- `{target_root / 'reesults' / 'benchmarks_summary.csv'}`",
+        f"- `{target_root / 'reesults' / 'primary_v1_summary.csv'}`",
+        f"- `{target_root / 'reesults' / 'robustness' / 'robustness_grid_results.csv'}`",
+        f"- `{target_root / 'reesults' / 'walk_forward' / 'walk_forward_summary.csv'}`",
         f"- `{manifest_path}`",
     ]
     summary_path = repro_dir / "validation_summary.md"
@@ -1787,7 +1787,7 @@ def build_parser() -> argparse.ArgumentParser:
         "prepare-data": "Run raw Excel to clean CSV data preparation.",
         "data-qc": "Run data quality report generation.",
         "run-primary-v1": "Run PrimaryV1 strategy and summary output.",
-        "run-benchmarks": "Run benchmark suite and reports.",
+        "run-benchmarks": "Run benchmark suite and reesults.",
         "run-all": "Run full core pipeline (prepare-data, data-qc, strategy, benchmarks).",
     }
     for cmd, help_text in core_help.items():
@@ -1796,7 +1796,7 @@ def build_parser() -> argparse.ArgumentParser:
             "--root",
             type=Path,
             default=PROJECT_ROOT,
-            help="Project root containing data/, reports/, and inputs.",
+            help="Project root containing data/, reesults/, and inputs.",
         )
 
     mode_parser = subparsers.add_parser(
@@ -1825,13 +1825,13 @@ def build_parser() -> argparse.ArgumentParser:
     setup_parser.add_argument(
         "--source-raw",
         type=Path,
-        default=Path("project_results/data/raw"),
+        default=Path("data/raw"),
         help="Source raw-data directory with Excel files.",
     )
     setup_parser.add_argument(
         "--clean",
         action="store_true",
-        help="Remove existing target data/clean and reports before setup.",
+        help="Remove existing target data/clean and reesults before setup.",
     )
 
     robustness_parser = subparsers.add_parser(
@@ -1849,7 +1849,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--out-dir",
         type=Path,
         default=None,
-        help="Output directory (default: <root>/reports/robustness).",
+        help="Output directory (default: <root>/reesults/robustness).",
     )
     robustness_parser.add_argument(
         "--tcost-grid-bps",
@@ -1891,7 +1891,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--out-dir",
         type=Path,
         default=None,
-        help="Output directory (default: <root>/reports/walk_forward).",
+        help="Output directory (default: <root>/reesults/walk_forward).",
     )
     walk_parser.add_argument(
         "--min-train-periods",
@@ -1933,12 +1933,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--root",
         type=Path,
         default=Path("test"),
-        help="Isolated root for data/reports (default: test).",
+        help="Isolated root for data/reesults (default: test).",
     )
     validation_parser.add_argument(
         "--clean-root",
         action="store_true",
-        help="Clean target root reports/clean data before running.",
+        help="Clean target root reesults/clean data before running.",
     )
     validation_parser.add_argument(
         "--skip-pytest",
