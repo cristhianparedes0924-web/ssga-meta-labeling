@@ -1,0 +1,11 @@
+# Robustness Grid Experiment Config
+# Placeholder for future friction and threshold stress testing
+
+experiment:
+  name: "robustness_stress"
+
+run:
+  tcost_grid_bps: "0,5,10,25,50"
+  buy_grid: "0.0001,0.25,0.50"
+  sell_grid: "-0.0001,-0.25,-0.50"
+  duration_grid: "6.0,8.5,10.0"

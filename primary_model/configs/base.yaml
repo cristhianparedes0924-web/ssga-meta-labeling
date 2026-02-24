@@ -1,0 +1,9 @@
+# Base configuration for primary_model
+# Placeholder for future config-driven data processing and backtesting
+
+paths:
+  root: "artifacts"
+
+model:
+  name: "primary_v1"
+  version: "1.0"

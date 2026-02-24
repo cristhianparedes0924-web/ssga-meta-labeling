@@ -1,0 +1,31 @@
+Metadata-Version: 2.4
+Name: primary-model
+Version: 0.1.0
+Summary: Primary model research/backtesting pipeline
+Author: Primary Model Team
+License: Proprietary
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: numpy<3.0,>=1.26
+Requires-Dist: pandas<3.0,>=2.2
+Requires-Dist: matplotlib<4.0,>=3.8
+Requires-Dist: openpyxl<4.0,>=3.1
+Provides-Extra: dev
+Requires-Dist: pytest<9.0,>=8.2; extra == "dev"
+Requires-Dist: ruff<1.0,>=0.6; extra == "dev"
+
+# SSGA Meta Labeling - Primary Model
+
+Standalone primary-model research and backtesting pipeline.
+
+## Quick Start
+Please see `INSTRUCTIONS.txt` for a complete beginner-friendly runbook on how to install, configure data, and execute the project pipelines.
+
+## Architecture Documentation
+For deeper architectural details, package definitions, and design decisions, refer to `docs/architecture.md`.
+
+## Quality Checks
+To ensure structural integrity and mathematical correctness, simply run:
+```bash
+python -m pytest -q
+```

@@ -1,0 +1,12 @@
+# Walk-Forward Validation Experiment Config
+# Placeholder for future strict train/test window definitions
+
+experiment:
+  name: "walk_forward_strict"
+
+run:
+  min_train_periods: 120
+  duration: 8.5
+  buy_threshold: 0.0001
+  sell_threshold: -0.0001
+  tcost_bps: 0.0

@@ -28,7 +28,9 @@ primary-model = "cli:main"
 
 [tool.setuptools]
 py-modules = ["cli"]
-packages = ["backtest", "data", "portfolio", "qc", "signals"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.pytest.ini_options]
 addopts = "-q"

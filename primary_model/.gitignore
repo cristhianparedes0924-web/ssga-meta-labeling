@@ -1,11 +1,16 @@
 # Python
 __pycache__/
 *.py[cod]
+*.spyderproject
+.spyproject
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .coverage
 htmlcov/
+
+# Temporary output logs
+out_*.txt
 
 # Environments
 .venv/

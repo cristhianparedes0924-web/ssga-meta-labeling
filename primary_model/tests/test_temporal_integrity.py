@@ -3,8 +3,8 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from backtest.engine import backtest_from_weights
-from signals.variant1 import build_primary_signal_variant1, expanding_zscore
+from primary_model.backtest.engine import backtest_from_weights
+from primary_model.signals.variant1 import build_primary_signal_variant1, expanding_zscore
 
 
 def _mock_universe(periods: int = 96) -> dict[str, pd.DataFrame]:

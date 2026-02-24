@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Simple runner for project mode, test mode, or both."""
+"""Simple runner for project mode, artifacts mode, or both."""
+# ruff: noqa: E402
 
 from __future__ import annotations
 
@@ -8,10 +9,19 @@ import os
 import shlex
 import subprocess
 import sys
-from pathlib import Path
+
+try:
+    from ._bootstrap import ensure_project_on_path
+except ImportError:  # pragma: no cover - direct script execution path
+    from _bootstrap import ensure_project_on_path
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+ensure_project_on_path()
+
+from primary_model.utils.paths import get_artifacts_root, get_project_root
+
+PROJECT_ROOT = get_project_root()
+ARTIFACTS_ROOT = get_artifacts_root()
 
 
 def parse_args() -> argparse.Namespace:
@@ -20,7 +30,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--mode",
-        choices=["project", "test", "both"],
+        choices=["project", "artifacts", "both"],
         required=True,
         help="Which execution mode to run.",
     )
@@ -39,19 +49,26 @@ def _run(command: list[str]) -> None:
 def main() -> None:
     args = parse_args()
 
-    project_cmd = [sys.executable, "cli.py", "run-all"]
+    project_cmd = [
+        sys.executable,
+        "cli.py",
+        "run-all",
+        "--root",
+        str(ARTIFACTS_ROOT),
+    ]
     test_cmd = [
         sys.executable,
-        "scripts/run_validation_suite.py",
+        "cli.py",
+        "run-validation-suite",
         "--root",
-        "test",
+        str(ARTIFACTS_ROOT),
         "--clean-root",
     ]
 
     if args.mode == "project":
         _run(project_cmd)
         return
-    if args.mode == "test":
+    if args.mode == "artifacts":
         _run(test_cmd)
         return
 

@@ -1,4 +1,4 @@
-.PHONY: install install-dev test lint prepare-data data-qc run-primary-v1 run-benchmarks run-all setup-test run-all-test robustness-test walk-forward-test validate-test run-mode-project run-mode-test run-mode-both
+.PHONY: install install-dev test lint prepare-data data-qc run-primary-v1 run-benchmarks run-all run-all-test robustness-test walk-forward-test validate-test full-validate run-mode-project run-mode-artifacts run-mode-both
 
 install:
 	python -m pip install -e .
@@ -25,28 +25,32 @@ run-benchmarks:
 	python cli.py run-benchmarks
 
 run-all:
-	python cli.py run-all
-
-setup-test:
-	python scripts/setup_test_root.py --target-root test --clean
+	python cli.py run-all --root artifacts
 
 run-all-test:
-	python cli.py run-all --root test
+	python cli.py run-all --root artifacts
 
 robustness-test:
-	python scripts/run_robustness.py --root test --out-dir test/reports/robustness
+	python cli.py run-robustness --root artifacts --out-dir artifacts/reports/robustness
 
 walk-forward-test:
-	python scripts/run_walk_forward.py --root test --out-dir test/reports/walk_forward
+	python cli.py run-walk-forward --root artifacts --out-dir artifacts/reports/walk_forward
 
 validate-test:
-	python scripts/run_validation_suite.py --root test --clean-root
+	python cli.py run-validation-suite --root artifacts --clean-root
+
+full-validate:
+	python -m pytest -q
+	python cli.py run-all --root artifacts
+	python cli.py run-robustness --root artifacts --out-dir artifacts/reports/robustness
+	python cli.py run-walk-forward --root artifacts --out-dir artifacts/reports/walk_forward
+	python cli.py run-validation-suite --root artifacts --clean-root
 
 run-mode-project:
 	python scripts/run_modes.py --mode project
 
-run-mode-test:
-	python scripts/run_modes.py --mode test
+run-mode-artifacts:
+	python scripts/run_modes.py --mode artifacts
 
 run-mode-both:
 	python scripts/run_modes.py --mode both

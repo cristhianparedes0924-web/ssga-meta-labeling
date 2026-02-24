@@ -1,0 +1,10 @@
+# Full Validation Suite Config
+# Placeholder to define multi-stage methodology tests
+
+experiment:
+  name: "validation_suite"
+
+run:
+  skip_pytest: false
+  skip_robustness: false
+  skip_walk_forward: false

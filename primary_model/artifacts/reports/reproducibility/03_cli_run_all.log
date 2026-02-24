@@ -1,0 +1,137 @@
+$ /home/cristhian/miniconda3/bin/python cli.py run-all --root artifacts
+
+STDOUT:
+Preparing clean data files...
+[spx] rows=360 min_date=1996-01-31 max_date=2025-12-31
+      Date  Price  Return
+1996-01-31 636.02  0.0326
+1996-02-29 640.43  0.0069
+1996-03-29 645.50  0.0079
+
+[bcom] rows=360 min_date=1996-01-31 max_date=2025-12-31
+      Date    Price   Return
+1996-01-31 104.5817 0.002483
+1996-02-29 106.3925 0.017315
+1996-03-29 111.0101 0.043402
+
+[treasury_10y] rows=360 min_date=1996-01-31 max_date=2025-12-31
+      Date  Price   Return
+1996-01-31  5.580 0.001436
+1996-02-29  6.098 0.092832
+1996-03-29  6.327 0.037553
+
+[corp_bonds] rows=360 min_date=1996-01-31 max_date=2025-12-31
+      Date  Price  Return
+1996-01-31 829.55  0.0065
+1996-02-29 809.84 -0.0238
+1996-03-29 802.94 -0.0085
+
+Done. Clean CSVs are in: /home/cristhian/Projects/ssga-meta-labeling/primary_model/artifacts/data/clean
+Asset summary:
+       asset  rows   min_date   max_date  pct_missing_return  price_min  price_max
+         spx   360 1996-01-31 2025-12-31                 0.0   636.0200  6849.0900
+        bcom   360 1996-01-31 2025-12-31                 0.0    60.8983   233.0345
+treasury_10y   360 1996-01-31 2025-12-31                 0.0     0.5282     6.9430
+  corp_bonds   360 1996-01-31 2025-12-31                 0.0   794.8900  3563.6800
+
+WARNING: treasury_10y Price appears yield-like (range 0.5282 to 6.9430). Treat this as a yield level series, not a bond total-return index.
+
+Overlap summary:
+ raw_overlap_rows  adjusted_overlap_rows overlap_min_date overlap_max_date
+              360                    359       1996-01-31       2025-12-31
+
+Returns correlation matrix:
+                   spx      bcom  treasury_10y  corp_bonds
+spx           1.000000  0.344972      0.141611    0.360750
+bcom          0.344972  1.000000      0.190245    0.174341
+treasury_10y  0.141611  0.190245      1.000000   -0.561417
+corp_bonds    0.360750  0.174341     -0.561417    1.000000
+
+Raw annualized mean/vol (monthly assumption):
+              ann_mean   ann_vol
+spx           0.092283  0.152452
+bcom          0.013431  0.152305
+treasury_10y  0.042165  0.321270
+corp_bonds    0.050513  0.059607
+
+Adjusted annualized mean/vol (monthly assumption, treasury duration=8.5):
+              ann_mean   ann_vol
+spx           0.091451  0.152596
+bcom          0.013385  0.152517
+treasury_10y  0.040367  0.077085
+corp_bonds    0.050437  0.059688
+
+HTML report written to: /home/cristhian/Projects/ssga-meta-labeling/primary_model/artifacts/reports/data_qc.html
+Performance table (net):
+           ann_return   ann_vol    sharpe  max_drawdown    calmar  avg_turnover
+PrimaryV1    0.063297  0.076955  0.837859     -0.220821  0.286644      0.189246
+
+Signal counts:
+signal
+BUY     197
+HOLD     15
+SELL    148
+
+Average turnover: 0.189246
+Saved CSV: /home/cristhian/Projects/ssga-meta-labeling/primary_model/artifacts/reports/primary_v1_backtest.csv
+Saved CSV: /home/cristhian/Projects/ssga-meta-labeling/primary_model/artifacts/reports/primary_v1_summary.csv
+Benchmark performance table (net):
+               ann_return   ann_vol    sharpe  max_drawdown    calmar  avg_turnover
+EqualWeight25    0.047792  0.071808  0.687576     -0.268990  0.177673      0.000000
+BuyHoldSPX       0.082662  0.152810  0.598620     -0.525605  0.157271      0.000000
+60/40            0.069366  0.093251  0.767870     -0.307769  0.225384      0.000000
+SimpleTrend      0.086249  0.129104  0.707779     -0.267169  0.322827      0.081006
+PrimaryV1        0.063297  0.076955  0.837859     -0.220821  0.286644      0.189246
+
+PrimaryV1 signal counts:
+signal
+BUY     197
+HOLD     15
+SELL    148
+
+PrimaryV1 average turnover: 0.189246
+
+Excess vs EqualWeight25:
+               mean_excess_annual  months_won  months_lost
+strategy                                                  
+EqualWeight25            0.000000           0            0
+BuyHoldSPX               0.042102         226          132
+60/40                    0.022232         208          150
+SimpleTrend              0.042004         220          138
+PrimaryV1                0.015104         188          156
+
+Correlation with EqualWeight25 net returns:
+               corr_with_equal_weight
+EqualWeight25                1.000000
+BuyHoldSPX                   0.759516
+60/40                        0.838412
+SimpleTrend                  0.588320
+PrimaryV1                    0.528167
+
+Asset-level sanity stats (adjusted returns):
+              ann_mean   ann_vol    sharpe
+spx           0.091451  0.152596  0.599299
+bcom          0.013385  0.152517  0.087762
+treasury_10y  0.040367  0.077085  0.523676
+corp_bonds    0.050437  0.059688  0.845000
+
+Asset returns correlation matrix (adjusted returns):
+                   spx      bcom  treasury_10y  corp_bonds
+spx           1.000000  0.345078     -0.115417    0.360710
+bcom          0.345078  1.000000     -0.121239    0.174334
+treasury_10y -0.115417 -0.121239      1.000000    0.660738
+corp_bonds    0.360710  0.174334      0.660738    1.000000
+
+Saved CSV: /home/cristhian/Projects/ssga-meta-labeling/primary_model/artifacts/reports/benchmarks_summary.csv
+Saved CSV: /home/cristhian/Projects/ssga-meta-labeling/primary_model/artifacts/reports/primary_v1_signal.csv
+Saved CSV: /home/cristhian/Projects/ssga-meta-labeling/primary_model/artifacts/reports/primary_v1_weights.csv
+Saved HTML: /home/cristhian/Projects/ssga-meta-labeling/primary_model/artifacts/reports/benchmarks_summary.html
+Saved plot: /home/cristhian/Projects/ssga-meta-labeling/primary_model/artifacts/reports/assets/equity_curves.png
+Saved plot: /home/cristhian/Projects/ssga-meta-labeling/primary_model/artifacts/reports/assets/drawdowns.png
+Saved plot: /home/cristhian/Projects/ssga-meta-labeling/primary_model/artifacts/reports/assets/rolling_sharpe.png
+
+
+STDERR:
+
+
+exit_code=0

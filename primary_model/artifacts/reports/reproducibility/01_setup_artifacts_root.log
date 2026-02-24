@@ -1,0 +1,12 @@
+$ /home/cristhian/miniconda3/bin/python scripts/setup_artifacts_root.py --target-root artifacts --clean
+
+STDOUT:
+Target root: /home/cristhian/Projects/ssga-meta-labeling/primary_model/artifacts
+Copied 0 raw files to: /home/cristhian/Projects/ssga-meta-labeling/primary_model/artifacts/data/raw
+Skipped 6 source files already in target location.
+
+
+STDERR:
+
+
+exit_code=0

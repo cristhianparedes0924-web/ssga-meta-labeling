@@ -1,79 +1,84 @@
-PRIMARY MODEL - SIMPLE RUN GUIDE
-================================
+# SSGA Meta Labeling - Primary Model
 
-This project can be run in 3 simple ways:
+This project implements the foundational backtesting and signal generation logic for the Primary Strategy variant 1, alongside a standardized validation suite for walk-forward limits and cost sensitivity.
 
-1) Run only the main project
-2) Run only the isolated test/validation workflow
-3) Run both (main project first, then isolated test workflow)
+## Prerequisites
+- Python 3.9+ (3.10+ recommended)
+- A virtual environment is highly recommended
 
-
-SETUP (DO THIS ONCE)
---------------------
-1. Create virtual environment:
+## Installation
+1. Create and activate a virtual environment:
    python -m venv .venv
+   source .venv/bin/activate  # (On Windows: .venv\Scripts\activate)
+2. Install dependencies:
+   pip install -r requirements.txt
+   pip install -r requirements-dev.txt  # If you plan to run tests
 
-2. Activate it:
-   source .venv/bin/activate
+## Data Setup
+1. Ensure the `artifacts/data/raw/` directory exists.
+2. Place your raw input data files (`spx.xlsx`, `treasury_10y.xlsx`, `bcom.xlsx`, `corp_bonds.xlsx`) inside `artifacts/data/raw/`.
 
-3. Install dependencies:
-   pip install -e .[dev]
+## Running the Project
+Use the canonical CLI entrypoint (`python cli.py <command>`). Artifacts (CSVs, HTML reports, and plots) are written automatically to `artifacts/reports/`.  
+`scripts/run_*.py` wrappers remain available for backward compatibility.
 
+Recommended first command (End-to-end validation suite):
+   python cli.py run-validation-suite
 
-OPTION A - RUN THE MAIN PROJECT ONLY
-------------------------------------
-Single command:
-python scripts/run_modes.py --mode project
+Canonical operator command (full reproducibility path):
+   make full-validate
 
-What it runs:
-- python cli.py run-all
+Other standalone execution modes:
+1. Fast Smoke Test (PrimaryV1 Pipeline):
+   python cli.py run-primary-v1
+2. Robustness Check (Grid Search):
+   python cli.py run-robustness
+3. Walk-Forward Check:
+   python cli.py run-walk-forward
+4. Benchmark Generation:
+   python cli.py run-benchmarks
 
-Where outputs go:
-- reports/
+Configs are managed in `configs/experiments/`. You can override paths and thresholds there.
 
-Equivalent Make command:
-- make run-mode-project
+## Running Tests
+To ensure the mathematical engine and pipeline architecture is stable, run:
+   python -m pytest -q
 
+## Resetting
+To reset the project to a fresh state (wipe all artifacts but keep data):
+   rm -rf artifacts/reports/*
+   rm -rf artifacts/data/clean/*
+   (Then recreate required `.gitkeep` placeholders if needed)
 
-OPTION B - RUN TESTS/VALIDATION ONLY (SEPARATE, ISOLATED)
-----------------------------------------------------------
-Single command:
-python scripts/run_modes.py --mode test
+## Troubleshooting
+- Missing Data: Ensure `artifacts/data/raw/` contains the necessary data files.
+- Import Errors: Run commands from the `primary_model/` root directory (the entrypoints bootstrap imports automatically; no `PYTHONPATH` export is needed).
 
-What it runs:
-- python scripts/run_validation_suite.py --root test --clean-root
+## Operator Reference
+See `docs/operator_runbook.md` for the concise, team-facing execution checklist and expected outputs.
 
-This includes:
-- pytest
-- full pipeline in isolated root
-- robustness grid
-- strict walk-forward run
-- reproducibility logs + manifest
+## What Teammates Can Ignore
+To keep things simple day-to-day:
 
-Where outputs go:
-- test/reports/
+Essential folders to care about:
+- `configs/` (Edit these to tweak run parameters)
+- `artifacts/` (Where data goes in and reports come out)
+- `scripts/` (Scripts to run)
+- `analytics/`, `benchmarks/`, `research/`, `signals/` (Core logic)
 
-Equivalent Make command:
-- make run-mode-test
+Safe to ignore unless developing deeply:
+- `tests/` (Test suite)
+- `docs/` (Architecture reference)
+- `.github/` (CI pipelines)
+- `Makefile`, `pyproject.toml`, `requirements*.txt` (Setup dependencies)
 
-
-OPTION C - RUN BOTH (PROJECT + TEST) IN ONE COMMAND
-----------------------------------------------------
-Single command:
-python scripts/run_modes.py --mode both
-
-Order:
-1. Main project run (reports/)
-2. Isolated test/validation run (test/reports/)
-
-Equivalent Make command:
-- make run-mode-both
-
-
-USEFUL NOTES
-------------
-- Main project outputs and test outputs are separated by design.
-- Main project data/output path: data/, reports/
-- Isolated validation path: test/data/, test/reports/
-- If you rerun test mode, previous isolated artifacts are replaced because
-  --clean-root is applied.
+## Project Map (Daily Focus)
+- **Daily Focus:** 
+  - `configs/` (Configure parameters) 
+  - `artifacts/` (Input/output staging)
+  - `scripts/` (Pipeline runners)
+  - `research/`, `signals/` (Strategy orchestrators)
+- **Advanced / Support Code (Rarely edited):**
+  - `analytics/`, `benchmarks/`, `backtest/`, `portfolio/`, `utils/`, `data/`
+- **Optional Reading:**
+  - `tests/`, `docs/`, `.github/`
