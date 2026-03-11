@@ -1,0 +1,17 @@
+primary:
+  trend_window: 6
+  relative_window: 3
+  zscore_min_periods: 12
+  duration: 8.5
+  buy_threshold: 0.31
+  sell_threshold: -0.31
+  tcost_bps: 0.0
+  benchmark_key: EqualWeight25
+
+validation:
+  min_train_periods: 120
+  robustness:
+    tcost_grid_bps: "0,5,10,25,50"
+    buy_grid: "0.31,0.25,0.50"
+    sell_grid: "-0.31,-0.25,-0.50"
+    duration_grid: "6.0,8.5,10.0"

@@ -1,0 +1,2 @@
+precision,recall,f1,auc_score,auc_binary,n_positive_signals,n_true_events,n_transitions,n_buy,n_hold,n_sell,n_total
+0.6363636363636364,0.18340611353711792,0.2847457627118644,0.48851192475646626,0.49939536446086663,66,229,119,66,222,72,360

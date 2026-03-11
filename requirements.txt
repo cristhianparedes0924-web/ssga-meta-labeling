@@ -1,6 +1,5 @@
-pandas>=2.0.0
-numpy>=1.24.0
-openpyxl>=3.1.0
-jupyterlab>=4.0.0
-matplotlib>=3.7.0
-scikit-learn>=1.3.0
+# Install the project itself in editable mode so `python -m metalabel.cli ...` works.
+-e .
+
+# Test dependency used by the local validation workflow.
+pytest>=8.0
