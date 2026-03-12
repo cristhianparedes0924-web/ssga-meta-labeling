@@ -18,6 +18,7 @@ from metalabel.data import DEFAULT_ASSETS, _resolve_within_project, apply_treasu
 from metalabel.primary.backtest import backtest_from_weights
 from metalabel.primary.portfolio import weights_from_primary_signal
 from metalabel.primary.signals import build_primary_signal_variant1
+from metalabel.secondary.features import build_supplemental_features
 
 
 _ACTIONABLE_SIGNALS = frozenset({"BUY", "SELL"})
@@ -106,6 +107,7 @@ def build_secondary_dataset(
     include_hold: bool = False,
     trailing_window: int = 12,
     indicator_weights: Mapping[str, float] | None = None,
+    use_supplemental: bool = False,
 ) -> pd.DataFrame:
     """Build a first-pass secondary dataset from the protected primary baseline.
 
@@ -114,6 +116,14 @@ def build_secondary_dataset(
     ``meta_target_return`` and ``meta_label`` columns come from the realized
     next-period net return produced by the primary-strategy weights chosen at
     ``t``.
+
+    Parameters
+    ----------
+    use_supplemental:
+        When True, load VIX and Liquidity (OAS) supplemental features from
+        ``root/data/clean/`` and append them as additional columns. These
+        provide regime context for the M2 classifier. Requires the supplemental
+        CSVs to exist — run ``prepare-supplemental-data`` first.
     """
 
     primary_cfg = _primary_settings(config)
@@ -169,6 +179,13 @@ def build_secondary_dataset(
     )
     events = events.join(weight_features).join(trailing_features)
 
+    supplemental_columns: list[str] = []
+    if use_supplemental:
+        supp = build_supplemental_features(root=resolved_root)
+        supp = supp.reindex(events.index)
+        events = events.join(supp)
+        supplemental_columns = list(supp.columns)
+
     allowed_signals = _ALL_EVENT_SIGNALS if include_hold else _ACTIONABLE_SIGNALS
     events = events[events["primary_signal"].isin(allowed_signals)].copy()
 
@@ -188,7 +205,7 @@ def build_secondary_dataset(
     trailing_columns = list(trailing_features.columns)
 
     events.index.name = "date"
-    ordered = base_columns + indicator_columns + weight_columns + trailing_columns
+    ordered = base_columns + indicator_columns + weight_columns + trailing_columns + supplemental_columns
     dataset = events[ordered].reset_index()
     return dataset
 

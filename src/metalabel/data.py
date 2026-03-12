@@ -23,6 +23,12 @@ ASSET_FILE_MAP = {
 DEFAULT_ASSETS = ["spx", "bcom", "treasury_10y", "corp_bonds"]
 _REQUIRED_ASSETS = ("spx", "bcom", "treasury_10y", "corp_bonds")
 
+SUPPLEMENTAL_FILE_MAP = {
+    "vix": "VIX.xlsx",
+    "liquidity": "Liquidity.xlsx",
+}
+SUPPLEMENTAL_ASSETS = ["vix", "liquidity"]
+
 
 def _normalize_column_name(value: object) -> str:
     return str(value).strip().upper()
@@ -292,3 +298,84 @@ def load_default_universe(root: Path) -> dict[str, pd.DataFrame]:
     """Load the default four-asset universe from ``root/data/clean``."""
     clean_dir = root / "data" / "clean"
     return load_universe(clean_dir, list(DEFAULT_ASSETS))
+
+
+def clean_level_series_file(
+    series_name: str, file_name: str, raw_dir: Path, clean_dir: Path
+) -> Path:
+    """Clean a supplemental Bloomberg-style Excel file that contains only a level series.
+
+    Unlike ``clean_asset_file``, this loader does not require ``CHG_PCT_1D``.
+    It expects ``Date`` and ``PX_LAST`` columns and writes a two-column CSV
+    with canonical columns ``Date`` and ``Price``.
+    """
+    input_path = raw_dir / file_name
+    output_path = clean_dir / f"{series_name}.csv"
+
+    if not input_path.exists():
+        raise FileNotFoundError(f"Missing required input file: {input_path}")
+
+    raw = pd.read_excel(input_path, header=None, dtype=object, engine="openpyxl")
+    header_row = find_header_row(raw)
+
+    header = raw.iloc[header_row].tolist()
+    data = raw.iloc[header_row + 1 :].copy()
+    data.columns = header
+    data = data.loc[:, [col for col in data.columns if pd.notna(col)]]
+
+    date_col = find_column(data.columns, "Date")
+    price_col = find_column(data.columns, "PX_LAST")
+    missing = [name for name, col in [("Date", date_col), ("PX_LAST", price_col)] if col is None]
+    if missing:
+        raise ValueError(f"{file_name}: missing required column(s): {missing}")
+
+    clean = data[[date_col, price_col]].copy()
+    clean.columns = ["Date", "Price"]
+    clean["Date"] = pd.to_datetime(clean["Date"], errors="coerce")
+    clean["Price"] = _coerce_numeric(clean["Price"])
+    clean = clean.dropna(subset=["Date", "Price"]).sort_values("Date").reset_index(drop=True)
+
+    clean_dir.mkdir(parents=True, exist_ok=True)
+    clean.to_csv(output_path, index=False, date_format="%Y-%m-%d")
+
+    if len(clean) == 0:
+        print(f"[{series_name}] rows=0")
+    else:
+        min_date = clean["Date"].min().date()
+        max_date = clean["Date"].max().date()
+        print(f"[{series_name}] rows={len(clean)} min_date={min_date} max_date={max_date}")
+        print(clean.head(3).to_string(index=False))
+    print()
+
+    return output_path
+
+
+def prepare_supplemental_data(root: Path) -> None:
+    """Clean supplemental level-series Excel files (VIX, Liquidity) into CSVs."""
+    raw_dir = _resolve_local_raw_dir()
+    clean_dir = root / "data" / "clean"
+
+    print("Preparing supplemental data files...")
+    for series_name, file_name in SUPPLEMENTAL_FILE_MAP.items():
+        clean_level_series_file(series_name, file_name, raw_dir=raw_dir, clean_dir=clean_dir)
+    print(f"Done. Supplemental CSVs are in: {clean_dir}")
+
+
+def load_supplemental_level_csv(path: Path) -> pd.Series:
+    """Load a supplemental level-only CSV (Date, Price) as a Date-indexed Series."""
+    raw = pd.read_csv(path, dtype=object)
+
+    date_col = find_column(raw.columns, "Date")
+    price_col = find_column(raw.columns, "Price")
+    missing = [name for name, col in [("Date", date_col), ("Price", price_col)] if col is None]
+    if missing:
+        raise ValueError(f"{path}: missing required column(s): {missing}")
+
+    frame = pd.DataFrame(
+        {
+            "Date": pd.to_datetime(raw[date_col], errors="coerce"),
+            "Price": _coerce_numeric(raw[price_col]),
+        }
+    )
+    frame = frame.dropna(subset=["Date", "Price"]).sort_values("Date").reset_index(drop=True)
+    return frame.set_index("Date")["Price"]
