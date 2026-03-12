@@ -12,6 +12,7 @@ Based on the current repo state, the primary-model repository already appears to
 - Walk-forward validation outputs
 - Monthly cross-validation outputs
 - Reporting outputs in `reports/results/` and plots in `reports/assets/`
+- A first-pass secondary dataset builder for event-level meta-labeling data
 
 The primary model is the current baseline. The main implemented strategy code lives under `src/metalabel/primary/`, with CLI entry points in `src/metalabel/cli.py` and runtime settings in `configs/primary.yaml`.
 
@@ -21,9 +22,10 @@ The primary model is the current baseline. The main implemented strategy code li
 - Baseline config source: `configs/primary.yaml`
 - Baseline outputs already appear to exist in `reports/results/primary_v1_*`
 - Benchmarks, robustness, walk-forward, and monthly CV outputs also appear to be present
+- Secondary dataset construction now appears to be implemented under `src/metalabel/secondary/`
 
 ## Not finished yet
 
-Based on the current repo state, secondary-model development does not appear to be implemented beyond a placeholder package at `src/metalabel/secondary/__init__.py`.
+Based on the current repo state, secondary-model development now appears to include first-pass dataset construction, but it does not yet appear to include model training, inference, promotion logic, or secondary reporting outputs.
 
-The repo does not appear to include a secondary-model pipeline, secondary-specific CLI command, secondary tests, or secondary reporting outputs yet.
+The repo does not appear to include a trained secondary model, a secondary-specific CLI command, or secondary evaluation dashboards yet.

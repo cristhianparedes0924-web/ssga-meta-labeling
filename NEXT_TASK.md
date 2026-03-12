@@ -1,33 +1,24 @@
 # Next Task
 
-## Goal
+## Status
 
-Scaffold the secondary model structure without changing current primary-model behavior.
+Awaiting planning
 
-## Allowed scope
+## Completed task
 
-- Add conservative package structure under `src/metalabel/secondary/`
-- Add placeholder modules, interfaces, and minimal documentation comments where needed
-- Add non-invasive tests for importability or empty scaffolding only
-- Add docs that explain intended secondary-model boundaries and dependencies on the primary baseline
+Implement the first-pass secondary dataset builder for meta-labeling.
 
-## Do not change
+## Current repo status
 
-- Do not change logic under `src/metalabel/primary/`
-- Do not change current CLI command names or current primary workflow behavior
-- Do not change `configs/primary.yaml` unless a future task explicitly requires secondary settings
-- Do not overwrite current tracked outputs in `reports/results/`
-- Do not alter the numerical behavior of the current primary baseline
+The repo now appears to have a leakage-aware secondary dataset builder under `src/metalabel/secondary/` with focused tests, while the primary model remains the protected baseline. Secondary-model training, inference, CLI integration, and evaluation outputs still do not appear to be implemented.
 
-## Deliverables
+## Proposed next bounded tasks
 
-- A clear `secondary/` package skeleton with named modules for future development
-- Safe placeholders for secondary-model inputs, labels/features, training, inference, and evaluation
-- Imports and package structure that do not affect existing primary execution paths
-- Minimal tests or checks, if added, that only validate the scaffold
+- Add a small, explicit CLI command for building and saving the secondary dataset to a non-canonical output path
+- Define and document the first-pass secondary dataset schema and file contract for future training work
+- Implement causal train/validation split utilities for the secondary dataset without adding any classifier training yet
+- Add a lightweight integration test that builds the secondary dataset from the repo's clean-data path without touching tracked reports
 
-## Done when
+## Recommended next task
 
-- The repo has a readable secondary-model skeleton
-- Existing primary commands still behave the same based on code inspection and unchanged primary paths
-- No primary logic, configs, tests, or tracked outputs were modified as part of the scaffolding task
+Implement causal train/validation split utilities for the secondary dataset without adding model training yet.
