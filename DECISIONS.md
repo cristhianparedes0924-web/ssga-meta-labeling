@@ -41,3 +41,31 @@ This keeps the first secondary step aligned with actual primary behavior instead
 ### Impact
 
 The first secondary dataset is built from `BUY` and `SELL` primary events by default, `meta_target_return` reflects the realized next-period primary-strategy net return implied at the decision date, and model training remains out of scope until this dataset contract is stable.
+
+## 2026-03-12
+
+### Decision
+
+Use chronological date-grouped temporal splits for secondary validation, with expanding-train / forward-validation as the default reusable protocol and a simple time holdout helper for smaller experiments.
+
+### Reason
+
+Secondary rows represent decision-time events, so validation must respect causal order. Grouping by decision date keeps same-date rows together, avoids train/validation leakage at shared timestamps, and gives later training code a simple protocol to reuse.
+
+### Impact
+
+Secondary split utilities now operate on ordered unique decision dates, never shuffle rows, require validation windows to occur strictly after training windows, and expose both a single holdout split and reusable expanding forward splits for future model training.
+
+## 2026-03-12
+
+### Decision
+
+The first secondary training pass will use actionable-event rows to predict `meta_label` with a simple logistic-regression classifier, focusing on false-positive filtering of the unchanged primary strategy rather than sizing.
+
+### Reason
+
+The current repo already defines actionable-event observations, a binary meta-label, and causal split utilities. A simple logistic-regression baseline is conservative, matches the existing dependency stack, and is sufficient for the first pass before adding more complex model families or sizing rules.
+
+### Impact
+
+Future first-pass training work should treat the secondary model as an accept/reject filter on primary actions, train on decision-time features only, keep position sizing out of scope, and evaluate both classification quality and filtered-strategy performance against the unchanged primary baseline.
