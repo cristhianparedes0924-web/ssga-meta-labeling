@@ -2,6 +2,33 @@
 
 This file gives coding agents and collaborators the minimum project-specific instructions needed to work safely in this repository.
 
+## Session Startup Protocol
+
+Before making any plan or edits, read these root files:
+
+- `AGENTS.md`
+- `PROJECT_STATE.md`
+- `NEXT_TASK.md`
+- `DECISIONS.md`
+
+Then:
+
+1. summarize the current project state
+2. summarize the current task
+3. identify which files are in scope
+4. avoid editing outside the defined scope
+5. treat the current primary model as the protected baseline unless the task explicitly says otherwise
+
+## Task Lifecycle And Control Files
+
+- The project planner is the human user and/or the ChatGPT Project context. Codex is the executor, not the strategic decision-maker, and must not silently redefine project direction beyond the currently approved task.
+- Before planning or editing, always read `AGENTS.md`, `PROJECT_STATE.md`, `NEXT_TASK.md`, and `DECISIONS.md`.
+- Treat `NEXT_TASK.md` as the currently approved assignment. At the end of every completed task, update it. If the task is complete and no new task has been explicitly approved, set it to an `Awaiting planning` state with the completed task, a short repo-status paragraph, 2-4 proposed bounded next tasks, and one recommended next task.
+- Update `PROJECT_STATE.md` only when repo state materially changes, and also before final handoff when the completed task changed the real project state. Do not update it for trivial refactors, comment-only edits, or formatting-only changes.
+- `DECISIONS.md` is append-only. Add an entry only for durable decisions that affect future work, and include `Date`, `Decision`, `Reason`, and `Impact`.
+- Treat the current primary model as the protected baseline unless `NEXT_TASK.md` explicitly authorizes changing it.
+- At end of task, report files changed, tests/checks run, whether `NEXT_TASK.md` was updated, whether `PROJECT_STATE.md` was updated, whether `DECISIONS.md` was updated, and any proposed next tasks if planning is required.
+
 ## Project Scope
 
 - This repository contains the implemented primary model and the project structure for continued secondary-model development.
