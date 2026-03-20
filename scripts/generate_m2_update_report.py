@@ -214,20 +214,68 @@ pdf.set_fill_color(*PANEL_BG)
 pdf.rect(15, pdf.get_y(), 180, 0.4, "F")
 pdf.ln(1)
 
-rows_data = [
-    ("M1 baseline (no filter)",     "78", "9.53%",  "1.310", "+0.000", WHITE),
-    ("M2 v1 - binary gate t=0.50",  "46", "n/a",    "1.175", "n/a",    MID_GREY),
-    ("M2 v2 - binary gate t=0.51",  "28", "6.01%",  "1.233", "-0.607", RED),
-    ("M2 v3 - norm position sizing", "78", "10.84%", "1.345", "+0.457", GREEN),
-]
-for name, n, ret, sh, ir, col in rows_data:
-    pdf.set_font("Helvetica", "B" if col == GREEN else "", 9)
+# Header row
+pdf.set_font("Helvetica", "B", 8)
+pdf.set_text_color(*MID_GREY)
+pdf.cell(72, 5.5, "Setup")
+pdf.cell(14, 5.5, "N", align="C")
+pdf.cell(28, 5.5, "Ann Return", align="C")
+pdf.cell(24, 5.5, "Sharpe", align="C")
+pdf.cell(0, 5.5, "Info Ratio", align="C", ln=True)
+pdf.set_fill_color(*PANEL_BG)
+pdf.rect(15, pdf.get_y(), 180, 0.3, "F")
+pdf.ln(1)
+
+def table_row(pdf, name, n, ret, sh, ir, col, bold=False):
+    pdf.set_font("Helvetica", "B" if bold else "", 8.5)
     pdf.set_text_color(*col)
-    pdf.cell(70, 6.5, name)
-    pdf.cell(18, 6.5, n, align="C")
-    pdf.cell(32, 6.5, ret, align="C")
-    pdf.cell(28, 6.5, sh, align="C")
-    pdf.cell(0, 6.5, ir, align="C", ln=True)
+    pdf.cell(72, 5.8, name)
+    pdf.cell(14, 5.8, n, align="C")
+    pdf.cell(28, 5.8, ret, align="C")
+    pdf.cell(24, 5.8, sh, align="C")
+    pdf.cell(0, 5.8, ir, align="C", ln=True)
+
+table_row(pdf, "M1 baseline (no filter)",      "78", "9.53%",  "1.310", "+0.000", WHITE, bold=True)
+pdf.ln(1)
+
+# v1 section
+pdf.set_font("Helvetica", "B", 7.5)
+pdf.set_text_color(*BLUE)
+pdf.cell(0, 5, "M2 v1 - Binary Gate (22 features incl. VIX/OAS)", ln=True)
+rows_v1 = [
+    ("  t=0.30",  "69", "9.10%",  "1.283", "-0.236"),
+    ("  t=0.40",  "56", "6.98%",  "1.056", "-0.737"),
+    ("  t=0.50",  "46", "5.42%",  "0.891", "-0.937"),
+    ("  t=0.60",  "38", "6.19%",  "1.146", "-0.634"),
+    ("  t=0.70",  "25", "5.22%",  "1.161", "-0.705"),
+    ("  t=0.80",  "10", "1.89%",  "0.924", "-1.062"),
+]
+for name, n, ret, sh, ir in rows_v1:
+    table_row(pdf, name, n, ret, sh, ir, LIGHT_GREY)
+pdf.ln(1)
+
+# v2 section
+pdf.set_font("Helvetica", "B", 7.5)
+pdf.set_text_color(*GOLD)
+pdf.cell(0, 5, "M2 v2 - Binary Gate (12 core features, no VIX/OAS)", ln=True)
+rows_v2 = [
+    ("  t=0.30",  "73", "9.34%",  "1.371", "-0.072"),
+    ("  t=0.40",  "58", "6.13%",  "1.003", "-0.781"),
+    ("  t=0.50",  "31", "5.14%",  "0.990", "-0.801"),
+    ("  t=0.51",  "28", "6.01%",  "1.233", "-0.607"),
+    ("  t=0.60",  "16", "4.84%",  "1.196", "-0.729"),
+    ("  t=0.70",  " 5", "1.89%",  "0.660", "-1.109"),
+    ("  t=0.80",  " 2", "1.05%",  "0.453", "-1.210"),
+]
+for name, n, ret, sh, ir in rows_v2:
+    table_row(pdf, name, n, ret, sh, ir, LIGHT_GREY)
+pdf.ln(1)
+
+# v3
+pdf.set_font("Helvetica", "B", 7.5)
+pdf.set_text_color(*GREEN)
+pdf.cell(0, 5, "M2 v3 - Position Sizing (12 core features)", ln=True)
+table_row(pdf, "  Normalised sizing (avg=1.0x)", "78", "10.84%", "1.345", "+0.457", GREEN, bold=True)
 
 pdf.ln(3)
 
