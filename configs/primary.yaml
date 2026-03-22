@@ -10,6 +10,8 @@ primary:
 
 validation:
   min_train_periods: 120
+  monthly_cv:
+    test_window_months: 1
   robustness:
     tcost_grid_bps: "0,5,10,25,50"
     buy_grid: "0.31,0.25,0.50"

@@ -10,7 +10,7 @@ Based on the current repo state, the primary-model repository already appears to
 - Benchmark generation and benchmark reporting outputs
 - Robustness runs across threshold, duration, and transaction-cost grids
 - Walk-forward validation outputs
-- Monthly cross-validation outputs
+- Monthly cross-validation outputs, now including variable out-of-sample fold horizons
 - Reporting outputs in `reports/results/` and plots in `reports/assets/`
 - A first-pass secondary dataset builder for event-level meta-labeling data
 - Causal temporal split utilities for secondary train/validation preparation
@@ -23,6 +23,7 @@ The primary model is the current baseline. The main implemented strategy code li
 - Baseline config source: `configs/primary.yaml`
 - Baseline outputs already appear to exist in `reports/results/primary_v1_*`
 - Benchmarks, robustness, walk-forward, and monthly CV outputs also appear to be present
+- Monthly CV now supports configurable OOS windows while preserving the default 1-month mode
 - Secondary dataset construction now appears to be implemented under `src/metalabel/secondary/`
 - Secondary temporal split utilities now appear to be implemented under `src/metalabel/secondary/`
 

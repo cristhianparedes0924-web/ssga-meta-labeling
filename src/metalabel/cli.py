@@ -194,6 +194,13 @@ def build_parser() -> argparse.ArgumentParser:
         default=int(validation_cfg["min_train_periods"]),
         help="Minimum in-sample history before first OOS month.",
     )
+    monthly_cv_cfg = validation_cfg.get("monthly_cv", {})
+    monthly_cv_parser.add_argument(
+        "--test-window-months",
+        type=int,
+        default=int(monthly_cv_cfg.get("test_window_months", 1)),
+        help="Number of calendar months in each OOS fold window (default: 1).",
+    )
     monthly_cv_parser.add_argument(
         "--duration",
         type=float,
@@ -324,6 +331,7 @@ def main(argv: list[str] | None = None) -> None:
             root=args.root,
             out_dir=args.out_dir,
             min_train_periods=args.min_train_periods,
+            test_window_months=args.test_window_months,
             duration=args.duration,
             buy_threshold=args.buy_threshold,
             sell_threshold=args.sell_threshold,

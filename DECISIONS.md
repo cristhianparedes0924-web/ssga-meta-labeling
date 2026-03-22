@@ -69,3 +69,17 @@ The current repo already defines actionable-event observations, a binary meta-la
 ### Impact
 
 Future first-pass training work should treat the secondary model as an accept/reject filter on primary actions, train on decision-time features only, keep position sizing out of scope, and evaluate both classification quality and filtered-strategy performance against the unchanged primary baseline.
+
+## 2026-03-22
+
+### Decision
+
+Keep `run-monthly-cv` backward-compatible at a 1-month default horizon, and write multi-month monthly-CV outputs into horizon-specific subfolders under `reports/results/monthly_cv/`.
+
+### Reason
+
+The repository already tracks canonical monthly-CV outputs in `reports/results/monthly_cv/`. Preserving the 1-month default avoids breaking the existing command and artifact paths, while subfolders for wider OOS windows prevent different horizon runs from overwriting one another.
+
+### Impact
+
+Future monthly-CV work should treat `1` month as the canonical default mode, pass wider OOS windows explicitly through `test_window_months`, and expect non-default horizons to write under folders such as `reports/results/monthly_cv/03m_oos/`.
