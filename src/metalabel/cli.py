@@ -196,10 +196,20 @@ def build_parser() -> argparse.ArgumentParser:
     )
     monthly_cv_cfg = validation_cfg.get("monthly_cv", {})
     monthly_cv_parser.add_argument(
-        "--test-window-months",
+        "--window-type",
+        choices=["expanding", "rolling"],
+        default=str(monthly_cv_cfg.get("window_type", "expanding")),
+        help="Training-window style for monthly CV (default: expanding).",
+    )
+    monthly_cv_parser.add_argument(
+        "--rolling-train-months",
         type=int,
-        default=int(monthly_cv_cfg.get("test_window_months", 1)),
-        help="Number of calendar months in each OOS fold window (default: 1).",
+        default=(
+            int(monthly_cv_cfg["rolling_train_months"])
+            if monthly_cv_cfg.get("rolling_train_months") is not None
+            else None
+        ),
+        help="Rolling train window length in months when --window-type rolling.",
     )
     monthly_cv_parser.add_argument(
         "--duration",
@@ -331,7 +341,8 @@ def main(argv: list[str] | None = None) -> None:
             root=args.root,
             out_dir=args.out_dir,
             min_train_periods=args.min_train_periods,
-            test_window_months=args.test_window_months,
+            window_type=args.window_type,
+            rolling_train_months=args.rolling_train_months,
             duration=args.duration,
             buy_threshold=args.buy_threshold,
             sell_threshold=args.sell_threshold,

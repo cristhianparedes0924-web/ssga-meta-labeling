@@ -83,3 +83,17 @@ The repository already tracks canonical monthly-CV outputs in `reports/results/m
 ### Impact
 
 Future monthly-CV work should treat `1` month as the canonical default mode, pass wider OOS windows explicitly through `test_window_months`, and expect non-default horizons to write under folders such as `reports/results/monthly_cv/03m_oos/`.
+
+## 2026-03-22
+
+### Decision
+
+Define monthly CV as a comparison between expanding and rolling training windows, keep OOS evaluation monthly, and store rolling-window outputs in dedicated subfolders under `reports/results/monthly_cv/`.
+
+### Reason
+
+The project walkthrough design compares how the same monthly OOS validation behaves under different training-history constructions. Varying OOS horizon length was the wrong interpretation; the correct comparison axis is training-window type, with rolling windows of 3, 6, 12, 24, and 36 months.
+
+### Impact
+
+Future monthly-CV work should keep one OOS month per fold, treat expanding history as the canonical root output in `reports/results/monthly_cv/`, and write rolling comparisons under folders such as `reports/results/monthly_cv/rolling_12m/`.

@@ -1,7 +1,7 @@
 # Monthly Cross-Validation Protocol
 
-- Window type: `expanding`.
-- Rolling train window months: `N/A`.
+- Window type: `rolling`.
+- Rolling train window months: `24`.
 - Fold design: one out-of-sample calendar month per fold with strictly causal training history.
 - Expanding mode uses all available history from the start of the sample through the month before the test month.
 - Rolling mode uses only the trailing `rolling_train_months` calendar months before the test month.
@@ -16,6 +16,6 @@
 - OOS observations concatenated: `239`.
 
 ## Outputs
-- `/home/cristhian789/projects/meta-labeling-project/reports/results/monthly_cv/monthly_cv_fold_summary.csv`
-- `/home/cristhian789/projects/meta-labeling-project/reports/results/monthly_cv/monthly_cv_oos_backtest.csv`
-- `/home/cristhian789/projects/meta-labeling-project/reports/results/monthly_cv/monthly_cv_summary.csv`
+- `/home/cristhian789/projects/meta-labeling-project/reports/results/monthly_cv/rolling_24m/monthly_cv_fold_summary.csv`
+- `/home/cristhian789/projects/meta-labeling-project/reports/results/monthly_cv/rolling_24m/monthly_cv_oos_backtest.csv`
+- `/home/cristhian789/projects/meta-labeling-project/reports/results/monthly_cv/rolling_24m/monthly_cv_summary.csv`

@@ -505,7 +505,8 @@ def _monthly_cross_validation(
     adjusted_universe: dict[str, pd.DataFrame],
     returns: pd.DataFrame,
     min_train_periods: int,
-    test_window_months: int,
+    window_type: str,
+    rolling_train_months: int | None,
     buy_threshold: float,
     sell_threshold: float,
     tcost_bps: float,
@@ -514,10 +515,27 @@ def _monthly_cross_validation(
     zscore_min_periods: int,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Run expanding month-based cross-validation using causal fold boundaries."""
+    allowed_window_types = {"expanding", "rolling"}
+    allowed_rolling_months = {3, 6, 12, 24, 36}
+
     if min_train_periods < 1:
         raise ValueError("min_train_periods must be >= 1.")
-    if test_window_months < 1:
-        raise ValueError("test_window_months must be >= 1.")
+    if window_type not in allowed_window_types:
+        raise ValueError(
+            f"window_type must be one of {sorted(allowed_window_types)}, got {window_type!r}."
+        )
+    if window_type == "rolling":
+        if rolling_train_months is None:
+            raise ValueError("rolling_train_months is required when window_type='rolling'.")
+        if rolling_train_months not in allowed_rolling_months:
+            raise ValueError(
+                "rolling_train_months must be one of "
+                f"{sorted(allowed_rolling_months)} when window_type='rolling'."
+            )
+    elif rolling_train_months is not None and rolling_train_months not in allowed_rolling_months:
+        raise ValueError(
+            f"rolling_train_months must be one of {sorted(allowed_rolling_months)} when provided."
+        )
     if returns.empty:
         raise ValueError("returns must contain at least one observation.")
     if returns.shape[1] == 0:
@@ -534,22 +552,29 @@ def _monthly_cross_validation(
     oos_folds: list[pd.DataFrame] = []
     unique_periods = periods.unique().sort_values()
 
-    for start_idx in range(0, len(unique_periods), test_window_months):
-        test_periods = unique_periods[start_idx : start_idx + test_window_months]
-        if len(test_periods) < test_window_months:
-            break
+    for test_period in unique_periods:
+        train_periods_all = unique_periods[unique_periods < test_period]
+        if len(train_periods_all) < min_train_periods:
+            continue
 
-        fold_dates = returns.index[periods.isin(test_periods)]
+        if window_type == "expanding":
+            train_periods = train_periods_all
+        else:
+            if len(train_periods_all) < int(rolling_train_months):
+                continue
+            train_periods = train_periods_all[-int(rolling_train_months) :]
+
+        fold_dates = returns.index[periods == test_period]
         if len(fold_dates) == 0:
             continue
 
         fold_start_date = fold_dates.min()
         fold_end_date = fold_dates.max()
-        train_dates = returns.index[returns.index < fold_start_date]
-
-        if len(train_dates) < min_train_periods:
+        train_dates = returns.index[periods.isin(train_periods)]
+        if len(train_dates) == 0:
             continue
 
+        train_start_date = train_dates.min()
         train_end_date = train_dates.max()
         subset_returns = returns.loc[:fold_end_date].copy()
         if len(subset_returns) < 2:
@@ -586,7 +611,7 @@ def _monthly_cross_validation(
             name="realized_date",
         )
         realized_periods = realized_dates.dt.to_period("M")
-        fold_mask = realized_periods.isin(test_periods)
+        fold_mask = realized_periods == test_period
         if not bool(fold_mask.any()):
             continue
 
@@ -595,22 +620,18 @@ def _monthly_cross_validation(
         fold_realized_dates = pd.DatetimeIndex(realized_dates.loc[decision_dates], name="realized_date")
         fold_signals = signals["signal"].reindex(decision_dates)
         fold_weights = _normalize_long_only_weights(weights.loc[decision_dates, columns])
-        test_start_period = test_periods.min()
-        test_end_period = test_periods.max()
-        fold_label = (
-            test_start_period.strftime("%Y-%m")
-            if test_window_months == 1
-            else f"{test_start_period.strftime('%Y-%m')} to {test_end_period.strftime('%Y-%m')}"
-        )
+        fold_label = test_period.strftime("%Y-%m")
+        rolling_months_value = int(rolling_train_months) if rolling_train_months is not None else np.nan
 
         fold_output = fold_backtest.copy()
         fold_output.insert(0, "decision_date", decision_dates)
         fold_output.insert(1, "fold_label", fold_label)
-        fold_output.insert(2, "test_window_months", int(test_window_months))
-        fold_output.insert(3, "test_start_month", test_start_period.strftime("%Y-%m"))
-        fold_output.insert(4, "test_end_month", test_end_period.strftime("%Y-%m"))
-        fold_output.insert(5, "train_end_date", train_end_date.date().isoformat())
-        fold_output.insert(6, "signal", fold_signals.values)
+        fold_output.insert(2, "window_type", window_type)
+        fold_output.insert(3, "rolling_train_months", rolling_months_value)
+        fold_output.insert(4, "test_month", test_period.strftime("%Y-%m"))
+        fold_output.insert(5, "train_start_date", train_start_date.date().isoformat())
+        fold_output.insert(6, "train_end_date", train_end_date.date().isoformat())
+        fold_output.insert(7, "signal", fold_signals.values)
         for col in columns:
             fold_output[f"w_{col}"] = pd.to_numeric(fold_weights[col], errors="coerce").to_numpy()
         fold_output.index = fold_realized_dates
@@ -629,9 +650,10 @@ def _monthly_cross_validation(
         fold_summary_rows.append(
             {
                 "fold_label": fold_label,
-                "test_window_months": int(test_window_months),
-                "test_start_month": test_start_period.strftime("%Y-%m"),
-                "test_end_month": test_end_period.strftime("%Y-%m"),
+                "window_type": window_type,
+                "rolling_train_months": rolling_months_value,
+                "test_month": test_period.strftime("%Y-%m"),
+                "train_start_date": train_start_date.date().isoformat(),
                 "train_end_date": train_end_date.date().isoformat(),
                 "observations_in_fold": int(len(fold_output)),
                 "ann_return": float(fold_perf["ann_return"]),
@@ -651,16 +673,15 @@ def _monthly_cross_validation(
     if not oos_folds:
         raise ValueError(
             "No monthly CV folds available for the requested "
-            f"min_train_periods={min_train_periods} and test_window_months={test_window_months}."
+            f"min_train_periods={min_train_periods}, window_type={window_type!r}, "
+            f"rolling_train_months={rolling_train_months!r}."
         )
 
     oos_backtest = pd.concat(oos_folds, axis=0).sort_index()
     oos_backtest["equity_gross"] = (1.0 + oos_backtest["gross_return"]).cumprod()
     oos_backtest["equity_net"] = (1.0 + oos_backtest["net_return"]).cumprod()
 
-    fold_summary = pd.DataFrame(fold_summary_rows).sort_values(
-        ["test_start_month", "test_end_month"]
-    ).reset_index(drop=True)
+    fold_summary = pd.DataFrame(fold_summary_rows).sort_values("test_month").reset_index(drop=True)
     return fold_summary, oos_backtest
 
 
@@ -668,7 +689,8 @@ def run_monthly_cv(
     root: Path = PROJECT_ROOT,
     out_dir: Path | None = None,
     min_train_periods: int | None = None,
-    test_window_months: int | None = None,
+    window_type: str | None = None,
+    rolling_train_months: int | None = None,
     duration: float | None = None,
     buy_threshold: float | None = None,
     sell_threshold: float | None = None,
@@ -681,8 +703,15 @@ def run_monthly_cv(
     monthly_cv_cfg = dict(validation_cfg.get("monthly_cv", {}))
 
     min_train_periods = int(min_train_periods or validation_cfg.get("min_train_periods", 120))
-    test_window_months = int(
-        test_window_months if test_window_months is not None else monthly_cv_cfg.get("test_window_months", 1)
+    window_type = str(window_type or monthly_cv_cfg.get("window_type", "expanding")).strip().lower()
+    rolling_train_months = (
+        int(rolling_train_months)
+        if rolling_train_months is not None
+        else (
+            int(monthly_cv_cfg["rolling_train_months"])
+            if monthly_cv_cfg.get("rolling_train_months") is not None
+            else None
+        )
     )
     duration = float(duration if duration is not None else primary_cfg["duration"])
     buy_threshold = float(buy_threshold if buy_threshold is not None else primary_cfg["buy_threshold"])
@@ -695,8 +724,10 @@ def run_monthly_cv(
         if out_dir is not None
         else (reports_results_dir(root) / "monthly_cv")
     )
-    if test_window_months != 1:
-        out_dir = out_dir / f"{test_window_months:02d}m_oos"
+    if window_type == "rolling":
+        if rolling_train_months is None:
+            raise ValueError("rolling_train_months is required when window_type='rolling'.")
+        out_dir = out_dir / f"rolling_{rolling_train_months:02d}m"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     clean_dir = root / "data" / "clean"
@@ -708,7 +739,8 @@ def run_monthly_cv(
         adjusted_universe=adjusted_universe,
         returns=returns,
         min_train_periods=min_train_periods,
-        test_window_months=test_window_months,
+        window_type=window_type,
+        rolling_train_months=rolling_train_months,
         buy_threshold=buy_threshold,
         sell_threshold=sell_threshold,
         tcost_bps=tcost_bps,
@@ -728,17 +760,23 @@ def run_monthly_cv(
     protocol = [
         "# Monthly Cross-Validation Protocol",
         "",
-        f"- Fold design: expanding history with `{test_window_months}` out-of-sample calendar month(s) per fold.",
-        "- Training history at fold start uses only observations strictly before the first test month.",
-        "- Within each fold, only returns realized inside that fold's test window are retained in the OOS backtest.",
+        f"- Window type: `{window_type}`.",
+        (
+            f"- Rolling train window months: `{rolling_train_months}`."
+            if window_type == "rolling"
+            else "- Rolling train window months: `N/A`."
+        ),
+        "- Fold design: one out-of-sample calendar month per fold with strictly causal training history.",
+        "- Expanding mode uses all available history from the start of the sample through the month before the test month.",
+        "- Rolling mode uses only the trailing `rolling_train_months` calendar months before the test month.",
+        "- Within each fold, only returns realized in the test month are retained in the OOS backtest.",
         f"- Minimum train periods before an eligible month: `{min_train_periods}`.",
-        f"- Test window months per fold: `{test_window_months}`.",
         f"- Treasury duration assumption: `{duration}`.",
         f"- Thresholds: buy `{buy_threshold}`, sell `{sell_threshold}`.",
         f"- Transaction cost: `{tcost_bps}` bps.",
         f"- Folds evaluated: `{len(fold_summary)}`.",
-        f"- First OOS window: `{fold_summary['fold_label'].iloc[0]}`.",
-        f"- Last OOS window: `{fold_summary['fold_label'].iloc[-1]}`.",
+        f"- First test month: `{fold_summary['test_month'].iloc[0]}`.",
+        f"- Last test month: `{fold_summary['test_month'].iloc[-1]}`.",
         f"- OOS observations concatenated: `{len(oos_backtest)}`.",
         "",
         "## Outputs",
