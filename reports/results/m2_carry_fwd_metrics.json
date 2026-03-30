@@ -1,0 +1,27 @@
+{
+  "threshold": 0.51,
+  "n_approved": 28,
+  "n_held_carry_fwd": 50,
+  "results": {
+    "m1_baseline": {
+      "ann_return": 0.0953,
+      "sharpe": 1.31,
+      "ir": 0.0
+    },
+    "m2_binary_wrong_0pct": {
+      "ann_return": 0.0601,
+      "sharpe": 1.233,
+      "ir": -0.607
+    },
+    "m2_binary_carry_fwd": {
+      "ann_return": 0.1468,
+      "sharpe": 1.106,
+      "ir": 0.318
+    },
+    "m2_sizing_norm": {
+      "ann_return": 0.1084,
+      "sharpe": 1.345,
+      "ir": 0.457
+    }
+  }
+}
