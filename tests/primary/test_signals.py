@@ -3,7 +3,11 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from metalabel.primary.signals import build_primary_signal_variant1, score_to_signal
+from metalabel.primary.signals import (
+    _dynamic_composite_score,
+    build_primary_signal_variant1,
+    score_to_signal,
+)
 
 
 def _sample_universe(n: int = 36) -> dict[str, pd.DataFrame]:
@@ -46,3 +50,44 @@ def test_build_primary_signal_variant1_emits_expected_columns() -> None:
         "signal",
     }
     assert expected.issubset(signals.columns)
+
+
+def test_dynamic_composite_score_smoke_returns_indexed_series() -> None:
+    idx = pd.date_range("2001-01-31", periods=60, freq="ME")
+    zscores = pd.DataFrame(
+        {
+            "spx_trend_z": np.linspace(-1.5, 1.5, 60),
+            "credit_vs_rates_z": np.sin(np.linspace(0.0, 4.0, 60)),
+            "risk_breadth_z": np.cos(np.linspace(0.0, 4.0, 60)),
+            "bcom_accel_z": np.linspace(0.8, -0.8, 60),
+            "yield_mom_z": np.linspace(-0.5, 0.5, 60),
+            "bcom_trend_z": np.nan,
+        },
+        index=idx,
+    )
+    target_ret = pd.Series(np.linspace(-0.03, 0.04, 60), index=idx)
+    spx_returns = pd.Series(np.linspace(-0.02, 0.03, 60), index=idx)
+
+    score = _dynamic_composite_score(zscores=zscores, target_ret=target_ret, spx_returns=spx_returns)
+
+    assert isinstance(score, pd.Series)
+    pd.testing.assert_index_equal(score.index, idx)
+    assert score.notna().any()
+
+
+def test_dynamic_composite_score_uses_only_active_columns_for_ic_windows() -> None:
+    idx = pd.date_range("2002-01-31", periods=60, freq="ME")
+    active_signal = pd.Series(np.linspace(-1.0, 1.0, 60), index=idx)
+    zscores = pd.DataFrame(
+        {
+            "spx_trend_z": active_signal,
+            "bcom_trend_z": np.nan,
+        },
+        index=idx,
+    )
+    target_ret = active_signal.shift(1).fillna(0.0)
+
+    score = _dynamic_composite_score(zscores=zscores, target_ret=target_ret)
+
+    assert pd.notna(score.iloc[-1])
+    assert score.iloc[-1] == active_signal.iloc[-1]

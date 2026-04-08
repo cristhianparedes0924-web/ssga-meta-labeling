@@ -6,6 +6,7 @@ from typing import Mapping
 
 import numpy as np
 import pandas as pd
+from hmmlearn.hmm import GaussianHMM
 
 from metalabel.data import _REQUIRED_ASSETS
 
@@ -126,29 +127,91 @@ def score_to_signal(
     return out
 
 
-def _dynamic_composite_score(zscores: pd.DataFrame, target_ret: pd.Series) -> pd.Series:
-    """Compute expanding IC/correlation-adjusted factor score."""
-    ic_data = zscores.shift(1).copy()
-    ic_data["target_ret"] = pd.to_numeric(target_ret, errors="coerce")
+def _equal_weight_series(columns: pd.Index) -> pd.Series:
+    """Return equal weights for the provided columns."""
+    return pd.Series(1.0 / len(columns), index=columns, dtype=float)
 
-    weights = pd.DataFrame(index=zscores.index, columns=zscores.columns, dtype=float)
+
+def _positive_spearman_ic_mask(ic_window: pd.DataFrame, columns: pd.Index) -> pd.Series:
+    """Build a binary IC mask from the provided trailing window."""
+    corrs = ic_window.corr(method="spearman")["target_ret"].drop("target_ret")
+    return (corrs.reindex(columns) > 0.0).astype(float)
+
+
+def _dynamic_composite_score(
+    zscores: pd.DataFrame,
+    target_ret: pd.Series,
+    spx_returns: pd.Series | None = None,
+) -> pd.Series:
+    """Compute expanding IC/correlation-adjusted factor score."""
+    active_cols = [c for c in zscores.columns if zscores[c].notna().any()]
+    if not active_cols:
+        return pd.Series(np.nan, index=zscores.index, name="composite_score", dtype=float)
+
+    active_index = pd.Index(active_cols)
+    active_zscores = zscores[active_cols]
+
+    ic_data = active_zscores.shift(1).copy()
+    ic_data["target_ret"] = pd.to_numeric(target_ret, errors="coerce").reindex(zscores.index)
+
+    vix_proxy = pd.DataFrame(index=zscores.index, columns=["vol_30d", "vol_90d", "shock"], dtype=float)
+    if spx_returns is not None:
+        spx_ret = pd.to_numeric(spx_returns, errors="coerce").reindex(zscores.index)
+        vix_proxy["vol_30d"] = spx_ret.rolling(30, min_periods=30).std()
+        vix_proxy["vol_90d"] = spx_ret.rolling(90, min_periods=90).std()
+        vix_proxy["shock"] = spx_ret.abs()
+        vix_proxy = vix_proxy.apply(expanding_zscore, axis=0)
+
+    weights = pd.DataFrame(0.0, index=zscores.index, columns=zscores.columns, dtype=float)
 
     for i in range(len(zscores)):
-        window = zscores.iloc[: i + 1].dropna(how="all")
+        window = active_zscores.iloc[: i + 1].dropna(how="all")
 
-        ic_mask = pd.Series(1.0, index=zscores.columns)
+        ic_mask = pd.Series(1.0, index=active_index, dtype=float)
+        force_equal_weights = False
         if i >= 36:
-            ic_window = ic_data.iloc[i - 36 : i + 1].dropna()
-            if len(ic_window) >= 12:
-                corrs = ic_window.corr(method="spearman")["target_ret"].drop("target_ret")
-                ic_mask = (corrs > 0.0).astype(float)
+            full_ic_window = ic_data.iloc[max(0, i - 35) : i + 1].dropna()
+            if len(full_ic_window) < 12:
+                force_equal_weights = True
+            else:
+                ic_window = full_ic_window
+                proxy_history = vix_proxy.iloc[: i + 1]
+                if not proxy_history.iloc[-1].isna().any():
+                    proxy_window = proxy_history.dropna()
+                    if len(proxy_window) >= 24:
+                        try:
+                            hmm = GaussianHMM(
+                                n_components=2,
+                                covariance_type="diag",
+                                n_iter=300,
+                                random_state=42,
+                            )
+                            regime_input = proxy_window.to_numpy()
+                            hmm.fit(regime_input)
+                            predicted_states = hmm.predict(regime_input)
+                            high_vol_state = int(np.argmax(hmm.means_[:, 0]))
+                            current_is_high_vol = predicted_states[-1] == high_vol_state
+                            regime_mask = predicted_states == high_vol_state
+                            if not current_is_high_vol:
+                                regime_mask = ~regime_mask
 
-        if len(window) < 12:
-            base_w = pd.Series(1.0 / zscores.shape[1], index=zscores.columns)
+                            regime_index = proxy_window.index[regime_mask]
+                            regime_ic_window = full_ic_window.loc[
+                                full_ic_window.index.intersection(regime_index)
+                            ]
+                            if len(regime_ic_window) >= 8:
+                                ic_window = regime_ic_window
+                        except Exception:
+                            ic_window = full_ic_window
+
+                ic_mask = _positive_spearman_ic_mask(ic_window, active_index)
+
+        if force_equal_weights or len(window) < 12:
+            base_w = _equal_weight_series(active_index)
         else:
             corr_mat = window.corr()
             if corr_mat.isna().any().any():
-                base_w = pd.Series(1.0 / zscores.shape[1], index=zscores.columns)
+                base_w = _equal_weight_series(active_index)
             else:
                 sum_corr = corr_mat.sum(axis=0).clip(lower=1.0)
                 inv_corr = 1.0 / sum_corr
@@ -158,9 +221,9 @@ def _dynamic_composite_score(zscores: pd.DataFrame, target_ret: pd.Series) -> pd
         if final_w.sum() > 0:
             final_w = final_w / final_w.sum()
         else:
-            final_w = pd.Series(1.0 / zscores.shape[1], index=zscores.columns)
+            final_w = _equal_weight_series(active_index)
 
-        weights.iloc[i] = final_w.values
+        weights.loc[zscores.index[i], active_index] = final_w.to_numpy()
 
     return (zscores * weights).sum(axis=1).rename("composite_score")
 
@@ -193,8 +256,13 @@ def build_primary_signal_variant1(
 
     if indicator_weights is None:
         spx_price = pd.to_numeric(universe["spx"]["Price"], errors="coerce")
+        spx_returns = pd.to_numeric(universe["spx"]["Return"], errors="coerce")
         target_ret = spx_price.pct_change()
-        score = _dynamic_composite_score(zscores=zscores_for_composite, target_ret=target_ret)
+        score = _dynamic_composite_score(
+            zscores=zscores_for_composite,
+            target_ret=target_ret,
+            spx_returns=spx_returns,
+        )
     else:
         score = composite_score(zscores=zscores_for_composite, weights=indicator_weights).rename("composite_score")
 
