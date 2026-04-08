@@ -29,6 +29,7 @@ import pandas as pd
 from metalabel.secondary.model import (
     M2_FEATURES_CORE,
     apply_position_sizing,
+    compute_carry_returns,
     run_walk_forward,
 )
 
@@ -44,12 +45,29 @@ MIN_TRAIN = 60
 # ---------------------------------------------------------------------------
 # Load and run walk-forward (core features, no threshold needed for sizing)
 # ---------------------------------------------------------------------------
-df = pd.read_csv(DATA_PATH, parse_dates=["date"])
+df = pd.read_csv(DATA_PATH, parse_dates=["date", "realized_date"])
 df = df.sort_values("date").reset_index(drop=True)
 
 preds = run_walk_forward(df, min_train_size=MIN_TRAIN,
                          threshold=0.5, features=M2_FEATURES_CORE)
 preds = preds.sort_values("date").reset_index(drop=True)
+
+# Merge weight columns and realized_date for carry-forward calculation
+w_cols = ["date", "realized_date", "weight_spx", "weight_bcom",
+          "weight_treasury_10y", "weight_corp_bonds"]
+preds = preds.merge(df[w_cols], on="date", how="left")
+
+# Load asset returns
+def load_asset(name):
+    a = pd.read_csv(ROOT / "data" / "clean" / f"{name}.csv", parse_dates=["Date"])
+    return a.set_index("Date")["Return"].rename(name)
+
+asset_rets = pd.concat([
+    load_asset("spx"), load_asset("bcom"),
+    load_asset("corp_bonds"), load_asset("treasury_10y"),
+], axis=1).sort_index()
+
+carry_rets = compute_carry_returns(preds, asset_rets)
 
 # ---------------------------------------------------------------------------
 # Build the four return streams
@@ -59,15 +77,15 @@ m1_returns   = preds["meta_target_return"].values
 # 1. M1 baseline: size=1 on every trade
 m1_stream = m1_returns.copy()
 
-# 2. M2 binary gate at 0.51: approved trades at size=1, rejected earn 0
-binary_stream = np.where(preds["m2_prob"] >= 0.51, m1_returns, 0.0)
+# 2. M2 binary gate at 0.51: approved earn M1 return, rejected earn prev allocation
+binary_stream = np.where(preds["m2_prob"] >= 0.51, m1_returns, carry_rets)
 
-# 3. M2 raw sizing: size = m2_prob (always < 1, de-risked vs M1)
-sized_raw = apply_position_sizing(preds, normalize=False)
+# 3. M2 raw sizing: size = m2_prob, unallocated earns prev allocation return
+sized_raw  = apply_position_sizing(preds, normalize=False, carry_returns=carry_rets)
 raw_stream = sized_raw["sized_return"].values
 
-# 4. M2 normalised sizing: size = m2_prob / mean(m2_prob), avg exposure = M1
-sized_norm = apply_position_sizing(preds, normalize=True)
+# 4. M2 normalised sizing: size = m2_prob / mean(m2_prob), unallocated earns prev allocation
+sized_norm  = apply_position_sizing(preds, normalize=True, carry_returns=carry_rets)
 norm_stream = sized_norm["sized_return"].values
 
 print("Position size distribution (normalised):")

@@ -1,0 +1,28 @@
+{
+  "baseline": {
+    "model": "LogisticRegression(C=0.5, penalty=l2)",
+    "auc": 0.5252,
+    "ann_return": 0.1103,
+    "sharpe": 1.379,
+    "ir": 0.302
+  },
+  "ridge_cv": {
+    "model": "LogisticRegressionCV(Cs=[0.01,0.05,0.1,0.5,1,5,10], cv=5)",
+    "auc": 0.5284,
+    "ann_return": 0.1245,
+    "sharpe": 1.474,
+    "ir": 0.443,
+    "c_values_chosen": {
+      "0.01": 4,
+      "0.5": 2,
+      "1.0": 5,
+      "10.0": 33,
+      "5.0": 34
+    }
+  },
+  "m1_baseline": {
+    "ann_return": 0.0953,
+    "sharpe": 1.31,
+    "ir": 0.0
+  }
+}

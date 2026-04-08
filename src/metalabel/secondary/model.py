@@ -18,7 +18,7 @@ from typing import Sequence
 
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
 from sklearn.preprocessing import StandardScaler
 
 from metalabel.secondary.split import walk_forward_splits
@@ -134,6 +134,25 @@ def _make_model() -> LogisticRegression:
     )
 
 
+def _make_ridge_model() -> LogisticRegressionCV:
+    """Return a Ridge logistic regression with C tuned by inner cross-validation.
+
+    Searches over Cs = [0.01, 0.05, 0.1, 0.5, 1.0, 5.0, 10.0] using 5-fold
+    stratified CV within each walk-forward training window, selecting the C
+    that maximises ROC-AUC.  All other settings match the baseline model.
+    """
+    return LogisticRegressionCV(
+        Cs=[0.01, 0.05, 0.1, 0.5, 1.0, 5.0, 10.0],
+        cv=5,
+        penalty="l2",
+        scoring="roc_auc",
+        solver="lbfgs",
+        max_iter=500,
+        class_weight="balanced",
+        random_state=42,
+    )
+
+
 # ---------------------------------------------------------------------------
 # Walk-forward prediction
 # ---------------------------------------------------------------------------
@@ -207,6 +226,57 @@ def run_walk_forward(
     return pd.DataFrame(records)
 
 
+def run_walk_forward_ridge(
+    df: pd.DataFrame,
+    min_train_size: int = 60,
+    step: int = 1,
+    threshold: float = 0.5,
+    features: list[str] | None = None,
+) -> tuple[pd.DataFrame, list[float]]:
+    """Walk-forward prediction using Ridge logistic regression with tuned C.
+
+    Same as ``run_walk_forward`` but uses ``LogisticRegressionCV`` to select
+    the best regularisation strength at each step via inner 5-fold CV.
+
+    Returns
+    -------
+    predictions : DataFrame  (same schema as run_walk_forward)
+    c_values    : list of C values chosen at each walk-forward step
+    """
+    df = df.sort_values("date").reset_index(drop=True)
+    records: list[dict] = []
+    c_values: list[float] = []
+
+    for train_df, test_df in walk_forward_splits(df, min_train_size=min_train_size, step=step):
+        X_train = prepare_features(train_df, features=features).values
+        y_train = train_df[_TARGET].values
+
+        scaler = StandardScaler()
+        X_train_s = scaler.fit_transform(X_train)
+
+        model = _make_ridge_model()
+        model.fit(X_train_s, y_train)
+        c_values.append(float(model.C_[0]))
+
+        X_test = prepare_features(test_df, features=features).values
+        X_test_s = scaler.transform(X_test)
+        probs = model.predict_proba(X_test_s)[:, 1]
+
+        for i, (_, row) in enumerate(test_df.iterrows()):
+            records.append(
+                {
+                    "date": row["date"],
+                    "primary_signal": row["primary_signal"],
+                    "meta_label": int(row[_TARGET]),
+                    "meta_target_return": float(row["meta_target_return"]),
+                    "m2_prob": float(probs[i]),
+                    "m2_approve": int(probs[i] >= threshold),
+                }
+            )
+
+    return pd.DataFrame(records), c_values
+
+
 def sweep_thresholds(
     predictions: pd.DataFrame,
     thresholds: list[float] | None = None,
@@ -267,20 +337,93 @@ def sweep_thresholds(
 # Position sizing
 # ---------------------------------------------------------------------------
 
+def compute_carry_returns(
+    predictions: pd.DataFrame,
+    asset_rets: pd.DataFrame,
+) -> np.ndarray:
+    """Compute the carry-forward return at each OOS step.
+
+    When M2 sizes down (position_size < 1), the unallocated fraction is not
+    sitting in cash - it is still invested in the PREVIOUS period's M1
+    allocation.  This function computes what that previous allocation earns
+    at each step using actual asset returns.
+
+    Parameters
+    ----------
+    predictions:
+        Output of ``run_walk_forward`` merged with weight columns and
+        realized_date from the secondary dataset.  Required columns:
+        realized_date, weight_spx, weight_bcom, weight_treasury_10y,
+        weight_corp_bonds, meta_target_return.
+    asset_rets:
+        DataFrame indexed by date with columns:
+        spx, bcom, corp_bonds, treasury_10y.
+
+    Returns
+    -------
+    carry : np.ndarray of shape (n,)
+        Carry-forward return at each step. At step 0 (no prior allocation)
+        falls back to M1's own return.
+    """
+    required = ["realized_date", "weight_spx", "weight_bcom",
+                "weight_treasury_10y", "weight_corp_bonds", "meta_target_return"]
+    missing = [c for c in required if c not in predictions.columns]
+    if missing:
+        raise KeyError(
+            f"predictions is missing columns needed for carry-forward: {missing}. "
+            "Merge weight columns from the secondary dataset before calling."
+        )
+
+    weights  = predictions[["weight_spx", "weight_bcom",
+                             "weight_treasury_10y", "weight_corp_bonds"]].values
+    m1_rets  = predictions["meta_target_return"].values
+
+    def _asset_ret(realized_date):
+        if realized_date in asset_rets.index:
+            return asset_rets.loc[realized_date]
+        idx = asset_rets.index.get_indexer([realized_date], method="nearest")[0]
+        return asset_rets.iloc[idx]
+
+    # Asset return matrix aligned to OOS events
+    # column order: spx=0, bcom=1, corp_bonds=2, treasury_10y=3
+    A = np.array([_asset_ret(rd).values
+                  for rd in predictions["realized_date"]])
+
+    carry = np.zeros(len(predictions))
+    for i in range(len(predictions)):
+        if i == 0:
+            carry[i] = m1_rets[i]          # no prior allocation, fallback
+        else:
+            pw = weights[i - 1]            # prev weights: [spx, bcom, tsy, corp]
+            ca = A[i]                      # current asset rets: [spx, bcom, corp, tsy]
+            carry[i] = (pw[0] * ca[0] +   # spx
+                        pw[1] * ca[1] +   # bcom
+                        pw[2] * ca[3] +   # treasury_10y (col 3 in A)
+                        pw[3] * ca[2])    # corp_bonds   (col 2 in A)
+    return carry
+
+
 def apply_position_sizing(
     predictions: pd.DataFrame,
     normalize: bool = True,
+    carry_returns: np.ndarray | None = None,
 ) -> pd.DataFrame:
     """Replace binary gate with probability-scaled position sizes.
 
     Instead of approve/reject, M2's probability scales how much of each
-    trade is taken.  Two modes:
+    trade is taken.
 
-    * normalize=True  (default): scale so average position = 1.0, keeping
-      the same total market exposure as M1 baseline.  Allows fair Sharpe
-      and IR comparison against M1.
-    * normalize=False: raw probability as size (0 to 1), so the portfolio
-      is always partially de-risked vs M1.
+    Sizing formula (normalize=True, default):
+        position_size = m2_prob / mean(m2_prob)
+
+    Return formula:
+        If carry_returns provided (correct economic behavior):
+            sized_return = size * m1_return + (1 - size) * carry_return
+            The unallocated fraction earns the previous period's M1
+            allocation return, not 0%.
+        If carry_returns is None (legacy):
+            sized_return = size * m1_return
+            The unallocated fraction implicitly earns 0%.
 
     Parameters
     ----------
@@ -289,26 +432,37 @@ def apply_position_sizing(
         meta_target_return).
     normalize:
         Whether to rescale sizes so their mean equals 1.0.
+    carry_returns:
+        Array of carry-forward returns computed by ``compute_carry_returns``.
+        When provided the sized return is economically correct.
+        When None falls back to the legacy zero-return assumption.
 
     Returns
     -------
     predictions DataFrame with two new columns:
         position_size  – the multiplier applied to each trade
-        sized_return   – position_size * meta_target_return
+        sized_return   – economically correct portfolio return
     """
     probs = predictions["m2_prob"].values.copy()
 
     if normalize:
         mean_prob = probs.mean()
         if mean_prob == 0:
-            raise ValueError("All probabilities are zero — cannot normalise.")
+            raise ValueError("All probabilities are zero - cannot normalise.")
         sizes = probs / mean_prob
     else:
         sizes = probs
 
+    m1_rets = predictions["meta_target_return"].values
+
+    if carry_returns is not None:
+        sized_rets = sizes * m1_rets + (1 - sizes) * carry_returns
+    else:
+        sized_rets = sizes * m1_rets
+
     result = predictions.copy()
     result["position_size"] = sizes
-    result["sized_return"]  = sizes * result["meta_target_return"].values
+    result["sized_return"]  = sized_rets
     return result
 
 

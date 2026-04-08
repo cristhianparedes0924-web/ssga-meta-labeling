@@ -15,21 +15,21 @@
     },
     "m2_binary_t051": {
       "n": 28,
-      "ann_return": 0.0601,
-      "sharpe": 1.233,
-      "ir": -0.607
+      "ann_return": 0.1468,
+      "sharpe": 1.106,
+      "ir": 0.318
     },
     "m2_sizing_raw": {
       "n": 78,
-      "ann_return": 0.0517,
-      "sharpe": 1.345,
-      "ir": -1.114
+      "ann_return": 0.0857,
+      "sharpe": 1.035,
+      "ir": -0.095
     },
     "m2_sizing_norm": {
       "n": 78,
-      "ann_return": 0.1084,
-      "sharpe": 1.345,
-      "ir": 0.457
+      "ann_return": 0.1103,
+      "sharpe": 1.379,
+      "ir": 0.302
     }
   }
 }

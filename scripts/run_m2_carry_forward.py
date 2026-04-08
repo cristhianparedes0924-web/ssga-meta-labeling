@@ -19,7 +19,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from metalabel.secondary.model import M2_FEATURES_CORE, apply_position_sizing, run_walk_forward
+from metalabel.secondary.model import M2_FEATURES_CORE, apply_position_sizing, compute_carry_returns, run_walk_forward
 
 ROOT      = Path(__file__).resolve().parent.parent
 DATA_PATH = ROOT / "reports" / "results" / "secondary_dataset.csv"
@@ -107,8 +107,9 @@ for i in range(len(preds)):
                                prev_w[2] * curr_a[3] +   # treasury_10y (col 3 in A)
                                prev_w[3] * curr_a[2])    # corp_bonds   (col 2 in A)
 
-# 4. Position sizing
-sized = apply_position_sizing(preds, normalize=True)
+# 4. Position sizing (correct: unallocated fraction earns prev allocation return)
+carry_rets  = compute_carry_returns(preds, asset_rets)
+sized       = apply_position_sizing(preds, normalize=True, carry_returns=carry_rets)
 norm_stream = sized["sized_return"].values
 
 # ── Stats ─────────────────────────────────────────────────────────────────────
