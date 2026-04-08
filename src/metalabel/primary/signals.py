@@ -170,39 +170,47 @@ def _dynamic_composite_score(
         ic_mask = pd.Series(1.0, index=active_index, dtype=float)
         force_equal_weights = False
         if i >= 36:
+            # Including row i is causal: ic_data aligns z_{t-1} with realized return_t,
+            # and the primary signal at t is used for deployment at t+1.
             full_ic_window = ic_data.iloc[max(0, i - 35) : i + 1].dropna()
             if len(full_ic_window) < 12:
                 force_equal_weights = True
             else:
                 ic_window = full_ic_window
-                proxy_history = vix_proxy.iloc[: i + 1]
-                if not proxy_history.iloc[-1].isna().any():
-                    proxy_window = proxy_history.dropna()
-                    if len(proxy_window) >= 24:
-                        try:
-                            hmm = GaussianHMM(
-                                n_components=2,
-                                covariance_type="diag",
-                                n_iter=300,
-                                random_state=42,
-                            )
-                            regime_input = proxy_window.to_numpy()
-                            hmm.fit(regime_input)
-                            predicted_states = hmm.predict(regime_input)
-                            high_vol_state = int(np.argmax(hmm.means_[:, 0]))
-                            current_is_high_vol = predicted_states[-1] == high_vol_state
-                            regime_mask = predicted_states == high_vol_state
-                            if not current_is_high_vol:
-                                regime_mask = ~regime_mask
+                current_proxy = vix_proxy.iloc[i]
+                if current_proxy.isna().any():
+                    proxy_window = vix_proxy.iloc[0:0]
+                else:
+                    proxy_window = vix_proxy.iloc[: i + 1].dropna()
 
-                            regime_index = proxy_window.index[regime_mask]
-                            regime_ic_window = full_ic_window.loc[
-                                full_ic_window.index.intersection(regime_index)
-                            ]
-                            if len(regime_ic_window) >= 8:
-                                ic_window = regime_ic_window
-                        except Exception:
+                if len(proxy_window) < 24:
+                    ic_window = full_ic_window
+                else:
+                    try:
+                        hmm = GaussianHMM(
+                            n_components=2,
+                            covariance_type="diag",
+                            n_iter=300,
+                            random_state=42,
+                        )
+                        regime_input = proxy_window.to_numpy()
+                        hmm.fit(regime_input)
+                        predicted_states = hmm.predict(regime_input)
+                        high_vol_state = int(np.argmax(hmm.means_[:, 0]))
+                        current_state = predicted_states[-1]
+                        current_is_high_vol = current_state == high_vol_state
+                        regime_state = high_vol_state if current_is_high_vol else 1 - high_vol_state
+                        regime_index = proxy_window.index[predicted_states == regime_state]
+                        regime_ic_window = full_ic_window.loc[
+                            full_ic_window.index.intersection(regime_index)
+                        ]
+                    except Exception:
+                        ic_window = full_ic_window
+                    else:
+                        if len(regime_ic_window) < 8:
                             ic_window = full_ic_window
+                        else:
+                            ic_window = regime_ic_window
 
                 ic_mask = _positive_spearman_ic_mask(ic_window, active_index)
 
