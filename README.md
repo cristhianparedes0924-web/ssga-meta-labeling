@@ -47,7 +47,83 @@ The primary model is the current implemented strategy engine. It:
 - converts those labels into portfolio weights
 - evaluates performance and classification-style diagnostics
 
-This is the live research baseline. Any future meta-labeling work should sit on top of this primary signal framework rather than replace it.
+This is the live research baseline. In team shorthand, this baseline is also the
+repo's effective `M1`. Any future meta-labeling work should sit on top of this
+primary signal framework rather than replace it.
+
+## PrimaryV1 / M1 Reporting Contract
+
+PrimaryV1 has two different metric scopes. They answer different questions and
+should not be mixed:
+
+- Official OOS metrics answer: how did M1 perform in walk-forward validation
+  after the required training history was available?
+- Full-sample causal metrics answer: how did the current causal strategy logic
+  perform over the whole available backtest sample?
+
+Use the official OOS metrics for team-facing M1 performance updates:
+
+```text
+reports/results/primary_v1_oos_summary.csv
+reports/results/walk_forward/walk_forward_summary.csv
+reports/results/walk_forward/walk_forward_oos_benchmark_summary.csv
+```
+
+The official OOS information ratio is calculated against `EqualWeight25OOS`,
+which is the equal-weight four-asset benchmark restricted to the same
+walk-forward OOS dates as PrimaryV1.
+
+Do not present these files as official OOS performance:
+
+```text
+reports/results/primary_v1_summary.csv
+reports/results/benchmarks_summary.csv
+reports/results/benchmarks_summary.html
+```
+
+Those files remain useful diagnostics, but they are full-sample causal outputs.
+They include an `evaluation_scope` column with `full_sample_causal` to make that
+scope explicit.
+
+### Current Metric Interpretation
+
+The current official OOS M1 information ratio is:
+
+```text
+PrimaryV1 OOS IR vs EqualWeight25OOS: 0.6632
+```
+
+This differs from the full-sample benchmark IR:
+
+```text
+PrimaryV1 full-sample IR vs EqualWeight25: 0.3035
+```
+
+Both numbers use the same information-ratio formula. The difference is the
+return window:
+
+- `0.6632` uses only walk-forward OOS dates.
+- `0.3035` uses the full-sample causal benchmark report.
+
+The older `0.6383` IR that appeared before the reporting cleanup came from a
+stale full-sample benchmark artifact. It is historical context only and should
+not be used as the current official M1 metric.
+
+Information ratio is computed as:
+
+```text
+active_return = strategy_net_return - benchmark_net_return
+information_ratio = mean(active_return) / std(active_return) * sqrt(12)
+```
+
+For official M1 OOS reporting:
+
+```text
+strategy_net_return = WalkForwardStrict PrimaryV1 net return
+benchmark_net_return = EqualWeight25OOS net return on the same dates
+```
+
+More detail is documented in `docs/primary_reporting_contract.md`.
 
 ## Secondary Model Workspace
 
@@ -66,6 +142,9 @@ meta-labeling-project/
 │   └── clean/
 ├── configs/
 │   └── primary.yaml
+├── docs/
+│   ├── primary_reporting_contract.md
+│   └── secondary_training_contract.md
 ├── src/
 │   └── metalabel/
 │       ├── __init__.py
@@ -350,6 +429,8 @@ Treat the following outputs as the canonical shared artifacts of the repository:
   - `reports/results/robustness/robustness_summary.md`
 - Walk-forward outputs:
   - `reports/results/walk_forward/walk_forward_backtest.csv`
+  - `reports/results/walk_forward/equal_weight_oos_backtest.csv`
+  - `reports/results/walk_forward/walk_forward_oos_benchmark_summary.csv`
   - `reports/results/walk_forward/standard_causal_backtest_slice.csv`
   - `reports/results/walk_forward/walk_forward_summary.csv`
   - `reports/results/walk_forward/walk_forward_protocol.md`
@@ -363,9 +444,11 @@ These filenames and locations are part of the repository contract for collaborat
 
 For performance reporting, treat `reports/results/primary_v1_oos_summary.csv` and
 `reports/results/walk_forward/walk_forward_summary.csv` as the canonical OOS
-artifacts for PrimaryV1. The `primary_v1_summary.csv` and benchmark summary
-artifacts remain useful, but they are full-sample causal backtest outputs and
-should not be presented as official OOS metrics.
+artifacts for PrimaryV1. The official OOS information ratio uses
+`EqualWeight25OOS`, computed on the same walk-forward OOS dates, as its benchmark.
+The `primary_v1_summary.csv` and benchmark summary artifacts remain useful, but
+they are full-sample causal backtest outputs and should not be presented as
+official OOS metrics.
 
 ## Replication Checklist
 
@@ -383,6 +466,7 @@ After that, the project can be run with the commands in this README.
 ## Notes
 
 - Repo-level agent and collaborator instructions live in `AGENTS.md`.
+- PrimaryV1/M1 metric-scope rules live in `docs/primary_reporting_contract.md`.
 - Raw input requirements and data assumptions are documented in `data/raw/README.md`.
 - `reports/results/` contains generated CSV, HTML, markdown, and reproducibility outputs.
 - `reports/assets/` contains generated figures.

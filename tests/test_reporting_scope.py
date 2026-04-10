@@ -247,8 +247,21 @@ def test_run_walk_forward_exports_official_primary_v1_oos_summary(
         tmp_path / "reports" / "results" / "walk_forward" / "walk_forward_summary.csv",
         index_col=0,
     )
+    oos_benchmark = pd.read_csv(
+        tmp_path / "reports" / "results" / "walk_forward" / "walk_forward_oos_benchmark_summary.csv",
+        index_col=0,
+    )
+    equal_weight_backtest = pd.read_csv(
+        tmp_path / "reports" / "results" / "walk_forward" / "equal_weight_oos_backtest.csv",
+        index_col=0,
+    )
 
     assert official.index.tolist() == ["PrimaryV1"]
     assert official["evaluation_scope"].iloc[0] == "oos_walk_forward"
     assert official["source_validation"].iloc[0] == "walk_forward"
+    assert official["benchmark_key"].iloc[0] == "EqualWeight25OOS"
+    assert pd.notna(official["info_ratio"].iloc[0])
     assert official["ann_return"].iloc[0] == walk_forward.loc["WalkForwardStrict", "ann_return"]
+    assert walk_forward.loc["EqualWeight25OOS", "evaluation_scope"] == "oos_walk_forward_benchmark"
+    assert oos_benchmark.index.tolist() == ["WalkForwardStrict", "EqualWeight25OOS"]
+    assert len(equal_weight_backtest) == 3

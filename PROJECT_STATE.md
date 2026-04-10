@@ -11,7 +11,9 @@ Based on the current repo state, the primary-model repository already appears to
 - Robustness runs across threshold, duration, and transaction-cost grids
 - Walk-forward validation outputs
 - Monthly cross-validation outputs comparing expanding versus rolling training windows with monthly OOS evaluation
-- Official PrimaryV1 OOS summary export sourced from walk-forward validation, alongside clearly labeled full-sample causal primary and benchmark summaries
+- Official PrimaryV1 OOS summary export sourced from walk-forward validation, including an OOS-aligned EqualWeight25 information ratio benchmark
+- Clearly labeled full-sample causal primary and benchmark summaries
+- Detailed PrimaryV1/M1 reporting-scope documentation in `docs/primary_reporting_contract.md`
 - Reporting outputs in `reports/results/` and plots in `reports/assets/`
 - A first-pass secondary dataset builder for event-level meta-labeling data
 - Causal temporal split utilities for secondary train/validation preparation
@@ -24,7 +26,8 @@ The primary model is the current baseline. The main implemented strategy code li
 - Baseline config source: `configs/primary.yaml`
 - Baseline outputs already appear to exist in `reports/results/primary_v1_*`
 - `reports/results/primary_v1_summary.csv` now represents full-sample causal backtest metrics only
-- `reports/results/primary_v1_oos_summary.csv` is now the canonical PrimaryV1 OOS performance summary sourced from walk-forward validation
+- `reports/results/primary_v1_oos_summary.csv` is now the canonical PrimaryV1 OOS performance summary sourced from walk-forward validation, with information ratio benchmarked against EqualWeight25 on matched OOS dates
+- `docs/primary_reporting_contract.md` documents the difference between official OOS metrics, full-sample diagnostics, and stale historical IR values
 - Benchmarks, robustness, walk-forward, and monthly CV outputs also appear to be present
 - Monthly CV now supports expanding-history validation plus rolling train windows of 3, 6, 12, 24, and 36 months while keeping OOS evaluation monthly
 - Secondary dataset construction now appears to be implemented under `src/metalabel/secondary/`

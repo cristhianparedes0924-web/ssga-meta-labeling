@@ -21,7 +21,7 @@ from metalabel import PROJECT_ROOT, load_primary_config
 from metalabel.data import DEFAULT_ASSETS, _resolve_local_raw_dir, _resolve_within_project, apply_treasury_total_return, load_universe, universe_returns_matrix
 from metalabel.primary.backtest import backtest_from_weights
 from metalabel.primary.metrics import perf_table
-from metalabel.primary.portfolio import _normalize_long_only_weights, weights_from_primary_signal
+from metalabel.primary.portfolio import _normalize_long_only_weights, weights_equal_weight, weights_from_primary_signal
 from metalabel.primary.signals import build_primary_signal_variant1, score_to_signal
 from metalabel.reporting import annualized_stats, build_asset_summary, build_data_qc_html, maybe_yield_warning, reports_results_dir
 
@@ -459,17 +459,31 @@ def run_walk_forward(
     full_backtest = backtest_from_weights(returns=returns, weights=full_weights, tcost_bps=tcost_bps)
     full_backtest = full_backtest.loc[wf_backtest.index.min() :].copy()
 
+    equal_weight_backtest = backtest_from_weights(
+        returns=returns,
+        weights=weights_equal_weight(returns),
+        tcost_bps=tcost_bps,
+    )
+    equal_weight_oos = equal_weight_backtest.reindex(wf_backtest.index).copy()
+    if equal_weight_oos[["net_return", "equity_net"]].isna().any().any():
+        raise ValueError("EqualWeight25 OOS benchmark could not be aligned to walk-forward dates.")
+    equal_weight_oos["equity_gross"] = (1.0 + equal_weight_oos["gross_return"]).cumprod()
+    equal_weight_oos["equity_net"] = (1.0 + equal_weight_oos["net_return"]).cumprod()
+
     summary = perf_table(
         {
             "WalkForwardStrict": wf_backtest,
+            "EqualWeight25OOS": equal_weight_oos,
             "StandardCausal": full_backtest,
-        }
+        },
+        benchmark_key="EqualWeight25OOS",
     )
     summary.insert(
         0,
         "evaluation_scope",
         [
             "oos_walk_forward",
+            "oos_walk_forward_benchmark",
             "full_sample_causal_slice",
         ],
     )
@@ -478,14 +492,22 @@ def run_walk_forward(
     official_oos_summary = summary.loc[["WalkForwardStrict"]].copy()
     official_oos_summary.index = pd.Index(["PrimaryV1"], name=summary.index.name)
     official_oos_summary["source_validation"] = "walk_forward"
+    official_oos_summary["benchmark_key"] = "EqualWeight25OOS"
 
     wf_path = out_dir / "walk_forward_backtest.csv"
+    eq_oos_path = out_dir / "equal_weight_oos_backtest.csv"
     std_path = out_dir / "standard_causal_backtest_slice.csv"
     summary_path = out_dir / "walk_forward_summary.csv"
+    oos_benchmark_summary_path = out_dir / "walk_forward_oos_benchmark_summary.csv"
     official_oos_path = reports_results_dir(root) / "primary_v1_oos_summary.csv"
     wf_backtest.to_csv(wf_path, index=True)
+    equal_weight_oos.to_csv(eq_oos_path, index=True)
     full_backtest.to_csv(std_path, index=True)
     summary.to_csv(summary_path, index=True)
+    summary.loc[["WalkForwardStrict", "EqualWeight25OOS"]].to_csv(
+        oos_benchmark_summary_path,
+        index=True,
+    )
     official_oos_summary.to_csv(official_oos_path, index=True)
 
     protocol = [
@@ -494,6 +516,7 @@ def run_walk_forward(
         "- Train window: expanding from first observation to decision date `t`.",
         "- Decision at `t`: compute signal using only data through `t`.",
         "- Realization at `t+1`: apply weight decided at `t` to next-period return.",
+        "- OOS information ratio uses EqualWeight25 on the same walk-forward OOS dates.",
         f"- Minimum train periods before first OOS decision: `{min_train_periods}`.",
         f"- Treasury duration assumption: `{duration}`.",
         f"- Thresholds: buy `{buy_threshold}`, sell `{sell_threshold}`.",
@@ -504,15 +527,19 @@ def run_walk_forward(
         "",
         "## Outputs",
         f"- `{wf_path}`",
+        f"- `{eq_oos_path}`",
         f"- `{std_path}`",
         f"- `{summary_path}`",
+        f"- `{oos_benchmark_summary_path}`",
         f"- `{official_oos_path}`",
     ]
     (out_dir / "walk_forward_protocol.md").write_text("\n".join(protocol), encoding="utf-8")
 
     print(f"Saved: {wf_path}")
+    print(f"Saved: {eq_oos_path}")
     print(f"Saved: {std_path}")
     print(f"Saved: {summary_path}")
+    print(f"Saved: {oos_benchmark_summary_path}")
     print(f"Saved: {official_oos_path}")
     print(f"Saved: {out_dir / 'walk_forward_protocol.md'}")
 
@@ -1062,6 +1089,7 @@ def run_validation_suite(
         f"- `{target_root / 'reports' / 'results' / 'primary_v1_oos_summary.csv'}`",
         f"- `{target_root / 'reports' / 'results' / 'robustness' / 'robustness_grid_results.csv'}`",
         f"- `{target_root / 'reports' / 'results' / 'walk_forward' / 'walk_forward_summary.csv'}`",
+        f"- `{target_root / 'reports' / 'results' / 'walk_forward' / 'walk_forward_oos_benchmark_summary.csv'}`",
         f"- `{manifest_path}`",
     ]
     summary_path = repro_dir / "validation_summary.md"

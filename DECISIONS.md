@@ -111,3 +111,17 @@ The repository already had a true OOS walk-forward pipeline, but the main `Prima
 ### Impact
 
 Future reporting should source official PrimaryV1 performance metrics from `reports/results/primary_v1_oos_summary.csv` or `reports/results/walk_forward/walk_forward_summary.csv`, while treating `primary_v1_summary.csv` and benchmark summary artifacts as full-sample causal diagnostics only.
+
+## 2026-04-10
+
+### Decision
+
+Use `EqualWeight25OOS` on matched walk-forward OOS dates as the benchmark for official PrimaryV1 OOS information ratio.
+
+### Reason
+
+Information ratio requires a benchmark return series on the same dates as the evaluated strategy. The previous official OOS summary contained only PrimaryV1, so its information ratio could not be computed.
+
+### Impact
+
+Future official PrimaryV1 OOS reports should include the matched OOS equal-weight benchmark when reporting information ratio. Full-sample benchmark reports remain diagnostics and should not be used as the official OOS IR source.
