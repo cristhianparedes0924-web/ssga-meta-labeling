@@ -329,13 +329,15 @@ Treat the following outputs as the canonical shared artifacts of the repository:
   - `data/clean/corp_bonds.csv`
 - Core primary-model outputs:
   - `reports/results/primary_v1_backtest.csv`
-  - `reports/results/primary_v1_summary.csv`
-  - `reports/results/primary_v1_classification.csv`
+  - `reports/results/primary_v1_summary.csv` (full-sample causal backtest metrics)
+  - `reports/results/primary_v1_classification.csv` (full-sample causal classification diagnostics)
   - `reports/results/primary_v1_signal.csv`
   - `reports/results/primary_v1_weights.csv`
+- Official PrimaryV1 OOS metrics:
+  - `reports/results/primary_v1_oos_summary.csv`
 - Benchmark outputs:
-  - `reports/results/benchmarks_summary.csv`
-  - `reports/results/benchmarks_summary.html`
+  - `reports/results/benchmarks_summary.csv` (full-sample causal benchmark comparison)
+  - `reports/results/benchmarks_summary.html` (full-sample causal benchmark comparison)
   - `reports/assets/equity_curves.png`
   - `reports/assets/drawdowns.png`
   - `reports/assets/rolling_sharpe.png`
@@ -358,6 +360,12 @@ Treat the following outputs as the canonical shared artifacts of the repository:
   - `reports/results/monthly_cv/monthly_cv_protocol.md`
 
 These filenames and locations are part of the repository contract for collaborators and agents. Avoid renaming them casually.
+
+For performance reporting, treat `reports/results/primary_v1_oos_summary.csv` and
+`reports/results/walk_forward/walk_forward_summary.csv` as the canonical OOS
+artifacts for PrimaryV1. The `primary_v1_summary.csv` and benchmark summary
+artifacts remain useful, but they are full-sample causal backtest outputs and
+should not be presented as official OOS metrics.
 
 ## Replication Checklist
 

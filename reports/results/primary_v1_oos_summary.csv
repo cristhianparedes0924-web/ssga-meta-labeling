@@ -1,0 +1,2 @@
+,evaluation_scope,ann_return,ann_vol,sharpe,max_drawdown,calmar,avg_turnover,info_ratio,win_rate,payout_ratio,pi_plus,pi_minus,delta_vs_standard,source_validation
+PrimaryV1,oos_walk_forward,0.07623380328766083,0.06840923506677837,1.1111205532231394,-0.1442792999566357,0.528376581467844,0.05271966527196653,,0.6736401673640168,1.1127065461141339,0.016654268322981326,-0.014967349999999949,0.0,walk_forward

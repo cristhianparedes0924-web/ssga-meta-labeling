@@ -97,3 +97,17 @@ The project walkthrough design compares how the same monthly OOS validation beha
 ### Impact
 
 Future monthly-CV work should keep one OOS month per fold, treat expanding history as the canonical root output in `reports/results/monthly_cv/`, and write rolling comparisons under folders such as `reports/results/monthly_cv/rolling_12m/`.
+
+## 2026-04-10
+
+### Decision
+
+Treat walk-forward validation as the canonical OOS performance source for official `PrimaryV1` reporting, and label `primary_v1_summary.csv` plus benchmark summaries as full-sample causal backtest artifacts.
+
+### Reason
+
+The repository already had a true OOS walk-forward pipeline, but the main `PrimaryV1` and benchmark summary artifacts were full-sample backtests and could be misread as official OOS performance metrics.
+
+### Impact
+
+Future reporting should source official PrimaryV1 performance metrics from `reports/results/primary_v1_oos_summary.csv` or `reports/results/walk_forward/walk_forward_summary.csv`, while treating `primary_v1_summary.csv` and benchmark summary artifacts as full-sample causal diagnostics only.

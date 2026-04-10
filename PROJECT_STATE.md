@@ -11,6 +11,7 @@ Based on the current repo state, the primary-model repository already appears to
 - Robustness runs across threshold, duration, and transaction-cost grids
 - Walk-forward validation outputs
 - Monthly cross-validation outputs comparing expanding versus rolling training windows with monthly OOS evaluation
+- Official PrimaryV1 OOS summary export sourced from walk-forward validation, alongside clearly labeled full-sample causal primary and benchmark summaries
 - Reporting outputs in `reports/results/` and plots in `reports/assets/`
 - A first-pass secondary dataset builder for event-level meta-labeling data
 - Causal temporal split utilities for secondary train/validation preparation
@@ -22,6 +23,8 @@ The primary model is the current baseline. The main implemented strategy code li
 - Baseline strategy: `PrimaryV1`
 - Baseline config source: `configs/primary.yaml`
 - Baseline outputs already appear to exist in `reports/results/primary_v1_*`
+- `reports/results/primary_v1_summary.csv` now represents full-sample causal backtest metrics only
+- `reports/results/primary_v1_oos_summary.csv` is now the canonical PrimaryV1 OOS performance summary sourced from walk-forward validation
 - Benchmarks, robustness, walk-forward, and monthly CV outputs also appear to be present
 - Monthly CV now supports expanding-history validation plus rolling train windows of 3, 6, 12, 24, and 36 months while keeping OOS evaluation monthly
 - Secondary dataset construction now appears to be implemented under `src/metalabel/secondary/`

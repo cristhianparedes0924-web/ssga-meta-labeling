@@ -465,14 +465,28 @@ def run_walk_forward(
             "StandardCausal": full_backtest,
         }
     )
+    summary.insert(
+        0,
+        "evaluation_scope",
+        [
+            "oos_walk_forward",
+            "full_sample_causal_slice",
+        ],
+    )
     summary["delta_vs_standard"] = summary["ann_return"] - summary.loc["StandardCausal", "ann_return"]
+
+    official_oos_summary = summary.loc[["WalkForwardStrict"]].copy()
+    official_oos_summary.index = pd.Index(["PrimaryV1"], name=summary.index.name)
+    official_oos_summary["source_validation"] = "walk_forward"
 
     wf_path = out_dir / "walk_forward_backtest.csv"
     std_path = out_dir / "standard_causal_backtest_slice.csv"
     summary_path = out_dir / "walk_forward_summary.csv"
+    official_oos_path = reports_results_dir(root) / "primary_v1_oos_summary.csv"
     wf_backtest.to_csv(wf_path, index=True)
     full_backtest.to_csv(std_path, index=True)
     summary.to_csv(summary_path, index=True)
+    official_oos_summary.to_csv(official_oos_path, index=True)
 
     protocol = [
         "# Walk-Forward Protocol",
@@ -492,12 +506,14 @@ def run_walk_forward(
         f"- `{wf_path}`",
         f"- `{std_path}`",
         f"- `{summary_path}`",
+        f"- `{official_oos_path}`",
     ]
     (out_dir / "walk_forward_protocol.md").write_text("\n".join(protocol), encoding="utf-8")
 
     print(f"Saved: {wf_path}")
     print(f"Saved: {std_path}")
     print(f"Saved: {summary_path}")
+    print(f"Saved: {official_oos_path}")
     print(f"Saved: {out_dir / 'walk_forward_protocol.md'}")
 
 
@@ -749,6 +765,7 @@ def run_monthly_cv(
         zscore_min_periods=int(primary_cfg["zscore_min_periods"]),
     )
     summary = perf_table({"MonthlyCV": oos_backtest})
+    summary.insert(0, "evaluation_scope", "oos_monthly_cv")
 
     fold_summary_path = out_dir / "monthly_cv_fold_summary.csv"
     oos_path = out_dir / "monthly_cv_oos_backtest.csv"
@@ -1042,7 +1059,7 @@ def run_validation_suite(
         "",
         "## Key Outputs",
         f"- `{target_root / 'reports' / 'results' / 'benchmarks_summary.csv'}`",
-        f"- `{target_root / 'reports' / 'results' / 'primary_v1_summary.csv'}`",
+        f"- `{target_root / 'reports' / 'results' / 'primary_v1_oos_summary.csv'}`",
         f"- `{target_root / 'reports' / 'results' / 'robustness' / 'robustness_grid_results.csv'}`",
         f"- `{target_root / 'reports' / 'results' / 'walk_forward' / 'walk_forward_summary.csv'}`",
         f"- `{manifest_path}`",

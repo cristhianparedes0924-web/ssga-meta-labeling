@@ -197,7 +197,7 @@ def build_benchmark_html(
 ) -> str:
     html_parts = [
         (
-            "<html><head><meta charset='utf-8'><title>Benchmark Summary</title>"
+            "<html><head><meta charset='utf-8'><title>Benchmark Summary (Full-Sample Causal Backtests)</title>"
             "<style>"
             "body{font-family:Arial,sans-serif;margin:20px;color:#111;}"
             "h1,h2,h3{margin-top:20px;}"
@@ -207,8 +207,15 @@ def build_benchmark_html(
             "img{max-width:100%;height:auto;border:1px solid #d0d0d0;margin-bottom:16px;}"
             "</style></head><body>"
         ),
-        "<h1>Benchmark Summary</h1>",
-        "<h2>Performance Table (Net)</h2>",
+        "<h1>Benchmark Summary (Full-Sample Causal Backtests)</h1>",
+        (
+            "<p>This report is a full-sample causal benchmark comparison. "
+            "It is not the official OOS scorecard for PrimaryV1. "
+            "Use <code>reports/results/primary_v1_oos_summary.csv</code> "
+            "or <code>reports/results/walk_forward/walk_forward_summary.csv</code> "
+            "for canonical PrimaryV1 OOS performance metrics.</p>"
+        ),
+        "<h2>Performance Table (Net, Full-Sample Causal)</h2>",
         summary.to_html(),
         "<h2>Excess vs EqualWeight25</h2>",
         excess.to_html(),

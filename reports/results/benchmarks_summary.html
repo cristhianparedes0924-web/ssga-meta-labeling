@@ -1,10 +1,12 @@
-<html><head><meta charset='utf-8'><title>Benchmark Summary</title><style>body{font-family:Arial,sans-serif;margin:20px;color:#111;}h1,h2,h3{margin-top:20px;}table{border-collapse:collapse;margin-bottom:16px;}th,td{border:1px solid #d0d0d0;padding:6px 10px;text-align:right;}th:first-child,td:first-child{text-align:left;}img{max-width:100%;height:auto;border:1px solid #d0d0d0;margin-bottom:16px;}</style></head><body>
-<h1>Benchmark Summary</h1>
-<h2>Performance Table (Net)</h2>
+<html><head><meta charset='utf-8'><title>Benchmark Summary (Full-Sample Causal Backtests)</title><style>body{font-family:Arial,sans-serif;margin:20px;color:#111;}h1,h2,h3{margin-top:20px;}table{border-collapse:collapse;margin-bottom:16px;}th,td{border:1px solid #d0d0d0;padding:6px 10px;text-align:right;}th:first-child,td:first-child{text-align:left;}img{max-width:100%;height:auto;border:1px solid #d0d0d0;margin-bottom:16px;}</style></head><body>
+<h1>Benchmark Summary (Full-Sample Causal Backtests)</h1>
+<p>This report is a full-sample causal benchmark comparison. It is not the official OOS scorecard for PrimaryV1. Use <code>reports/results/primary_v1_oos_summary.csv</code> or <code>reports/results/walk_forward/walk_forward_summary.csv</code> for canonical PrimaryV1 OOS performance metrics.</p>
+<h2>Performance Table (Net, Full-Sample Causal)</h2>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
+      <th>evaluation_scope</th>
       <th>ann_return</th>
       <th>ann_vol</th>
       <th>sharpe</th>
@@ -21,6 +23,7 @@
   <tbody>
     <tr>
       <th>EqualWeight25</th>
+      <td>full_sample_causal</td>
       <td>0.047792</td>
       <td>0.071808</td>
       <td>0.687576</td>
@@ -35,6 +38,7 @@
     </tr>
     <tr>
       <th>BuyHoldSPX</th>
+      <td>full_sample_causal</td>
       <td>0.082662</td>
       <td>0.152810</td>
       <td>0.598620</td>
@@ -49,6 +53,7 @@
     </tr>
     <tr>
       <th>60/40</th>
+      <td>full_sample_causal</td>
       <td>0.069366</td>
       <td>0.093251</td>
       <td>0.767870</td>
@@ -63,6 +68,7 @@
     </tr>
     <tr>
       <th>SimpleTrend</th>
+      <td>full_sample_causal</td>
       <td>0.086249</td>
       <td>0.129104</td>
       <td>0.707779</td>
@@ -77,17 +83,18 @@
     </tr>
     <tr>
       <th>PrimaryV1</th>
-      <td>0.083760</td>
-      <td>0.065719</td>
-      <td>1.260636</td>
-      <td>-0.144279</td>
-      <td>0.580541</td>
-      <td>0.049860</td>
-      <td>0.638344</td>
-      <td>0.689944</td>
-      <td>1.140561</td>
-      <td>0.016513</td>
-      <td>-0.014478</td>
+      <td>full_sample_causal</td>
+      <td>0.064887</td>
+      <td>0.072314</td>
+      <td>0.907729</td>
+      <td>-0.206227</td>
+      <td>0.314639</td>
+      <td>0.098184</td>
+      <td>0.303456</td>
+      <td>0.636872</td>
+      <td>1.117437</td>
+      <td>0.017538</td>
+      <td>-0.015695</td>
     </tr>
   </tbody>
 </table>
@@ -134,9 +141,9 @@
     </tr>
     <tr>
       <th>PrimaryV1</th>
-      <td>0.033475</td>
-      <td>211</td>
-      <td>127</td>
+      <td>0.016268</td>
+      <td>194</td>
+      <td>147</td>
     </tr>
   </tbody>
 </table>
@@ -167,7 +174,7 @@
     </tr>
     <tr>
       <th>PrimaryV1</th>
-      <td>0.712567</td>
+      <td>0.723284</td>
     </tr>
   </tbody>
 </table>

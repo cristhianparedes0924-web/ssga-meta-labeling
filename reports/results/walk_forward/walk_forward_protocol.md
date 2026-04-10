@@ -12,6 +12,7 @@
 - Last OOS decision date: `2025-11-28`.
 
 ## Outputs
-- `C:\Users\crist\OneDrive\Documents\primary_model_test\meta-labeling-project\reports\results\walk_forward\walk_forward_backtest.csv`
-- `C:\Users\crist\OneDrive\Documents\primary_model_test\meta-labeling-project\reports\results\walk_forward\standard_causal_backtest_slice.csv`
-- `C:\Users\crist\OneDrive\Documents\primary_model_test\meta-labeling-project\reports\results\walk_forward\walk_forward_summary.csv`
+- `/home/cristhian/Projects/ssga-meta-labeling/reports/results/walk_forward/walk_forward_backtest.csv`
+- `/home/cristhian/Projects/ssga-meta-labeling/reports/results/walk_forward/standard_causal_backtest_slice.csv`
+- `/home/cristhian/Projects/ssga-meta-labeling/reports/results/walk_forward/walk_forward_summary.csv`
+- `/home/cristhian/Projects/ssga-meta-labeling/reports/results/primary_v1_oos_summary.csv`

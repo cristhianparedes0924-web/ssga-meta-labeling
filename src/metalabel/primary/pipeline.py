@@ -58,20 +58,22 @@ def run_primary_variant1(root: Path, config: Mapping[str, Any] | None = None) ->
         tcost_bps=float(primary_cfg["tcost_bps"]),
     )
     summary = perf_table({"PrimaryV1": backtest}, periods_per_year=12)
+    summary.insert(0, "evaluation_scope", "full_sample_causal")
     spx_fwd = adj_universe["spx"]["Return"].shift(-1)
     clf = classification_table(
         signal=signals["signal"],
         score=signals["composite_score"],
         forward_returns=spx_fwd,
     )
+    clf.insert(0, "evaluation_scope", "full_sample_causal")
 
     avg_turnover = float(backtest["turnover"].mean())
 
-    print("Performance table (net):")
+    print("Performance table (net, full-sample causal backtest):")
     print(summary.to_string())
     print()
 
-    print("Classification metrics (BUY vs SPX up, AUC on composite score):")
+    print("Classification metrics (BUY vs SPX up, AUC on composite score; full-sample causal):")
     print(clf.to_string(index=False))
     print()
 
@@ -143,13 +145,14 @@ def run_benchmarks(root: Path, config: Mapping[str, Any] | None = None) -> None:
         periods_per_year=12,
         benchmark_key=str(primary_cfg["benchmark_key"]),
     )
+    summary.insert(0, "evaluation_scope", "full_sample_causal")
     strategy_returns = _strategy_return_table(backtests)
     excess = _excess_vs_equal_weight(strategy_returns, ew_col="EqualWeight25")
     corr = _corr_vs_equal_weight(strategy_returns, ew_col="EqualWeight25")
     asset_stats = _asset_sanity_table(returns)
     asset_corr = returns.corr()
 
-    print("Benchmark performance table (net):")
+    print("Benchmark performance table (net, full-sample causal backtests):")
     print(summary.to_string())
     print()
 
@@ -159,8 +162,9 @@ def run_benchmarks(root: Path, config: Mapping[str, Any] | None = None) -> None:
         score=primary_signals["composite_score"],
         forward_returns=spx_fwd,
     )
+    primary_clf.insert(0, "evaluation_scope", "full_sample_causal")
     primary_avg_turnover = float(backtests["PrimaryV1"]["turnover"].mean())
-    print("PrimaryV1 classification metrics:")
+    print("PrimaryV1 classification metrics (full-sample causal):")
     print(primary_clf.to_string(index=False))
     print()
     print(f"PrimaryV1 average turnover: {primary_avg_turnover:.6f}")
