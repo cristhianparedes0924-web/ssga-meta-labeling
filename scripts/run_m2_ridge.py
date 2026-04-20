@@ -161,6 +161,12 @@ with open(METRICS, "w") as f:
     json.dump(metrics, f, indent=2)
 print(f"\nMetrics saved -> {METRICS.relative_to(ROOT)}")
 
+# Save ridge predictions for use in other scripts
+ridge_out = ROOT / "reports" / "results" / "m2_ridge_predictions.csv"
+ridge_preds[["date", "meta_label", "meta_target_return", "m2_prob"]].to_csv(
+    ridge_out, index=False)
+print(f"Ridge predictions saved -> {ridge_out.relative_to(ROOT)}")
+
 # ---------------------------------------------------------------------------
 # Charts
 # ---------------------------------------------------------------------------

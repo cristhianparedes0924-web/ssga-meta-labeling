@@ -1,0 +1,439 @@
+{
+  "config": {
+    "forward_window": 1,
+    "train_frac": 0.6,
+    "val_frac": 0.2,
+    "threshold_min": 0.3,
+    "threshold_max": 0.7,
+    "threshold_step": 0.01,
+    "objective": "sharpe",
+    "random_state": 42,
+    "feature_columns": [
+      "Z1_Mom",
+      "Z2_Value",
+      "Z3_Carry",
+      "Z5_Vol",
+      "Z4_Trend"
+    ]
+  },
+  "data_summary": {
+    "raw_rows": 360,
+    "signal_rows": 348,
+    "labeled_rows": 347
+  },
+  "splits": {
+    "train": {
+      "rows": 208,
+      "start_date": "1997-01-31",
+      "end_date": "2014-04-30",
+      "trade_signal_rows": 152
+    },
+    "validation": {
+      "rows": 69,
+      "start_date": "2014-05-30",
+      "end_date": "2020-01-31",
+      "trade_signal_rows": 59
+    },
+    "test": {
+      "rows": 70,
+      "start_date": "2020-02-28",
+      "end_date": "2025-11-28",
+      "trade_signal_rows": 56
+    }
+  },
+  "selected_threshold": 0.5700000000000003,
+  "validation_threshold_table": [
+    {
+      "threshold": 0.3,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.31,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.32,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.33,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.34,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.35000000000000003,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.36000000000000004,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.37000000000000005,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.38000000000000006,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.39000000000000007,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.4000000000000001,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.4100000000000001,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.4200000000000001,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.4300000000000001,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.4400000000000001,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.4500000000000001,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.46000000000000013,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.47000000000000014,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.48000000000000015,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.49000000000000016,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.5000000000000002,
+      "objective_value": 0.4600795784931968,
+      "final_value": 1.2770828168763135,
+      "max_drawdown": -0.1497355582898743,
+      "sharpe": 0.4600795784931968,
+      "trades_taken": 59
+    },
+    {
+      "threshold": 0.5100000000000002,
+      "objective_value": 0.43099649900203746,
+      "final_value": 1.2546750953152068,
+      "max_drawdown": -0.16465431579829648,
+      "sharpe": 0.43099649900203746,
+      "trades_taken": 58
+    },
+    {
+      "threshold": 0.5200000000000002,
+      "objective_value": 0.4288738983771463,
+      "final_value": 1.2520053769818031,
+      "max_drawdown": -0.17936363808820166,
+      "sharpe": 0.4288738983771463,
+      "trades_taken": 56
+    },
+    {
+      "threshold": 0.5300000000000002,
+      "objective_value": 0.42801665872251826,
+      "final_value": 1.2513734795933904,
+      "max_drawdown": -0.17936363808820155,
+      "sharpe": 0.42801665872251826,
+      "trades_taken": 55
+    },
+    {
+      "threshold": 0.5400000000000003,
+      "objective_value": 0.4148994289382912,
+      "final_value": 1.2328276453483389,
+      "max_drawdown": -0.17936363808820163,
+      "sharpe": 0.4148994289382912,
+      "trades_taken": 53
+    },
+    {
+      "threshold": 0.5500000000000003,
+      "objective_value": 0.40581567161810056,
+      "final_value": 1.2247768108435995,
+      "max_drawdown": -0.17936363808820155,
+      "sharpe": 0.40581567161810056,
+      "trades_taken": 51
+    },
+    {
+      "threshold": 0.5600000000000003,
+      "objective_value": 0.5272795683603653,
+      "final_value": 1.2982483296388168,
+      "max_drawdown": -0.15481068573984516,
+      "sharpe": 0.5272795683603653,
+      "trades_taken": 49
+    },
+    {
+      "threshold": 0.5700000000000003,
+      "objective_value": 0.7694475099825795,
+      "final_value": 1.429437777297873,
+      "max_drawdown": -0.08560161942317356,
+      "sharpe": 0.7694475099825795,
+      "trades_taken": 48
+    },
+    {
+      "threshold": 0.5800000000000003,
+      "objective_value": 0.6240836432221194,
+      "final_value": 1.3246311872649041,
+      "max_drawdown": -0.08560161942317354,
+      "sharpe": 0.6240836432221194,
+      "trades_taken": 45
+    },
+    {
+      "threshold": 0.5900000000000003,
+      "objective_value": 0.6240836432221194,
+      "final_value": 1.3246311872649041,
+      "max_drawdown": -0.08560161942317354,
+      "sharpe": 0.6240836432221194,
+      "trades_taken": 45
+    },
+    {
+      "threshold": 0.6000000000000003,
+      "objective_value": 0.6240836432221194,
+      "final_value": 1.3246311872649041,
+      "max_drawdown": -0.08560161942317354,
+      "sharpe": 0.6240836432221194,
+      "trades_taken": 45
+    },
+    {
+      "threshold": 0.6100000000000003,
+      "objective_value": 0.588524039174219,
+      "final_value": 1.3005461497143564,
+      "max_drawdown": -0.08560161942317358,
+      "sharpe": 0.588524039174219,
+      "trades_taken": 42
+    },
+    {
+      "threshold": 0.6200000000000003,
+      "objective_value": 0.588524039174219,
+      "final_value": 1.3005461497143564,
+      "max_drawdown": -0.08560161942317358,
+      "sharpe": 0.588524039174219,
+      "trades_taken": 42
+    },
+    {
+      "threshold": 0.6300000000000003,
+      "objective_value": 0.5184866653195079,
+      "final_value": 1.2539031342334526,
+      "max_drawdown": -0.08560161942317343,
+      "sharpe": 0.5184866653195079,
+      "trades_taken": 41
+    },
+    {
+      "threshold": 0.6400000000000003,
+      "objective_value": 0.5220121776618,
+      "final_value": 1.255947930262021,
+      "max_drawdown": -0.08411046900964819,
+      "sharpe": 0.5220121776618,
+      "trades_taken": 40
+    },
+    {
+      "threshold": 0.6500000000000004,
+      "objective_value": 0.4664845257032978,
+      "final_value": 1.2216410710484946,
+      "max_drawdown": -0.08411046900964812,
+      "sharpe": 0.4664845257032978,
+      "trades_taken": 39
+    },
+    {
+      "threshold": 0.6600000000000004,
+      "objective_value": 0.5078880953241774,
+      "final_value": 1.2441497971376725,
+      "max_drawdown": -0.08411046900964818,
+      "sharpe": 0.5078880953241774,
+      "trades_taken": 38
+    },
+    {
+      "threshold": 0.6700000000000004,
+      "objective_value": 0.3467386980824204,
+      "final_value": 1.1450886782951406,
+      "max_drawdown": -0.08411046900964808,
+      "sharpe": 0.3467386980824204,
+      "trades_taken": 35
+    },
+    {
+      "threshold": 0.6800000000000004,
+      "objective_value": 0.370110206562226,
+      "final_value": 1.1513850926335634,
+      "max_drawdown": -0.08411046900964815,
+      "sharpe": 0.370110206562226,
+      "trades_taken": 32
+    },
+    {
+      "threshold": 0.6900000000000004,
+      "objective_value": 0.40712686926594166,
+      "final_value": 1.1657673160663444,
+      "max_drawdown": -0.0841104690096481,
+      "sharpe": 0.40712686926594166,
+      "trades_taken": 30
+    },
+    {
+      "threshold": 0.7000000000000004,
+      "objective_value": 0.385116401943964,
+      "final_value": 1.153400521134661,
+      "max_drawdown": -0.08411046900964819,
+      "sharpe": 0.385116401943964,
+      "trades_taken": 27
+    }
+  ],
+  "validation_metrics": {
+    "primary": {
+      "periods": 69,
+      "trades_available": 59,
+      "trades_taken": 59,
+      "hit_rate": 0.6610169491525424,
+      "total_return": 0.27708281687631353,
+      "final_value": 1.2770828168763135,
+      "cagr": 0.04345297174948959,
+      "annualized_volatility": 0.10453839328396378,
+      "sharpe": 0.4600795784931968,
+      "max_drawdown": -0.1497355582898743
+    },
+    "meta": {
+      "periods": 69,
+      "trades_available": 59,
+      "trades_taken": 48,
+      "hit_rate": 0.6875,
+      "total_return": 0.429437777297873,
+      "final_value": 1.429437777297873,
+      "cagr": 0.06410690618083303,
+      "annualized_volatility": 0.0857228160756626,
+      "sharpe": 0.7694475099825795,
+      "max_drawdown": -0.08560161942317356
+    },
+    "diagnostics": {
+      "profitable_signals": 39,
+      "profitable_signals_taken": 33,
+      "profitable_signals_missed": 6,
+      "losing_signals_avoided": 5
+    }
+  },
+  "test_metrics": {
+    "primary": {
+      "periods": 70,
+      "trades_available": 56,
+      "trades_taken": 56,
+      "hit_rate": 0.6607142857142857,
+      "total_return": 0.9495581192227911,
+      "final_value": 1.949558119222791,
+      "cagr": 0.1212522983899218,
+      "annualized_volatility": 0.13596190382392395,
+      "sharpe": 0.9131952922103213,
+      "max_drawdown": -0.1330730270363267
+    },
+    "meta": {
+      "periods": 70,
+      "trades_available": 56,
+      "trades_taken": 42,
+      "hit_rate": 0.6428571428571429,
+      "total_return": 0.5362980434043529,
+      "final_value": 1.536298043404353,
+      "cagr": 0.07638397812025222,
+      "annualized_volatility": 0.1271616351186182,
+      "sharpe": 0.6436950534844604,
+      "max_drawdown": -0.18305440451937716
+    },
+    "diagnostics": {
+      "profitable_signals": 37,
+      "profitable_signals_taken": 27,
+      "profitable_signals_missed": 10,
+      "losing_signals_avoided": 4
+    }
+  }
+}

@@ -18,8 +18,11 @@ from typing import Sequence
 
 import numpy as np
 import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
+from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
 
 from metalabel.secondary.split import walk_forward_splits
 
@@ -277,6 +280,171 @@ def run_walk_forward_ridge(
     return pd.DataFrame(records), c_values
 
 
+def run_walk_forward_rf(
+    df: pd.DataFrame,
+    min_train_size: int = 60,
+    step: int = 1,
+    threshold: float = 0.5,
+    features: list[str] | None = None,
+) -> tuple[pd.DataFrame, list[dict]]:
+    """Walk-forward prediction using a Random Forest classifier with tuned hyperparameters.
+
+    At each step, fits a RandomForestClassifier with hyperparameters selected
+    via 5-fold stratified GridSearchCV within the training window only.
+    No scaling is applied (trees are scale-invariant).
+
+    Grid searched:
+        n_estimators : [100, 200]
+        max_depth    : [2, 3, 4]
+        min_samples_leaf : [5, 10]
+
+    Parameters
+    ----------
+    df : time-ordered secondary dataset.
+    min_train_size : events used for first training window.
+    step : events predicted per walk-forward step.
+    threshold : probability cut-off for m2_approve.
+    features : feature list. Defaults to M2_FEATURES_CORE.
+
+    Returns
+    -------
+    predictions : DataFrame (same schema as run_walk_forward)
+    best_params  : list of dicts, one per walk-forward step
+    """
+    if features is None:
+        features = M2_FEATURES_CORE
+
+    df = df.sort_values("date").reset_index(drop=True)
+    records: list[dict] = []
+    best_params: list[dict] = []
+
+    param_grid = {
+        "n_estimators":      [100, 200],
+        "max_depth":         [2, 3, 4],
+        "min_samples_leaf":  [5, 10],
+    }
+
+    for train_df, test_df in walk_forward_splits(df, min_train_size=min_train_size, step=step):
+        X_train = prepare_features(train_df, features=features).values
+        y_train = train_df[_TARGET].values
+
+        base_rf = RandomForestClassifier(
+            class_weight="balanced",
+            random_state=42,
+            n_jobs=-1,
+        )
+        cv = GridSearchCV(
+            base_rf,
+            param_grid,
+            cv=5,
+            scoring="roc_auc",
+            refit=True,
+            n_jobs=-1,
+        )
+        cv.fit(X_train, y_train)
+        best_params.append(cv.best_params_)
+
+        X_test = prepare_features(test_df, features=features).values
+        probs = cv.predict_proba(X_test)[:, 1]
+
+        for i, (_, row) in enumerate(test_df.iterrows()):
+            records.append(
+                {
+                    "date": row["date"],
+                    "primary_signal": row["primary_signal"],
+                    "meta_label": int(row[_TARGET]),
+                    "meta_target_return": float(row["meta_target_return"]),
+                    "m2_prob": float(probs[i]),
+                    "m2_approve": int(probs[i] >= threshold),
+                }
+            )
+
+    return pd.DataFrame(records), best_params
+
+
+def run_walk_forward_svm(
+    df: pd.DataFrame,
+    min_train_size: int = 60,
+    step: int = 1,
+    threshold: float = 0.5,
+    features: list[str] | None = None,
+) -> tuple[pd.DataFrame, list[dict]]:
+    """Walk-forward prediction using SVM with RBF kernel.
+
+    Uses SVC with probability=True (Platt scaling) to produce calibrated
+    probabilities. C and gamma are tuned via 5-fold stratified GridSearchCV
+    within each training window. Features are scaled before fitting.
+
+    Grid searched:
+        C     : [0.1, 1.0, 10.0]
+        gamma : ['scale', 0.1, 0.01]
+
+    Parameters
+    ----------
+    df : time-ordered secondary dataset.
+    min_train_size : events used for first training window.
+    step : events predicted per walk-forward step.
+    threshold : probability cut-off for m2_approve.
+    features : feature list. Defaults to M2_FEATURES_CORE.
+
+    Returns
+    -------
+    predictions : DataFrame (same schema as run_walk_forward)
+    best_params  : list of dicts, one per walk-forward step
+    """
+    if features is None:
+        features = M2_FEATURES_CORE
+
+    df = df.sort_values("date").reset_index(drop=True)
+    records: list[dict] = []
+    best_params: list[dict] = []
+
+    param_grid = {
+        "C":     [0.1, 1.0, 10.0],
+        "gamma": ["scale", 0.1, 0.01],
+    }
+
+    for train_df, test_df in walk_forward_splits(df, min_train_size=min_train_size, step=step):
+        X_train = prepare_features(train_df, features=features).values
+        y_train = train_df[_TARGET].values
+
+        scaler = StandardScaler()
+        X_train_s = scaler.fit_transform(X_train)
+
+        base_svm = SVC(
+            kernel="rbf",
+            probability=True,
+            class_weight="balanced",
+            random_state=42,
+        )
+        cv = GridSearchCV(
+            base_svm,
+            param_grid,
+            cv=5,
+            scoring="roc_auc",
+            refit=True,
+        )
+        cv.fit(X_train_s, y_train)
+        best_params.append(cv.best_params_)
+
+        X_test_s = scaler.transform(prepare_features(test_df, features=features).values)
+        probs = cv.predict_proba(X_test_s)[:, 1]
+
+        for i, (_, row) in enumerate(test_df.iterrows()):
+            records.append(
+                {
+                    "date": row["date"],
+                    "primary_signal": row["primary_signal"],
+                    "meta_label": int(row[_TARGET]),
+                    "meta_target_return": float(row["meta_target_return"]),
+                    "m2_prob": float(probs[i]),
+                    "m2_approve": int(probs[i] >= threshold),
+                }
+            )
+
+    return pd.DataFrame(records), best_params
+
+
 def sweep_thresholds(
     predictions: pd.DataFrame,
     thresholds: list[float] | None = None,
@@ -414,7 +582,14 @@ def apply_position_sizing(
     trade is taken.
 
     Sizing formula (normalize=True, default):
-        position_size = m2_prob / mean(m2_prob)
+        position_size[t] = m2_prob[t] / expanding_mean(m2_prob[0:t])
+
+        Uses an expanding mean: at each step t, divides by the mean of all
+        OOS probabilities seen so far (steps 0 through t-1), not the global
+        mean computed over the full sample. This avoids any look-ahead bias
+        since the normalisation denominator at step t uses no future data.
+        At step 0 (no prior OOS history) falls back to dividing by the
+        probability itself, giving size = 1.0.
 
     Return formula:
         If carry_returns provided (correct economic behavior):
@@ -431,7 +606,7 @@ def apply_position_sizing(
         Output of ``run_walk_forward`` (must contain m2_prob and
         meta_target_return).
     normalize:
-        Whether to rescale sizes so their mean equals 1.0.
+        Whether to rescale sizes using the expanding mean of past OOS probs.
     carry_returns:
         Array of carry-forward returns computed by ``compute_carry_returns``.
         When provided the sized return is economically correct.
@@ -446,10 +621,16 @@ def apply_position_sizing(
     probs = predictions["m2_prob"].values.copy()
 
     if normalize:
-        mean_prob = probs.mean()
-        if mean_prob == 0:
-            raise ValueError("All probabilities are zero - cannot normalise.")
-        sizes = probs / mean_prob
+        sizes = np.empty(len(probs))
+        for t in range(len(probs)):
+            if t == 0:
+                # No prior OOS history - size = 1.0 for the first prediction
+                sizes[t] = 1.0
+            else:
+                expanding_mean = probs[:t].mean()
+                if expanding_mean == 0:
+                    raise ValueError(f"Expanding mean is zero at step {t}.")
+                sizes[t] = probs[t] / expanding_mean
     else:
         sizes = probs
 

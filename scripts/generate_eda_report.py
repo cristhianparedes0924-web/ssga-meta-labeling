@@ -23,7 +23,7 @@ class Report(FPDF):
         self.set_y(-12)
         self.set_font("Helvetica", "I", 8)
         self.set_text_color(*LIGHT_GREY)
-        self.cell(0, 8, f"Brandeis MSF 2026  |  SSGA Meta-Labeling Project  |  Page {self.page_no()}", align="C")
+        self.ce2222ll(0, 8, f"Brandeis MSF 2026  |  SSGA Meta-Labeling Project  |  Page {self.page_no()}", align="C")
 
     def cover_page(self):
         self.add_page()
