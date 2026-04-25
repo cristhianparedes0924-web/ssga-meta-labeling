@@ -125,3 +125,17 @@ Information ratio requires a benchmark return series on the same dates as the ev
 ### Impact
 
 Future official PrimaryV1 OOS reports should include the matched OOS equal-weight benchmark when reporting information ratio. Full-sample benchmark reports remain diagnostics and should not be used as the official OOS IR source.
+
+## 2026-04-25
+
+### Decision
+
+Merge the `Sam_M2_Trees` branch as experimental secondary-model work while preserving the current PrimaryV1/M1 OOS reporting contract as the protected baseline.
+
+### Reason
+
+The branch adds substantial M2 model, evaluation, script, notebook, and report artifacts that support secondary-model exploration, but the existing PrimaryV1 reporting contract remains the canonical baseline for official M1 performance.
+
+### Impact
+
+Future work may build on the merged M2 tree-model artifacts, but promotion to a canonical secondary workflow should be explicit. PrimaryV1/M1 official reporting should continue to use the protected OOS artifacts and reporting contract unless a later approved task changes that baseline.

@@ -1,0 +1,111 @@
+{
+  "config": {
+    "mode": "walk_forward",
+    "forward_window": 1,
+    "train_frac": 0.6,
+    "val_frac": 0.2,
+    "threshold_min": 0.3,
+    "threshold_max": 0.7,
+    "threshold_step": 0.01,
+    "objective": "sharpe",
+    "random_state": 42,
+    "validation_window": 60,
+    "min_train_window": 120,
+    "transaction_cost_bps": 0.0,
+    "decision_policy": "threshold",
+    "probability_calibration": "none",
+    "utility_margin": 0.0,
+    "utility_risk_aversion": 0.0,
+    "feature_columns": [
+      "Z1_Mom",
+      "Z2_Value",
+      "Z3_Carry",
+      "Z5_Vol",
+      "Z4_Trend"
+    ]
+  },
+  "data_summary": {
+    "raw_rows": 360,
+    "signal_rows": 348,
+    "labeled_rows": 347
+  },
+  "splits": {
+    "train": {
+      "rows": 208,
+      "start_date": "1997-01-31",
+      "end_date": "2014-04-30",
+      "trade_signal_rows": 152
+    },
+    "validation": {
+      "rows": 69,
+      "start_date": "2014-05-30",
+      "end_date": "2020-01-31",
+      "trade_signal_rows": 59
+    },
+    "test": {
+      "rows": 70,
+      "start_date": "2020-02-28",
+      "end_date": "2025-11-28",
+      "trade_signal_rows": 56
+    }
+  },
+  "walk_forward_summary": {
+    "test_rows": 70,
+    "status_counts": {
+      "ok": 70
+    }
+  },
+  "threshold_summary": {
+    "count": 70,
+    "min": 0.3,
+    "max": 0.7000000000000004,
+    "mean": 0.5318571428571429,
+    "median": 0.6000000000000003,
+    "std": 0.1296070198401181
+  },
+  "utility_score_summary": null,
+  "test_metrics": {
+    "primary": {
+      "periods": 70,
+      "trades_available": 56,
+      "trades_taken": 56,
+      "hit_rate": 0.6607142857142857,
+      "avg_exposure": 0.8,
+      "turnover_events": 5,
+      "annualized_turnover": 0.8571428571428572,
+      "total_transaction_cost": 0.0,
+      "total_return": 0.9495581192227911,
+      "final_value": 1.949558119222791,
+      "cagr": 0.1212522983899218,
+      "annualized_volatility": 0.13596190382392395,
+      "sharpe": 0.9131952922103213,
+      "max_drawdown": -0.1330730270363267,
+      "gross_final_value": 1.949558119222791,
+      "gross_total_return": 0.9495581192227911
+    },
+    "meta": {
+      "periods": 70,
+      "trades_available": 56,
+      "trades_taken": 41,
+      "hit_rate": 0.6829268292682927,
+      "avg_exposure": 0.5857142857142857,
+      "turnover_events": 15,
+      "annualized_turnover": 2.5714285714285716,
+      "total_transaction_cost": 0.0,
+      "total_return": 0.47734134305853115,
+      "final_value": 1.4773413430585312,
+      "cagr": 0.0691874693596024,
+      "annualized_volatility": 0.11889555660160929,
+      "sharpe": 0.6235622384105972,
+      "max_drawdown": -0.17801412727322624,
+      "gross_final_value": 1.4773413430585312,
+      "gross_total_return": 0.47734134305853115
+    },
+    "diagnostics": {
+      "profitable_signals": 37,
+      "profitable_signals_taken": 28,
+      "profitable_signals_missed": 9,
+      "losing_signals_avoided": 6
+    }
+  }
+}

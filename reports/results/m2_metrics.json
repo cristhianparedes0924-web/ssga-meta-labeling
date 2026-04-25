@@ -1,0 +1,24 @@
+{
+  "oos_events": 78,
+  "min_train_size": 60,
+  "threshold": 0.5,
+  "accuracy": 0.5385,
+  "roc_auc": 0.5227,
+  "m1_baseline": {
+    "n": 78,
+    "win_rate": 0.7179,
+    "avg_return": 0.007618,
+    "annualised_sharpe": 1.31
+  },
+  "m2_approved": {
+    "n": 46,
+    "win_rate": 0.7174,
+    "avg_return": 0.007473,
+    "annualised_sharpe": 1.175
+  },
+  "m2_rejected": {
+    "n": 32,
+    "win_rate": 0.7188,
+    "avg_return": 0.007827
+  }
+}

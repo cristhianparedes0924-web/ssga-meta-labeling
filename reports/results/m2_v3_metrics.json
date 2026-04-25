@@ -1,0 +1,35 @@
+{
+  "version": "v3 - position sizing",
+  "position_size_stats": {
+    "min": 0.346,
+    "mean": 1.0,
+    "max": 1.718,
+    "std": 0.2722
+  },
+  "results": {
+    "m1_baseline": {
+      "n": 78,
+      "ann_return": 0.0953,
+      "sharpe": 1.31,
+      "ir": 0.0
+    },
+    "m2_binary_t051": {
+      "n": 28,
+      "ann_return": 0.1468,
+      "sharpe": 1.106,
+      "ir": 0.318
+    },
+    "m2_sizing_raw": {
+      "n": 78,
+      "ann_return": 0.0857,
+      "sharpe": 1.035,
+      "ir": -0.095
+    },
+    "m2_sizing_norm": {
+      "n": 78,
+      "ann_return": 0.1103,
+      "sharpe": 1.379,
+      "ir": 0.302
+    }
+  }
+}

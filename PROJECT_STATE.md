@@ -17,6 +17,7 @@ Based on the current repo state, the primary-model repository already appears to
 - Reporting outputs in `reports/results/` and plots in `reports/assets/`
 - A first-pass secondary dataset builder for event-level meta-labeling data
 - Causal temporal split utilities for secondary train/validation preparation
+- M2 secondary-model experiments, including supplemental feature construction, logistic/tree model evaluation helpers, walk-forward prediction utilities, standalone M2 scripts, notebooks, and tracked M2 report artifacts
 
 The primary model is the current baseline. The main implemented strategy code lives under `src/metalabel/primary/`, with CLI entry points in `src/metalabel/cli.py` and runtime settings in `configs/primary.yaml`.
 
@@ -32,9 +33,10 @@ The primary model is the current baseline. The main implemented strategy code li
 - Monthly CV now supports expanding-history validation plus rolling train windows of 3, 6, 12, 24, and 36 months while keeping OOS evaluation monthly
 - Secondary dataset construction now appears to be implemented under `src/metalabel/secondary/`
 - Secondary temporal split utilities now appear to be implemented under `src/metalabel/secondary/`
+- Secondary M2 modeling utilities now appear to be implemented under `src/metalabel/secondary/model.py`, with related feature helpers and scripts for M2, M2 v2/v3, Ridge, ROC, and carry-forward evaluation
 
 ## Not finished yet
 
-Based on the current repo state, secondary-model development now appears to include first-pass dataset construction and causal split preparation, but it does not yet appear to include model training, inference, promotion logic, or secondary reporting outputs.
+Based on the current repo state, secondary-model development now appears to include dataset construction, causal split preparation, and experimental M2 model/evaluation workflows.
 
-The repo does not appear to include a trained secondary model, a secondary-specific CLI command, or secondary evaluation dashboards yet.
+The repo does not yet appear to include a promoted production secondary model, a canonical secondary-specific package CLI command, or secondary evaluation dashboards.

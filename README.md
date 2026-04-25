@@ -397,6 +397,21 @@ python -m metalabel.cli run-validation-suite --root test --clean-root
 python -m metalabel.cli run-self-tests
 ```
 
+### Secondary M2 evaluation scripts
+
+The `Sam_M2_Trees` branch adds standalone M2 evaluation and reporting scripts,
+including tree-based secondary models and related comparison reports:
+
+```powershell
+python scripts/run_m2.py
+python scripts/run_m2_v2.py
+python scripts/run_m2_v3.py
+python scripts/run_m2_ridge.py
+python scripts/run_m2_carry_forward.py
+python scripts/run_m2_roc.py
+python scripts/run_evaluation.py --mode walk_forward
+```
+
 ## Results Contract
 
 Treat the following outputs as the canonical shared artifacts of the repository:

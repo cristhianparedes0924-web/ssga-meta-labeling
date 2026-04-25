@@ -8,8 +8,9 @@ import sys
 from pathlib import Path
 
 from metalabel import PROJECT_ROOT, load_primary_config
-from metalabel.data import _resolve_within_project, prepare_data
+from metalabel.data import _resolve_within_project, prepare_data, prepare_supplemental_data
 from metalabel.primary.pipeline import run_all, run_benchmarks, run_primary_variant1
+from metalabel.secondary.dataset import build_secondary_dataset, save_secondary_dataset
 from metalabel.validation import run_data_qc, run_modes, run_monthly_cv, run_robustness, run_self_tests, run_validation_suite, run_walk_forward, setup_test_root
 
 
@@ -26,6 +27,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     core_help = {
         "prepare-data": "Run raw Excel to clean CSV data preparation.",
+        "prepare-supplemental-data": "Clean supplemental level-series Excel files (VIX, Liquidity) into CSVs.",
         "data-qc": "Run data quality report generation.",
         "run-primary-v1": "Run PrimaryV1 strategy and summary output.",
         "run-benchmarks": "Run benchmark suite and results.",
@@ -39,6 +41,40 @@ def build_parser() -> argparse.ArgumentParser:
             default=PROJECT_ROOT,
             help="Project root (must stay inside this repository folder).",
         )
+
+    secondary_parser = subparsers.add_parser(
+        "build-secondary-dataset",
+        aliases=["build_secondary_dataset"],
+        help="Build and save the secondary meta-labeling dataset to a CSV.",
+    )
+    secondary_parser.add_argument(
+        "--root",
+        type=Path,
+        default=PROJECT_ROOT,
+        help="Project root (must stay inside this repository folder).",
+    )
+    secondary_parser.add_argument(
+        "--out",
+        type=Path,
+        default=Path("reports/results/secondary_dataset.csv"),
+        help="Output CSV path relative to project root (default: reports/results/secondary_dataset.csv).",
+    )
+    secondary_parser.add_argument(
+        "--include-hold",
+        action="store_true",
+        help="Include HOLD events in the dataset (default: BUY/SELL only).",
+    )
+    secondary_parser.add_argument(
+        "--use-supplemental",
+        action="store_true",
+        help="Append VIX and Liquidity (OAS) features. Requires supplemental CSVs to exist.",
+    )
+    secondary_parser.add_argument(
+        "--trailing-window",
+        type=int,
+        default=12,
+        help="Trailing health feature window in months (default: 12).",
+    )
 
     subparsers.add_parser(
         "run-self-tests",
@@ -283,10 +319,12 @@ def main(argv: list[str] | None = None) -> None:
     args = parser.parse_args(argv)
     command = args.command
 
-    if command in {"prepare-data", "data-qc", "run-primary-v1", "run-benchmarks", "run-all"}:
+    if command in {"prepare-data", "prepare-supplemental-data", "data-qc", "run-primary-v1", "run-benchmarks", "run-all"}:
         root = _resolve_within_project(args.root, "root")
         if command == "prepare-data":
             prepare_data(root)
+        elif command == "prepare-supplemental-data":
+            prepare_supplemental_data(root)
         elif command == "data-qc":
             run_data_qc(root)
         elif command == "run-primary-v1":
@@ -295,6 +333,19 @@ def main(argv: list[str] | None = None) -> None:
             run_benchmarks(root)
         elif command == "run-all":
             run_all(root)
+        return
+
+    if command in {"build-secondary-dataset", "build_secondary_dataset"}:
+        root = _resolve_within_project(args.root, "root")
+        out_path = root / args.out
+        dataset = build_secondary_dataset(
+            root=root,
+            include_hold=args.include_hold,
+            use_supplemental=args.use_supplemental,
+            trailing_window=args.trailing_window,
+        )
+        saved = save_secondary_dataset(dataset, out_path)
+        print(f"Secondary dataset saved: {saved}  (rows={len(dataset)}, cols={len(dataset.columns)})")
         return
 
     if command in {"run-self-tests", "run_self_tests"}:
